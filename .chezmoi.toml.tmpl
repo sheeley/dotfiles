@@ -1,0 +1,62 @@
+{{- $email := get . "email" -}}
+{{- if not $email -}}
+{{-   $email = promptString "email" -}}
+{{- end -}}
+
+{{- $github_secret := get . "github_secret" -}}
+{{- if not $github_secret -}}
+{{-   $github_secret = promptString "Github secret" -}}
+{{- end -}}
+
+{{- $slack_secret := get . "slack_secret" -}}
+{{- if not $slack_secret -}}
+{{-    $slack_secret = promptString "Slack secret" -}}
+{{- end -}}
+
+{{- $personal := false -}}
+{{- if (hasKey . "personal") -}}
+{{-   $personal = get . "personal" -}}
+{{- else -}}
+{{-   $personal = promptString "Personal Machine? true|false" -}}
+{{- end -}}
+
+{{- $work_email := get . "work_email" -}}
+{{- if (and (not $personal) (not $work_email)) -}}
+{{-   $work_email = promptString "work email" -}}
+{{- end -}}
+
+{{- $borg_secret := get . "borg_secret" -}}
+{{- if $personal -}}
+{{-	if not $borg_secret -}}
+{{-	    $borg_secret = (onepassword "borg").details.password -}}
+{{-	end -}}
+{{- end -}}
+
+{{- /* 
+These are stored as passwords because I couldn't get chezmoi's integration with op working correctly.
+I'm not sure, but it seems like the schema that op returns is different and no longer contains designation. 
+*/ -}}
+
+{{- $bartender2license := get . "bartender2license" -}}
+{{- if not $bartender2license -}}
+{{-	$bartender2license = (onepassword "Bartender 2 License").details.password -}}
+{{- end -}}
+
+{{- $bartender4license := get . "bartender4license" -}}
+{{- if not $bartender4license -}}
+{{-	$bartender4license = (onepassword "Bartender 4 License").details.password -}}
+{{- end -}}
+
+[data]
+email             = {{ $email | quote }}
+work_email        = {{ $work_email | quote }}
+github_secret     = {{ $github_secret | quote }}
+slack_secret      = {{ $slack_secret | quote }}
+borg_secret       = {{ $borg_secret | quote }}
+bartender2license = {{ $bartender2license | quote }}
+bartender4license = {{ $bartender4license | quote }}
+personal          = {{ $personal }}
+
+
+[diff]
+exclude = ["scripts"]

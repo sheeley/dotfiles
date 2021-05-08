@@ -1,0 +1,15 @@
+ControlMaster auto
+ControlPath ~/.ssh/control/%r@%h:%p
+ControlPersist yes
+
+Host minikomputor.local
+User sheeley
+
+# ssh -f -N tunnel
+
+# tunnels
+Host tunnel2
+  HostName 10.9.186.23
+  IdentityFile ~/keys/search-api.pem
+	User stack
+  LocalForward 9000 127.0.0.1:9000

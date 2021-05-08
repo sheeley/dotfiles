@@ -1,0 +1,11 @@
+#! /usr/bin/env bash
+set -eu # x
+
+y='\e[1;33m' # Yellow and Bold
+r='\e[0m'    # Reset
+printf "$y%s$r (y/N)" "$1"
+read -r INPUT
+if [ "$INPUT" == "y" ] || [ "$INPUT" == "yes" ]; then
+	exit 0
+fi
+exit 1

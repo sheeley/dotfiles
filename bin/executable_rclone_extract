@@ -1,0 +1,4 @@
+#! /usr/bin/env bash
+set -eu # x
+
+rclone sync borg-backup:aigee-sheeleybackup /Volumes/money/borgbackup

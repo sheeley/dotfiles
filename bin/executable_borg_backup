@@ -1,0 +1,71 @@
+#! /usr/bin/env bash
+set -eu # x
+
+# borg init --encryption=repokey /Volumes/money/borgbackup
+# borg key export /Volumes/money/borgbackup borgkey
+
+# some helpers and error handling:
+info() { printf "\n%s %s\n\n" "$(date)" "$*" >&2; }
+trap 'echo $( date ) Backup interrupted >&2; exit 2' INT TERM
+
+info "Starting backup"
+
+# Backup the most important directories into an archive named after
+# the machine this script is currently running on:
+
+# --list \ - list shouldn't be used with progress https://github.com/borgbackup/borg/issues/5316
+borg create \
+    --verbose \
+    --filter AME \
+    --stats \
+    --show-rc \
+    --compression lz4 \
+    --progress \
+    --exclude-caches \
+    --exclude '/home/*/.cache/*' \
+    --exclude '/var/cache/*' \
+    --exclude '/var/tmp/*' \
+    --exclude '.DS_Store' \
+    --exclude '.nzb' \
+    --exclude '*.url' \
+    --exclude '*.webloc' \
+    --exclude 'Thumbs.db' \
+    --exclude '.Trashes*' \
+    --exclude '.fseventsd*' \
+    ::'johnny {now}' \
+    \
+    /Users/sheeley/projects/ \
+    /Users/sheeley/Documents/ \
+    /Volumes/money/music/
+# ::'m2 {now}' \
+# \
+# /Volumes/m2\ backup/
+
+backup_exit=$?
+
+info "Pruning repository"
+
+# Use the `prune` subcommand to maintain 7 daily, 4 weekly and 6 monthly archives
+
+borg prune \
+    --prefix 'johnny' \
+    --list \
+    --show-rc \
+    --keep-daily 7 \
+    --keep-weekly 4 \
+    --keep-monthly 6
+
+prune_exit=$?
+
+# use highest exit code as global exit code
+global_exit=$((backup_exit > prune_exit ? backup_exit : prune_exit))
+
+if [ ${global_exit} -eq 0 ]; then
+    info "Backup and Prune finished successfully"
+elif [ ${global_exit} -eq 1 ]; then
+    info "Backup and/or Prune finished with warnings"
+else
+    info "Backup and/or Prune finished with errors"
+fi
+
+exit ${global_exit}

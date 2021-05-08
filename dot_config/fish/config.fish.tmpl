@@ -1,0 +1,112 @@
+# vim: set filetype=fish :
+set fish_greeting
+
+set -x EDITOR nvim
+alias vim="$EDITOR"
+alias vi="$EDITOR"
+set -x LESS "-R"
+
+set -x GOPATH "$HOME/go"
+set -x PRIVATE_CMD_DIR $HOME/projects/sheeley/infrastructure/cmd
+set -x PRIVATE_DATA_DIR $HOME/projects/sheeley/infrastructure/data
+set -x PRIVATE_TOOLS_DIR $HOME/projects/sheeley/infrastructure
+set -x TOOLS_DIR $HOME/projects/sheeley/tools
+
+set -x GITHUB_KEY {{ .github_secret }}
+{{if .slack_secret }}set -x SLACK_KEY {{ .slack_secret }}{{end}}
+
+# backup related
+set -x HOMEBREW_BUNDLE_FILE "$HOME/Documents/Brewfile"
+set -x BORG_REPO /Volumes/money/borgbackup
+{{if .borg_secret}}set -x BORG_PASSPHRASE {{ .borg_secret }}{{end}}
+
+fish_add_path /Applications/Xcode.app/Contents/Developer/usr/bin
+fish_add_path $HOME/.fastlane/bin
+fish_add_path $HOME/bin
+fish_add_path $HOME/personal_bin
+fish_add_path /sbin
+fish_add_path /usr/sbin
+fish_add_path /bin
+fish_add_path /usr/bin
+fish_add_path /usr/local/bin
+fish_add_path $HOME/.cargo/bin
+fish_add_path /usr/local/sbin
+fish_add_path $PRIVATE_TOOLS_DIR/scripts
+fish_add_path $GOPATH/bin
+
+function fish_title
+    if test $_ != "fish"
+        echo $_ ' '
+    end
+    fish_prompt_pwd_dir_length=3 prompt_pwd
+end
+
+function cdgo
+    cd $GOPATH/src
+end
+
+function cdinfra
+    cd $PRIVATE_TOOLS_DIR
+end
+
+function cdtools
+    cd $TOOLS_DIR
+end
+
+function editinfra
+    $EDITOR $PRIVATE_TOOLS_DIR
+end
+
+function edittools
+    $EDITOR $TOOLS_DIR
+end
+
+function mkcd
+    mkdir $argv
+    cd $argv
+end
+
+function reload
+    source "$HOME/.config/fish/config.fish"
+end
+
+test -e {$HOME}/.iterm2_shell_integration.fish
+and source {$HOME}/.iterm2_shell_integration.fish
+
+starship init fish | source
+
+{{- if not .personal -}}
+function __set_git_committer
+    set -l email {{- .work_email | quote -}}
+    switch $PWD
+        case "*jaxf*"
+            set email {{- .work_email | quote -}}
+        case "*fanatics*"
+            set email {{- .work_email | quote -}}
+    end
+    set -g -x GIT_COMMITTER_EMAIL $email
+    set -g -x GIT_AUTHOR_EMAIL $email
+end
+
+__set_git_committer
+
+function __check_dir --on-variable PWD --description 'Change git committer for work'
+    status --is-command-substitution; and return
+    __set_git_committer
+end
+
+set -x PATH $HOME/git/fanatics/forge/go-build-scripts/ $PATH
+set -x PATH $HOME/git/fanatics/forge/go-build-scripts/modules $PATH
+set -x GOPROXY direct
+set -x GOSUMDB off
+
+function cdfan
+    cd $GOPATH/src/jaxf-github.fanatics.corp
+end
+
+# function __check_dir --on-variable PWD --description 'Change git committer for work'
+#     status --is-command-substitution; and return
+#     __set_git_committer
+# end
+
+{{- end -}}

@@ -1,0 +1,5 @@
+#! /usr/bin/env bash
+set -eu # x
+
+eval $(op signin my)
+chezmoi update

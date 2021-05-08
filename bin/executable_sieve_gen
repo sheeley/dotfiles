@@ -1,0 +1,9 @@
+#! /usr/bin/env bash
+set -eu # x
+
+(
+    cd "$PRIVATE_TOOLS_DIR"
+    go run cmd/sieve-gen/sievegen.go | tee aigee-mail.sieve | pbcopy
+    echo "sieve copied"
+    open "https://www.fastmail.com/settings/rules/sieve?u=9619409e"
+)

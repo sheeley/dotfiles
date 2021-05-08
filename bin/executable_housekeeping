@@ -1,0 +1,32 @@
+#! /usr/bin/env bash
+set -eu # x
+
+if get_input "Update brew?"; then
+	brew update
+	brew doctor
+fi
+
+if get_input "Dump brew bundle?"; then
+	rm "$HOMEBREW_BUNDLE_FILE" || echo "No brewfile"
+	brew bundle dump
+fi
+
+if get_input "Dump plists?"; then
+	plist_export
+fi
+
+(
+cd "$TOOLS_DIR"
+git fetch
+echo "$TOOLS_DIR status:"
+git status
+)
+
+(
+cd "$PRIVATE_TOOLS_DIR"
+git fetch
+echo "$PRIVATE_TOOLS_DIR status:"
+git status
+)
+
+full_backup

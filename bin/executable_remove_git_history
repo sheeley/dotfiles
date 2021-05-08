@@ -1,0 +1,14 @@
+#! /usr/bin/env bash
+set -eu # x
+
+if get_input "Remove entire git history?"; then
+	git checkout --orphan latest_branch
+	git add -A
+	git commit -am "Initial commit"
+	git branch -D main
+	git branch -m main
+	if get_input "Push to origin?"; then
+		git push -f origin main
+	fi
+fi
+

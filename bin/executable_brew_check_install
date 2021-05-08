@@ -1,0 +1,7 @@
+#! /usr/bin/env bash
+set -eu # x
+_=$(HOMEBREW_NO_AUTO_UPDATE=1 brew list "$1")
+SC=$?
+if [[ $SC -ne 0 ]]; then
+    brew install "$1"
+fi

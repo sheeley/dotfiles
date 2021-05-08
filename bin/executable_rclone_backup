@@ -1,0 +1,5 @@
+#! /usr/bin/env bash
+set -eu # x
+
+# --dry-run
+rclone sync -P --transfers 16 --exclude .DS_Store /Volumes/money/borgbackup borg-backup:aigee-sheeleybackup

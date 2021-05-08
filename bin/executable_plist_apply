@@ -1,0 +1,6 @@
+#! /usr/bin/env bash
+set -eu # x
+
+for f in "$(chezmoi source-path)"/bin/plists/*.sh; do
+  bash "$f" 
+done

@@ -1,0 +1,8 @@
+README.md
+bin/ds_test
+{{- if .personal }}
+*_work*
+{{ else }}
+*_personal*
+{{- end }}
+initial_setup.sh

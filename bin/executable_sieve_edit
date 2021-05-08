@@ -1,0 +1,4 @@
+#! /usr/bin/env bash
+set -eu # x
+
+$EDITOR "$PRIVATE_TOOLS_DIR/cmd/sieve-gen/sievegen.go"
