@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+# GENERATED FILE, DO NOT TOUCH
+# Edit plist_export or create a file without generated.sh in its name.
 
 defaults write org.shiftitapp.ShiftIt "bottomKeyCode" -integer 125
 defaults write org.shiftitapp.ShiftIt "bottomModifiers" -integer 1835008

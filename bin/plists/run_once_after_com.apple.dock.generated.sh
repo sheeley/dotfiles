@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+# GENERATED FILE, DO NOT TOUCH
+# Edit plist_export or create a file without generated.sh in its name.
 
 defaults write com.apple.dock "autohide" -boolean true
 defaults write com.apple.dock "largesize" -float 128
@@ -340,7 +342,7 @@ defaults write com.apple.dock "persistent-others" '
 			<key>file-data</key>
 			<dict>
 				<key>_CFURLString</key>
-				<string>file:///Users/sheeley/Downloads/</string>
+				<string>file://~/Downloads/</string>
 				<key>_CFURLStringType</key>
 				<integer>15</integer>
 			</dict>
@@ -396,7 +398,7 @@ defaults write com.apple.dock "persistent-others" '
 			<key>file-data</key>
 			<dict>
 				<key>_CFURLString</key>
-				<string>file:///Users/sheeley/Screenshots/</string>
+				<string>file://~/Screenshots/</string>
 				<key>_CFURLStringType</key>
 				<integer>15</integer>
 			</dict>

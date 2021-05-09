@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+# GENERATED FILE, DO NOT TOUCH
+# Edit plist_export or create a file without generated.sh in its name.
 
 defaults write com.omnigroup.OmniFocus3 "AutomaticAlarmDeferredEnabled" -boolean true
 defaults write com.omnigroup.OmniFocus3 "BorrowedOmniAccountLoginIdentifiers" '

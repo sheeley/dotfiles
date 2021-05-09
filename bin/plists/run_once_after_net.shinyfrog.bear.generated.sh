@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
+# GENERATED FILE, DO NOT TOUCH
+# Edit plist_export or create a file without generated.sh in its name.
 
 defaults write net.shinyfrog.bear "SFAppIconMatchesTheme" -boolean false
-defaults write net.shinyfrog.bear "SFAppThemeName" -string 'Solarized Dark'
+defaults write net.shinyfrog.bear "SFAppThemeName" -string 'Solarized Light'
 defaults write net.shinyfrog.bear "SFAutoGrabURLTitles" -boolean false
 defaults write net.shinyfrog.bear "SFEditorLineWidthMultiplier" -float 65
 defaults write net.shinyfrog.bear "SFFirstLaunchNotes" -boolean true

@@ -34,8 +34,8 @@ borg create \
     --exclude '.fseventsd*' \
     ::'johnny {now}' \
     \
-    /Users/sheeley/projects/ \
-    /Users/sheeley/Documents/ \
+    "$HOME/projects/" \
+    "$HOME/Documents/" \
     /Volumes/money/music/
 # ::'m2 {now}' \
 # \

@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+# GENERATED FILE, DO NOT TOUCH
+# Edit plist_export or create a file without generated.sh in its name.
 
 defaults write com.apple.finder "CopyProgressWindowLocation" -string '{151, 645}'
 defaults write com.apple.finder "EmptyTrashProgressWindowLocation" -string '{520, 228}'

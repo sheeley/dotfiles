@@ -1,14 +1,16 @@
 #!/usr/bin/env bash
+# GENERATED FILE, DO NOT TOUCH
+# Edit plist_export or create a file without generated.sh in its name.
 
 defaults write com.apple.controlcenter "NSStatusItem Preferred Position AirPlay" -float 401
-defaults write com.apple.controlcenter "NSStatusItem Preferred Position Battery" -float 342
-defaults write com.apple.controlcenter "NSStatusItem Preferred Position BentoBox" -float 165
-defaults write com.apple.controlcenter "NSStatusItem Preferred Position Bluetooth" -float 379
-defaults write com.apple.controlcenter "NSStatusItem Preferred Position Clock" -float 74.5
-defaults write com.apple.controlcenter "NSStatusItem Preferred Position DoNotDisturb" -float 305
-defaults write com.apple.controlcenter "NSStatusItem Preferred Position Sound" -float 271
-defaults write com.apple.controlcenter "NSStatusItem Preferred Position UserSwitcher" -float 5894
-defaults write com.apple.controlcenter "NSStatusItem Preferred Position WiFi" -float 413
+defaults write com.apple.controlcenter "NSStatusItem Preferred Position Battery" -float 338
+defaults write com.apple.controlcenter "NSStatusItem Preferred Position BentoBox" -float 161
+defaults write com.apple.controlcenter "NSStatusItem Preferred Position Bluetooth" -float 375
+defaults write com.apple.controlcenter "NSStatusItem Preferred Position Clock" -float 72.5
+defaults write com.apple.controlcenter "NSStatusItem Preferred Position DoNotDisturb" -float 301
+defaults write com.apple.controlcenter "NSStatusItem Preferred Position Sound" -float 267
+defaults write com.apple.controlcenter "NSStatusItem Preferred Position UserSwitcher" -float 5844
+defaults write com.apple.controlcenter "NSStatusItem Preferred Position WiFi" -float 409
 defaults write com.apple.controlcenter "NSStatusItem Visible AirPlay" -boolean true
 defaults write com.apple.controlcenter "NSStatusItem Visible Battery" -boolean true
 defaults write com.apple.controlcenter "NSStatusItem Visible BentoBox" -boolean true

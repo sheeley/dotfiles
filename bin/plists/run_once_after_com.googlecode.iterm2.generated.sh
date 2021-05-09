@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+# GENERATED FILE, DO NOT TOUCH
+# Edit plist_export or create a file without generated.sh in its name.
 
 defaults write com.googlecode.iterm2 "AllowClipboardAccess" -boolean true
 defaults write com.googlecode.iterm2 "AppleAntiAliasingThreshold" -integer 1
@@ -848,7 +850,7 @@ defaults write com.googlecode.iterm2 "New Bookmarks" '
 		<key>Window Type</key>
 		<integer>0</integer>
 		<key>Working Directory</key>
-		<string>/Users/sheeley</string>
+		<string>~</string>
 	</dict>
 </array>
 '

@@ -2,6 +2,7 @@
 from subprocess import run
 import os
 import fnmatch
+import re
 import stat
 
 
@@ -9,11 +10,16 @@ import stat
 # then you can monitor the Library/Preferences folder with
 # ls -lFat to see the most recently changed files listed first
 # you can probably determine which file you're interested in from there.
-
+WARNING = """
+# GENERATED FILE, DO NOT TOUCH
+# Edit plist_export or create a file without generated.sh in its name.
+"""
 DS_PATH = "ds"
-OUT_DIR = "/Users/sheeley/.local/share/chezmoi/bin/plists/"
+HOME_DIR = os.path.expanduser("~")
+OUT_DIR = f"{HOME_DIR}/.local/share/chezmoi/bin/plists/"
 OUT_PREFIX = "run_once_after_"
 OUT_SUFFIX = ".generated.sh"
+escaped_home = HOME_DIR.replace("/", "\\/")
 
 for filename in os.listdir(OUT_DIR):
     if fnmatch.fnmatch(filename, f"*{OUT_SUFFIX}"):
@@ -238,9 +244,11 @@ for (key, rules) in to_export.items():
         #     return arg
         # wrapped_cmd = map(wrap_quote, cmd)
         # print(" ".join(wrapped_cmd), "\n", file_name, "\n")
-        command = run(cmd, stdout=o_file)
-        if command.returncode != 0:
-            print(command)
-        elif restart_application:
+        command = run(cmd, capture_output=True)
+        command.check_returncode()
+        fixed = re.sub(escaped_home, "~", command.stdout.decode('utf-8'))
+        fixed = re.sub("\n", WARNING, fixed, count=1)
+        o_file.write(fixed)
+        if restart_application:
             o_file.write(f"start_application -r -a \"{restart_application}\"")
     os.chmod(file_name, stat.S_IRWXU | stat.S_IRGRP | stat.S_IROTH)

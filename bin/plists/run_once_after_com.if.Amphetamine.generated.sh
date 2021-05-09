@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+# GENERATED FILE, DO NOT TOUCH
+# Edit plist_export or create a file without generated.sh in its name.
 
 defaults write com.if.Amphetamine "Adjust Volume For CDM Warning" -integer 0
 defaults write com.if.Amphetamine "Allow Closed-Display Sleep" -integer 1
@@ -37,7 +39,7 @@ defaults write com.if.Amphetamine "Manage Status Item Image Padding" -integer 0
 defaults write com.if.Amphetamine "Mouse Movement Inactivity Delay" -integer 300
 defaults write com.if.Amphetamine "Mouse Movement Interval" -integer 60
 defaults write com.if.Amphetamine "Mouse Movement Smoothness" -integer 1
-defaults write com.if.Amphetamine "NSStatusItem Preferred Position Amphetamine" -float 450.5
+defaults write com.if.Amphetamine "NSStatusItem Preferred Position Amphetamine" -float 446.5
 defaults write com.if.Amphetamine "NSStatusItem Preferred Position Item-0" -float 412.5
 defaults write com.if.Amphetamine "Notification Sound End" -integer 0
 defaults write com.if.Amphetamine "Notification Sound Start" -integer 0

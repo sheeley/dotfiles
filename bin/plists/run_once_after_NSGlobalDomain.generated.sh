@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+# GENERATED FILE, DO NOT TOUCH
+# Edit plist_export or create a file without generated.sh in its name.
 
 defaults write NSGlobalDomain "AppleActionOnDoubleClick" -string 'Maximize'
 defaults write NSGlobalDomain "AppleMiniaturizeOnDoubleClick" -boolean false
