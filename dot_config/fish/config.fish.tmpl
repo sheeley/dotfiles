@@ -75,7 +75,7 @@ and source {$HOME}/.iterm2_shell_integration.fish
 
 starship init fish | source
 
-{{- if not .personal -}}
+{{- /* if not .personal -}}
 function __set_git_committer
     set -l email {{- .email | quote }}
     switch $PWD
@@ -109,4 +109,4 @@ end
 #     __set_git_committer
 # end
 
-{{- end -}}
+{{- end */ -}}
