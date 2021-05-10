@@ -53,7 +53,6 @@ cask "font-profont-nerd-font"
 cask "font-space-mono-nerd-font"
 cask "iterm2"
 cask "krisp"
-cask "lunchy"
 cask "muzzle"
 cask "qlstephen"
 cask "shiftit"
@@ -63,7 +62,6 @@ mas "Bear", id: 1091189122
 mas "Clocker", id: 1056643111
 mas "Expressions", id: 913158085
 mas "iA Writer", id: 775737590
-mas "Jayson", id: 1189824719
 mas "Patterns", id: 429449079
 mas "The Unarchiver", id: 425424353
 EOS
