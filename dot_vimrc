@@ -21,7 +21,6 @@ syntax enable
 set background=dark
 set autochdir " change working directory to open buffer
 set lazyredraw " Don't redraw while executing macros (good performance config)
-imap ;; <Esc>
 set showmatch " Show matching brackets when text indicator is over them
 command! W w !sudo tee % > /dev/null " :W sudo save - handy for permission issues
 set backspace=indent,eol,start
@@ -78,6 +77,7 @@ map <leader>vimrc :tabe ~/local/share/chezmoi/dot_vimrc<cr>
 nnoremap <leader>r :!%:p<Enter>
 nnoremap <silent> <Space> @=(foldlevel('.')?'za':"\<Space>")<CR>
 vnoremap <Space> zf
+imap ;; <Esc>
 " }}} end Key mappings
 
 " Files {{{
@@ -106,8 +106,6 @@ augroup vimrc
 	autocmd FileType toml setlocal commentstring=#\ %s
 augroup end
 " }}} end Files
-
-
 
 "  VIM-Plug {{{
 if empty(glob('~/.vim/autoload/plug.vim'))
@@ -197,6 +195,34 @@ let g:airline_theme='solarized'
 let g:pep8_ignore="E501"
 let g:pymode_lint_ignore = ["E501", "W",]
 " }}} end python-mode
+
+" ale {{{
+let g:ale_linters = {
+  \    'css': ['eslint', 'prettier'],
+  \    'javascript': ['eslint', 'prettier'],
+  \    'json': ['jsonlint'],
+  \    'markdown': ['remark-lint'],
+  \    'python': [],
+  \    'rust': ['rls', 'rustfmt'],
+  \    'scala': [],
+  \    'sh': ['language_server', 'shellcheck'],
+  \    'sql': ['sqlint'],
+  \    'vim': ['vint']
+  \}
+let g:ale_fixers = {
+  \    'css': ['prettier', 'eslint'],
+  \    'javascript': ['prettier', 'eslint', 'jq'],
+  \    'json': ['prettier', 'eslint', 'jq'],
+  \    'markdown': ['remark-lint'],
+  \    'python': ['isort', 'black'],
+  \    'rust': ['rustfmt'],
+  \    'scala': ['scalafmt'],
+  \    'sh': ['shfmt'],
+  \    'sql': ['sqlformat'],
+  \    '*': ['remove_trailing_lines', 'trim_whitespace']
+  \}
+
+" }}}
 
 " coc {{{
 let g:coc_global_extensions = ['coc-json', 'coc-git', 'coc-pyright', 'coc-markdownlint', 
