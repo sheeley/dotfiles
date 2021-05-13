@@ -1,5 +1,5 @@
 #! /usr/bin/env bash
-set -eu # x
+set -euo pipefail # x
 
 # add screenshot dir, set folder, add to dock
 mkdir -p ~/Screenshots

@@ -1,5 +1,5 @@
 #! /usr/bin/env bash
-set -eu # x
+set -euo pipefail # x
 
 sudo dscacheutil -flushcache
 sudo killall -HUP mDNSResponder

@@ -1,5 +1,5 @@
 #! /usr/bin/env bash
-set -eu # x
+set -euo pipefail # x
 
 # WARNING: This always extracts to the current directory
 # borg extract /path/to/repo::my-files

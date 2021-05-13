@@ -1,5 +1,5 @@
 #! /usr/bin/env bash
-set -eu # x
+set -euo pipefail # x
 
 DIR="$(chezmoi source-path)/bin/"
 PREFIX="${DIR}executable_"

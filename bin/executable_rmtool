@@ -1,5 +1,5 @@
 #! /usr/bin/env bash
-set -eu # x
+set -euo pipefail # x
 
 if [[ "$1" == "scripts" ]]; then
 	exit 1

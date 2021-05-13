@@ -1,4 +1,4 @@
 #! /usr/bin/env bash
-set -eu # x
+set -euo pipefail # x
 
 git push --force-with-lease

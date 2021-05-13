@@ -1,5 +1,5 @@
 #! /usr/bin/env bash
-set -eu # x
+set -euo pipefail # x
 
 if get_input "Remove entire git history?"; then
 	git checkout --orphan latest_branch
