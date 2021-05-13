@@ -1,5 +1,5 @@
 #! /usr/bin/env bash
-set -eu # x
+set -euo pipefail # x
 _=$(HOMEBREW_NO_AUTO_UPDATE=1 brew list "$1")
 SC=$?
 if [[ $SC -ne 0 ]]; then

@@ -133,7 +133,8 @@ Plug 'vim-airline/vim-airline-themes'
 Plug 'majutsushi/tagbar'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'dense-analysis/ale'
-
+Plug 'jremmen/vim-ripgrep'
+Plug 'stefandtw/quickfix-reflector.vim'
 " languages
 Plug 'hashivim/vim-terraform', { 'for': 'tf' }
 Plug 'python-mode/python-mode', { 'for': 'python', 'branch': 'develop' }

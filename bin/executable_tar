@@ -1,4 +1,4 @@
 #! /usr/bin/env bash
-set -eu # x
+set -euo pipefail # x
 
 echo use aunpack && exit 1

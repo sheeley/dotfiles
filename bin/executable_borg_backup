@@ -1,5 +1,5 @@
 #! /usr/bin/env bash
-set -eu # x
+set -euo pipefail # x
 
 # borg init --encryption=repokey /Volumes/money/borgbackup
 # borg key export /Volumes/money/borgbackup borgkey

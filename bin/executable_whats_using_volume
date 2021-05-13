@@ -1,5 +1,5 @@
 #! /usr/bin/env bash
-set -eu # x
+set -euo pipefail # x
 
 # usage: whats_using_volume /Volumes/money
 sudo lsof | grep "$1"

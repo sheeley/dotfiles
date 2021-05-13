@@ -1,5 +1,5 @@
 #! /usr/bin/env bash
-set -eu # x
+set -euo pipefail # x
 
 check_status() {
 	if [[ $(git status --porcelain=v2) != "" ]]; then
