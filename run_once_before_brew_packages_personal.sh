@@ -13,5 +13,5 @@ mas "Reeder", id: 1529448980
 mas "Twitter", id: 1482454543
 mas "Watchdog", id: 734258109
 mas "WhatsApp", id: 1147396723
+mas "Xcode", id: 497799835
 EOS
-# mas "Xcode", id: 497799835
