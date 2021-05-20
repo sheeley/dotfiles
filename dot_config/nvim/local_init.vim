@@ -50,9 +50,9 @@ augroup vimrc
     " vim config
     command! ReloadConfig set all&|silent source ~/.vimrc
 	" automatically chezmoi apply after editing a file in chezmoi repo
-	autocmd BufWritePost ~/.local/share/chezmoi/* silent! ! chezmoi apply --source-path %
+	autocmd BufWritePost ~/.local/share/chezmoi/*!(.sh) silent! ! chezmoi apply --source-path %
 	" follow that with sourcing .vimrc if it's the one that changed
-	autocmd BufWritePost ~/.local/share/chezmoi/dot_vimrc,~/.local/share/chezmoi/dot_config/nvim/local_bundles.vim,~/.local/share/chezmoi/dot_config/nvim/local_init.vim silent source ~/.vimrc
+	autocmd BufWritePost ~/.local/share/chezmoi/dot_vimrc,~/.local/share/chezmoi/dot_config/nvim/*.vim silent source ~/.vimrc " TODO: also set all& 
     autocmd FileType vim setlocal foldmethod=marker
     
 	" fish
