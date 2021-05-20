@@ -11,7 +11,7 @@ try
 catch
 endtry
 
-" gitgutter, always show
+" prevent gutter (git, checks, etc) from hiding when there's no content
 set signcolumn=yes
 
 " time to respond 
