@@ -8,6 +8,15 @@ confirm() {
     fi
 }
 
+
+if [ "$EMAIL" == "" ]; then
+    echo "Enter email to use for ssh key"
+    read -r EMAIL
+fi
+echo "Sign in to app store"
+# TODO: open /Applications/App\ Store
+
+
 if ! xcode-select -p; then
     xcode-select --install
 fi
@@ -23,11 +32,6 @@ sh -c "$(curl -fsLS git.io/chezmoi)"
 brew install 1password 1password-cli
 
 confirm || exit 1
-
-if [ "$EMAIL" == "" ]; then
-    echo "Enter email to use for ssh key"
-    read -r EMAIL
-fi
 
 # generate ssh key
 if [ ! -f ~/.ssh/id_ed25519 ]; then
