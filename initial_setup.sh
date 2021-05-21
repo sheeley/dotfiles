@@ -1,5 +1,7 @@
 #! /usr/bin/env bash
 
+export PATH=$PATH:~/bin
+
 confirm() {
     echo -n "Continue?"
     read -r CONFIRM
