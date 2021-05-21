@@ -69,7 +69,3 @@ EOS
 if ! pip3 show neovim2 &>/dev/null; then
 	pip3 install neovim
 fi
-# open /Applications/Bartender\ 4.app
-# open /Applications/ShiftIt.app
-# open /Applications/Amphetamine.app
-# open /Applications/Krisp.app
