@@ -37,7 +37,7 @@ echo "save your key in Github and and generate a token"
 open https://github.com/settings/keys
 open https://github.com/settings/tokens
 
-if [ "$HOMEBREW_GITHUB_API_TOKEN" -eq "" ]; then
+if [ "$HOMEBREW_GITHUB_API_TOKEN" == "" ]; then
     echo "Enter email to use for ssh key"
     read -r HOMEBREW_GITHUB_API_TOKEN
     export HOMEBREW_GITHUB_API_TOKEN
