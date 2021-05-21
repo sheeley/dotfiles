@@ -41,8 +41,8 @@ augroup numbertoggle
 augroup END
 " }}} end line numbering
 
-" Files {{{
-augroup vimrc
+" Chezmoi  {{{
+augroup chezmoi
 	" this will echo commands as setting them for debugging:
 	" :set verbose=9
 	autocmd!
@@ -50,11 +50,21 @@ augroup vimrc
     " vim config
     command! ReloadConfig set all&|silent source ~/.vimrc
 	" automatically chezmoi apply after editing a file in chezmoi repo
-	autocmd BufWritePost ~/.local/share/chezmoi/*!(.sh) silent! ! chezmoi apply --source-path %
+    " !(.sh)
+    " silent!
+	autocmd BufWritePost ~/.local/share/chezmoi/*  ! chezmoi apply --source-path %
 	" follow that with sourcing .vimrc if it's the one that changed
 	autocmd BufWritePost ~/.local/share/chezmoi/dot_vimrc,~/.local/share/chezmoi/dot_config/nvim/*.vim silent source ~/.vimrc " TODO: also set all& 
     autocmd FileType vim setlocal foldmethod=marker
-    
+augroup end
+" }}}
+
+" File types {{{
+augroup filetypes
+	" this will echo commands as setting them for debugging:
+	" :set verbose=9
+	autocmd!
+
 	" fish
 	" Set up :make to use fish for syntax checking.
 	autocmd FileType compiler fish
