@@ -1,7 +1,7 @@
 # Setup
 
 ```sh
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/sheeley/dotfiles/initial_setup.sh)"
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/sheeley/dotfiles/main/initial_setup.sh)"
 ```
 
 ## .chezmoiignore
