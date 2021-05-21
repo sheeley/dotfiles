@@ -35,7 +35,7 @@ fi
 pbcopy < ~/.ssh/id_ed25519.pub
 echo "save your key in Github and and generate a token"
 open https://github.com/settings/keys
-open https://github.com/settings/tokens
+open https://github.com/settings/tokens/new?scopes=gist,public_repo,workflow&description=Homebrew
 
 if [ "$HOMEBREW_GITHUB_API_TOKEN" == "" ]; then
     echo "Enter email to use for ssh key"
