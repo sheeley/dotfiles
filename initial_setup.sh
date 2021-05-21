@@ -35,10 +35,12 @@ if [ ! -f ~/.ssh/id_ed25519 ]; then
 fi
 
 # store key in github
-pbcopy < ~/.ssh/id_ed25519.pub
-echo "save your key in Github and and generate a token"
-open https://github.com/settings/keys
-open https://github.com/settings/tokens/new?scopes=gist,public_repo,workflow&description=Homebrew
+echo "Open Github?"
+if confirm; then
+    pbcopy < ~/.ssh/id_ed25519.pub
+    open https://github.com/settings/keys
+    open https://github.com/settings/tokens/new?scopes=gist,public_repo,workflow&description=Homebrew
+fi
 
 if [ "$HOMEBREW_GITHUB_API_TOKEN" == "" ]; then
     echo "Enter Github token"
