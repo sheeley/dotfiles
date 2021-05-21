@@ -9,16 +9,17 @@ brew "rsync"
 mas "Space Gremlin", id: 414515628
 mas "Reeder", id: 1529448980
 mas "Twitter", id: 1482454543
-mas "Watchdog", id: 734258109
+
 EOS
 
-echo -n "Install Xcode/swift? "
-read -r INSTALL
-if [ "$INSTALL" == "y"]; then
-  brew bundle --file=- <<-EOS
-  mas "Xcode", id: 497799835
-  brew "swiftlint"
-  brew "swiftformat"
-  cask "swiftformat-for-xcode"
-EOS
-fi
+# echo -n "Install Xcode/swift? "
+# read -r INSTALL
+# if [ "$INSTALL" == "y"]; then
+#  brew bundle --file=- <<-EOS
+#  mas "Xcode", id: 497799835
+#  brew "swiftlint"
+#  brew "swiftformat"
+#  cask "swiftformat-for-xcode"
+#  mas "Watchdog", id: 734258109
+# EOS
+# fi
