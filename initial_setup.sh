@@ -3,7 +3,7 @@
 confirm() {
     echo "Continue?"
     read -r CONFIRM
-    if [ "$CONFIRM" -ne "y" ]; then
+    if [ "$CONFIRM" != "y" ]; then
         return 1
     fi
 }
