@@ -24,10 +24,13 @@ brew install 1password 1password-cli
 
 confirm || exit 1
 
-# generate ssh key
-if [[ ! -f ~/.ssh/id_ed25519 ]]; then
+if [ "$EMAIL" == "" ]; then
     echo "Enter email to use for ssh key"
     read -r EMAIL
+fi
+
+# generate ssh key
+if [ ! -f ~/.ssh/id_ed25519 ]; then
     ssh-keygen -t ed25519 -C "$EMAIL"
 fi
 
@@ -38,7 +41,7 @@ open https://github.com/settings/keys
 open https://github.com/settings/tokens/new?scopes=gist,public_repo,workflow&description=Homebrew
 
 if [ "$HOMEBREW_GITHUB_API_TOKEN" == "" ]; then
-    echo "Enter email to use for ssh key"
+    echo "Enter Github token"
     read -r HOMEBREW_GITHUB_API_TOKEN
     export HOMEBREW_GITHUB_API_TOKEN
 fi
