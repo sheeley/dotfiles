@@ -1,7 +1,7 @@
 #! /usr/bin/env bash
 
 confirm() {
-    echo "Continue?"
+    echo -n "Continue?"
     read -r CONFIRM
     if [ "$CONFIRM" != "y" ]; then
         return 1
