@@ -54,16 +54,17 @@ cask "font-space-mono-nerd-font"
 cask "iterm2"
 cask "krisp"
 cask "muzzle"
+cask "omnifocus"
 cask "qlstephen"
 cask "shiftit"
 mas "Amphetamine", id: 937984704
-mas "Be Focused", id: 973134470
 mas "Bear", id: 1091189122
 mas "Clocker", id: 1056643111
 mas "Expressions", id: 913158085
 mas "iA Writer", id: 775737590
 mas "Patterns", id: 429449079
 mas "The Unarchiver", id: 425424353
+mas "Slack for Desktop", id: 803453959
 EOS
 
 if ! pip3 show neovim2 &>/dev/null; then
