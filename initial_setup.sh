@@ -9,7 +9,8 @@ if ! which brew; then
 fi
 
 # install 1Password and chezmoi - should be all the initial dependencies needed
-brew install 1password-cli chezmoi
+sh -c "$(curl -fsLS git.io/chezmoi)"
+brew install 1password 1password-cli
 
 # generate ssh key
 if [[ ! -f ~/.ssh/id_ed25519 ]]; then
@@ -29,4 +30,4 @@ open https://github.com/settings/tokens
 OP_TOKEN=$(op signin my.1password.com "$EMAIL")
 
 # run the actual setup
-chezmoi init --apply git@github.com:sheeley/dotfiles.git
+~/bin/chezmoi init --apply git@github.com:sheeley/dotfiles.git
