@@ -11,3 +11,5 @@ Set up to ignore `*_work*` and `*_personal*` outside of those contexts.
 - [ ] Modifier keys 
 - [ ] Automate `:PlugInstall`?
 - [ ] Install `fisher` and `nvm.fish`? 
+- [ ] Choose photos library (option + open Photos.app)
+- [ ] Choose Music library

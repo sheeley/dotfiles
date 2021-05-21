@@ -9,3 +9,7 @@ set -euo pipefail # x
 
 # Extract the "src" directory
 # borg extract /path/to/repo::my-files home/USERNAME/src
+LATEST=$(borg list --prefix johnny --last 1 --format='{archive}')
+# CURRENT_DIR="$(pwd | cut -c 2-)"
+CURRENT_DIR="Users/sheeley"
+borg extract "::$LATEST" "$CURRENT_DIR"
