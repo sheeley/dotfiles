@@ -20,19 +20,12 @@ set -x HOMEBREW_BUNDLE_FILE "$HOME/Documents/Brewfile"
 set -x BORG_REPO /Volumes/money/borgbackup
 {{if .borg_secret}}set -x BORG_PASSPHRASE {{ .borg_secret }}{{end}}
 
-fish_add_path /Applications/Xcode.app/Contents/Developer/usr/bin
-fish_add_path $HOME/.fastlane/bin
-fish_add_path $HOME/bin
-fish_add_path $HOME/personal_bin
-fish_add_path /sbin
-fish_add_path /usr/sbin
-fish_add_path /bin
-fish_add_path /usr/bin
-fish_add_path /usr/local/bin
-fish_add_path $HOME/.cargo/bin
-fish_add_path /usr/local/sbin
-fish_add_path $PRIVATE_TOOLS_DIR/scripts
-fish_add_path $GOPATH/bin
+# order: my tools, go/rust, brew, xcode, system
+fish_add_path -m $HOME/bin $PRIVATE_TOOLS_DIR/scripts \
+    $GOPATH/bin $HOME/.cargo/bin \
+    /usr/local/bin /usr/local/sbin \
+    /Applications/Xcode.app/Contents/Developer/usr/bin \
+    /sbin /usr/sbin /bin /usr/bin
 
 function fish_title
     if test $_ != "fish"
