@@ -52,7 +52,7 @@ augroup chezmoi
 	" automatically chezmoi apply after editing a file in chezmoi repo
     " !(.sh)
     " silent!
-	autocmd BufWritePost ~/.local/share/chezmoi/*  ! chezmoi apply --source-path %
+	autocmd BufWritePost ~/.local/share/chezmoi/*!(.sh) silent!  ! chezmoi apply --source-path %
 	" follow that with sourcing .vimrc if it's the one that changed
 	autocmd BufWritePost ~/.local/share/chezmoi/dot_vimrc,~/.local/share/chezmoi/dot_config/nvim/*.vim silent source ~/.vimrc " TODO: also set all& 
     autocmd FileType vim setlocal foldmethod=marker
@@ -86,7 +86,7 @@ let g:pymode_lint_ignore = ["E501", "W",]
 
 " coc {{{
 let g:coc_global_extensions = ['coc-json', 'coc-git', 'coc-pyright', 'coc-markdownlint', 
-			\ 'coc-go', 'coc-css', 'coc-highlight', 'coc-sh', 'coc-sql', 
+			\ 'coc-go', 'coc-css', 'coc-highlight', 'coc-sh', 'coc-sql', 'coc-prettier',
 			\ 'coc-yaml', 'coc-toml', 'coc-tsserver', 'coc-pairs']
 
 " Set internal encoding of vim, not needed on neovim, since coc.nvim using some

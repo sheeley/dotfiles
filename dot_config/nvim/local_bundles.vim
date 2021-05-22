@@ -22,6 +22,9 @@ Plug 'itspriddle/vim-shellcheck'
 " Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries', 'for': 'go' }
 Plug 'dag/vim-fish', { 'for': 'fish' }
 Plug 'editorconfig/editorconfig-vim', { 'for': 'editorconfig' }
+" Plug 'toyamarinyon/vim-swift'
+Plug 'keith/swift.vim'
+" Plug 'apple/swift'
 " Plug 'pangloss/vim-javascript', { 'for': ['javascript', 'javascriptreact', 'typescript'] }
 " Plug 'leafgarland/typescript-vim', { 'for': 'javascript' }
 " Plug 'maxmellon/vim-jsx-pretty', { 'for': 'javascript' }
