@@ -1,19 +1,32 @@
 // vim: set filetype=jsonc :
 {
-	"diagnostic.displayByAle": true,
-	"coc.preferences.formatOnSaveFiletypes": [
-"css",
-		"markdown",
-		"javascript",
-		"typescript",
-		"javascriptreact",
-		"typescriptreact",
-		"json",
-		"python",
-		"go",
-		"yaml",
-		"sh",
-		"toml",
-		"fish"
-	]
+    "diagnostic.displayByAle": true,
+    "coc.preferences.formatOnSaveFiletypes": [
+        "css",
+        "markdown",
+        "javascript",
+        "typescript",
+        "javascriptreact",
+        "typescriptreact",
+        "json",
+        "python",
+        "go",
+        "yaml",
+        "sh",
+        "toml",
+        "fish",
+        "swift"
+    ],
+    "diagnostic.checkCurrentLine": true,
+  "languageserver": {
+        "swift": {
+            "command": "sourcekit-lsp",
+            "args": [],
+            "filetypes": [
+                "swift"
+            ],
+            "initializationOptions": {},
+            "settings": {}
+        }
+    }
 }
