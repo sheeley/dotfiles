@@ -36,6 +36,7 @@ borg create \
     \
     "$HOME/projects/" \
     "$HOME/Documents/" \
+    "$HOME/Music/Music/Music Library.musiclibrary" \
     /Volumes/money/music/
 # ::'m2 {now}' \
 # \
