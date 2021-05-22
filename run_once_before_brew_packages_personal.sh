@@ -1,6 +1,5 @@
 #! /usr/bin/env bash
 
-# swiftlint needs to come after xcode
 brew bundle --file=- <<-EOS
 brew "borgbackup"
 brew "hugo"
@@ -13,7 +12,8 @@ EOS
 echo -n "Install Xcode/swift? "
 read -r INSTALL
 if [ -t 0 ] && [ "$INSTALL" == "y" ]; then
- brew bundle --file=- <<-EOS
+# swiftlint needs to come after xcode
+brew bundle --file=- <<-EOS
  mas "Xcode", id: 497799835
  brew "swiftlint"
  brew "swiftformat"
