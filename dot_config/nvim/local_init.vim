@@ -14,13 +14,27 @@ endtry
 " prevent gutter (git, checks, etc) from hiding when there's no content
 set signcolumn=yes
 
-" time to respond 
+" time to respond
 set timeoutlen=500
+
+" windows {{{
+" TODO: automatically create a split if none doesn't exist
+" noremap <C-j> :sp
+" noremap <C-k> :sp
+" noremap <C-l> :vsp
+" noremap <C-h> :vsp
+
+" Switching easily
+noremap <C-j> <C-w>j
+noremap <C-k> <C-w>k
+noremap <C-l> <C-w>l
+noremap <C-h> <C-w>h
+" }}}
 
 " Key mappings {{{
 " Edit vim configuration
-map <leader>config :tabe ~/local/share/chezmoi/dot_vimrc<cr> 
-map <leader>vimrc :tabe ~/local/share/chezmoi/dot_vimrc<cr> 
+map <leader>config :tabe ~/local/share/chezmoi/dot_vimrc<cr>
+map <leader>vimrc :tabe ~/local/share/chezmoi/dot_vimrc<cr>
 " run current file
 nnoremap <leader>r :!%:p<Enter>
 " folding {{{
@@ -54,7 +68,7 @@ augroup chezmoi
     " silent!
 	autocmd BufWritePost ~/.local/share/chezmoi/*!(.sh) silent!  ! chezmoi apply --source-path %
 	" follow that with sourcing .vimrc if it's the one that changed
-	autocmd BufWritePost ~/.local/share/chezmoi/dot_vimrc,~/.local/share/chezmoi/dot_config/nvim/*.vim silent source ~/.vimrc " TODO: also set all& 
+	autocmd BufWritePost ~/.local/share/chezmoi/dot_vimrc,~/.local/share/chezmoi/dot_config/nvim/*.vim silent source ~/.vimrc " TODO: also set all&
     autocmd FileType vim setlocal foldmethod=marker
 augroup end
 " }}}
@@ -69,7 +83,7 @@ augroup filetypes
 	" Set up :make to use fish for syntax checking.
 	autocmd FileType compiler fish
 
-	" toml 
+	" toml
 	autocmd FileType toml setlocal commentstring=#\ %s
 
 augroup end
@@ -80,12 +94,54 @@ let g:clap_insert_mode_only = 1 " close clap on first esc
 " }}} end clap
 
 " python-mode {{{
-let g:pep8_ignore="E501"
-let g:pymode_lint_ignore = ["E501", "W",]
+let g:pep8_ignore='E501'
+let g:pymode_lint_ignore = ['E501', 'W',]
 " }}} end python-mode
 
+" ale {{{
+let g:ale_set_quickfix = 1
+let g:ale_set_highlight = 1
+" highlight ALEWarning ctermbg=DarkMagenta
+let g:ale_sign_column_always = 1
+let g:ale_fix_on_save = 1
+let g:ale_change_sign_column_color = 1
+let g:ale_echo_msg_error_str = 'E'
+let g:ale_echo_msg_warning_str = 'W'
+let g:ale_echo_msg_format = '[%linter%] %s [%severity%]'
+let g:ale_open_list = 1
+:call extend(g:ale_linters, {
+  \    'css': ['eslint', 'prettier'],
+  \    'javascript': ['eslint', 'prettier'],
+  \    'json': ['jsonlint'],
+  \    'markdown': ['remark-lint'],
+  \    'python': [],
+  \    'rust': ['rls', 'rustfmt'],
+  \    'scala': [],
+  \    'sh': ['language_server', 'shellcheck'],
+  \    'sql': ['sqlint'],
+  \    'swift': ['swiftformat'],
+  \    'vim': ['vint']
+  \})
+
+:call extend(g:ale_fixers, {
+  \    'css': ['prettier', 'eslint'],
+  \    'javascript': ['prettier', 'eslint', 'jq'],
+  \    'json': ['prettier', 'eslint', 'jq'],
+  \    'markdown': ['remark-lint'],
+  \    'python': ['isort', 'black'],
+  \    'rust': ['rustfmt'],
+  \    'scala': ['scalafmt'],
+  \    'sh': ['shfmt'],
+  \    'sql': ['sqlformat'],
+  \    'swift': ['swiftformat'],
+  \    '*': ['remove_trailing_lines', 'trim_whitespace']
+  \})
+
+let g:vim_swift_format_use_ale = 1
+" }}}
+
 " coc {{{
-let g:coc_global_extensions = ['coc-json', 'coc-git', 'coc-pyright', 'coc-markdownlint', 
+let g:coc_global_extensions = ['coc-json', 'coc-git', 'coc-pyright', 'coc-markdownlint',
 			\ 'coc-go', 'coc-css', 'coc-highlight', 'coc-sh', 'coc-sql', 'coc-prettier',
 			\ 'coc-yaml', 'coc-toml', 'coc-tsserver', 'coc-pairs']
 
@@ -108,7 +164,7 @@ set shortmess+=c
 
 " Always show the signcolumn, otherwise it would shift the text each time
 " diagnostics appear/become resolved.
-if has("patch-8.1.1564")
+if has('patch-8.1.1564')
 	" Recently vim can merge signcolumn and number column into one
 	set signcolumn=number
 else
@@ -157,12 +213,9 @@ function! s:show_documentation()
 	elseif (coc#rpc#ready())
 		call CocActionAsync('doHover')
 	else
-		execute '!' . &keywordprg . " " . expand('<cword>')
+		execute '!' . &keywordprg . ' ' . expand('<cword>')
 	endif
 endfunction
-
-" Highlight the symbol and its references when holding the cursor.
-autocmd CursorHold * silent call CocActionAsync('highlight')
 
 " Symbol renaming.
 nmap <leader>rn <Plug>(coc-rename)
@@ -171,12 +224,15 @@ nmap <leader>rn <Plug>(coc-rename)
 xmap <leader>f  <Plug>(coc-format-selected)
 nmap <leader>f  <Plug>(coc-format-selected)
 
-augroup mygroup
+augroup coc
 	autocmd!
 	" Setup formatexpr specified filetype(s).
 	autocmd FileType typescript,json setl formatexpr=CocAction('formatSelected')
 	" Update signature help on jump placeholder.
 	autocmd User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
+
+    " Highlight the symbol and its references when holding the cursor.
+    autocmd CursorHold * silent call CocActionAsync('highlight')
 augroup end
 
 " Applying codeAction to the selected region.
