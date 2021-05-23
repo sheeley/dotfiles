@@ -384,6 +384,7 @@ let g:UltiSnipsEditSplit="vertical"
 
 " ale
 let g:ale_linters = {}
+let g:ale_fixers = {}
 
 " Tagbar
 nmap <silent> <F4> :TagbarToggle<CR>
