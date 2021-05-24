@@ -1,3 +1,6 @@
+	" this will echo commands as setting them for debugging:
+	" :set verbose=9
+
 if &shell =~# 'fish$'
 	set shell=zsh
 endif
@@ -18,17 +21,12 @@ set signcolumn=yes
 set timeoutlen=500
 
 " windows {{{
-" TODO: automatically create a split if none doesn't exist
-" noremap <C-j> :sp
-" noremap <C-k> :sp
-" noremap <C-l> :vsp
-" noremap <C-h> :vsp
-
-" Switching easily
-noremap <C-j> <C-w>j
-noremap <C-k> <C-w>k
-noremap <C-l> <C-w>l
-noremap <C-h> <C-w>h
+" automatically create a split if none doesn't exist, otherwise navigate in
+" the direction
+nnoremap <expr> <C-j> winnr('j') == '1' ? ':sp<CR>' : '<C-w>j'
+nnoremap <expr> <C-k> winnr('k') == '1' ? ':sp<CR>' : '<C-w>k'
+nnoremap <expr> <C-h> winnr('h') == '1' ? ':vsp<CR>' : '<C-w>h'
+nnoremap <expr> <C-l> winnr('l') == '1' ? ':vsp<CR>' : '<C-w>l'
 " }}}
 
 " Key mappings {{{
@@ -37,14 +35,18 @@ map <leader>config :tabe ~/local/share/chezmoi/dot_vimrc<cr>
 map <leader>vimrc :tabe ~/local/share/chezmoi/dot_vimrc<cr>
 " run current file
 nnoremap <leader>r :!%:p<Enter>
+imap ;; <Esc>
+" TODO: (un)indent with Tab
+" nmap <Tab> <C-t>
+" nmap <S-Tab> <C-d>
+" }}} end Key mappings
+
 " folding {{{
 set foldmethod=syntax
 nnoremap <silent> <Space> @=(foldlevel('.')?'za':"\<Space>")<CR>
 vnoremap <Space> zf
 " }}} folding
-imap ;; <Esc>
-" }}} end Key mappings
-" set ruler&
+
 " line numbering {{{
 " turn hybrid numbers on, automatically toggle on type
 set number relativenumber
@@ -57,8 +59,6 @@ augroup END
 
 " Chezmoi  {{{
 augroup chezmoi
-	" this will echo commands as setting them for debugging:
-	" :set verbose=9
 	autocmd!
 
     " vim config
@@ -66,7 +66,7 @@ augroup chezmoi
 	" automatically chezmoi apply after editing a file in chezmoi repo
     " !(.sh)
     " silent!
-	autocmd BufWritePost ~/.local/share/chezmoi/*!(.sh) silent!  ! chezmoi apply --source-path %
+	autocmd BufWritePost ~/.local/share/chezmoi/* silent! ! chezmoi apply --source-path %
 	" follow that with sourcing .vimrc if it's the one that changed
 	autocmd BufWritePost ~/.local/share/chezmoi/dot_vimrc,~/.local/share/chezmoi/dot_config/nvim/*.vim silent source ~/.vimrc " TODO: also set all&
     autocmd FileType vim setlocal foldmethod=marker
