@@ -10,14 +10,10 @@ confirm() {
     fi
 }
 
-
 if [ "$EMAIL" == "" ]; then
     echo "Enter email to use for ssh key"
     read -r EMAIL
 fi
-echo "Sign in to app store"
-# TODO: open /Applications/App\ Store
-
 
 if ! xcode-select -p; then
     xcode-select --install
@@ -31,10 +27,14 @@ fi
 
 # install 1Password and chezmoi - should be all the initial dependencies needed
 sh -c "$(curl -fsLS git.io/chezmoi)"
-brew install 1password 1password-cli
+brew install 1password 1password-cli mas
+
+echo "Sign in to app store"
+mas open
 
 confirm || exit 1
 
+# TODO: XCode doesn't like ed25519. Maybe generate more than one? Hrm.
 # generate ssh key
 if [ ! -f ~/.ssh/id_ed25519 ]; then
     ssh-keygen -t ed25519 -C "$EMAIL"
@@ -43,9 +43,9 @@ fi
 # store key in github
 echo "Open Github?"
 if confirm; then
-    pbcopy < ~/.ssh/id_ed25519.pub
+    pbcopy <~/.ssh/id_ed25519.pub
     open https://github.com/settings/keys
-    open https://github.com/settings/tokens/new?scopes=gist,public_repo,workflow&description=Homebrew
+    open 'https://github.com/settings/tokens/new?scopes=gist,public_repo,workflow&description=Homebrew'
 fi
 
 if [ "$HOMEBREW_GITHUB_API_TOKEN" == "" ]; then
