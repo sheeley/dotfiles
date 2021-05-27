@@ -77,7 +77,7 @@ starship init fish | source
 
 {{ if not .personal -}}
 function __set_git_committer
-    set -l email {{- .email | quote }}
+    set -l email {{ .email | quote }}
     switch $PWD
         case "*jaxf*"
             set email {{ .work_email | quote }}
