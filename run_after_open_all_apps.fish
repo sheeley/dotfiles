@@ -1,5 +1,5 @@
 #!/usr/bin/env fish
-if "$VIM" != ""
+if set -q $VIM
     exit
 end
 
