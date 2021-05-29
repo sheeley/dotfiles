@@ -75,6 +75,10 @@ followRedirects = true
 followRedirects = true
 [url "ssh://git@github.com/"]
 insteadOf = https://github.com/
+{{ if not .personal -}}
+[url "ssh://git@jaxf-github.fanatics.corp/"]
+insteadOf = https://jaxf-github.fanatics.corp/
+{{- end }}
 [diff "plist"]
 textconv = plutil -convert xml1 -o -
 [pull]
