@@ -93,6 +93,11 @@ augroup end
 let g:clap_insert_mode_only = 1 " close clap on first esc
 " }}} end clap
 
+" go {{{
+" let g:go_fmt_experimental = 1
+let g:go_fmt_command='gopls'
+" }}}
+
 " python-mode {{{
 let g:pep8_ignore='E501'
 let g:pymode_lint_ignore = ['E501', 'W',]
