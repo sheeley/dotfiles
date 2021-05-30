@@ -1,0 +1,16 @@
+[media]
+type = s3
+provider = AWS
+env_auth = true
+region = us-east-1
+profile = {{ .rclone_profile }}
+
+[borg-backup]
+type = s3
+provider = AWS
+env_auth = true
+region = us-east-1
+server_side_encryption = aws:kms
+sse_kms_key_id = {{ .rclone_kms }}
+storage_class = ONEZONE_IA
+upload_cutoff = 0

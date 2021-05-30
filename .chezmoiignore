@@ -1,8 +1,12 @@
 README.md
 bin/ds_test
+
 {{- if .personal }}
 *_work*
+
 {{ else }}
 *_personal*
+dot_config/rclone
 {{- end }}
+
 initial_setup.sh
