@@ -23,10 +23,11 @@ set timeoutlen=500
 " windows {{{
 " automatically create a split if none doesn't exist, otherwise navigate in
 " the direction
-nnoremap <expr> <C-j> winnr('j') == '1' ? ':sp<CR>' : '<C-w>j'
-nnoremap <expr> <C-k> winnr('k') == '1' ? ':sp<CR>' : '<C-w>k'
-nnoremap <expr> <C-h> winnr('h') == '1' ? ':vsp<CR>' : '<C-w>h'
-nnoremap <expr> <C-l> winnr('l') == '1' ? ':vsp<CR>' : '<C-w>l'
+noremap <C-j> <C-w>j
+noremap <C-k> <C-w>k
+noremap <C-h> <C-w>h
+nnoremap <expr> <C-l> winnr('l') == winnr() ? ':vsp<CR>' : '<C-w>l'
+" nnoremap <expr> <C-k> winnr('k') == '1' ? ':sp<CR>' : '<C-w>k'
 " }}}
 
 " Key mappings {{{
