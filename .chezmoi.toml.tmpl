@@ -26,15 +26,25 @@
 {{- end -}}
 
 {{- $borg_secret := get . "borg_secret" -}}
+{{- $rclone_kms := get . "rclone_kms" -}}
+{{- $rclone_profile := get . "rclone_profile" -}}
 {{- if $personal -}}
 {{-	if not $borg_secret -}}
 {{-	    $borg_secret = (onepassword "borg").details.password -}}
 {{-	end -}}
+
+{{-	if not $rclone_kms -}}
+{{-	    $rclone_kms = (onepassword "rclone_kms").details.password -}}
+{{-	end -}}
+
+{{- if not $rclone_profile -}}
+{{- $rclone_profile = promptString "rclone AWS profile" -}}
+{{- end -}}
 {{- end -}}
 
-{{- /* 
+{{- /*
 These are stored as passwords because I couldn't get chezmoi's integration with op working correctly.
-I'm not sure, but it seems like the schema that op returns is different and no longer contains designation. 
+I'm not sure, but it seems like the schema that op returns is different and no longer contains designation.
 */ -}}
 
 {{- $bartender2license := get . "bartender2license" -}}
@@ -52,11 +62,13 @@ email             = {{ $email | quote }}
 work_email        = {{ $work_email | quote }}
 github_secret     = {{ $github_secret | quote }}
 slack_secret      = {{ $slack_secret | quote }}
-borg_secret       = {{ $borg_secret | quote }}
 bartender2license = {{ $bartender2license | quote }}
 bartender4license = {{ $bartender4license | quote }}
-personal          = {{ $personal }}
 
+personal          = {{ $personal }}
+borg_secret       = {{ $borg_secret | quote }}
+rclone_kms        = {{ $rclone_kms | quote }}
+rclone_profile    = {{ $rclone_profile | quote }}
 
 [diff]
 exclude = ["scripts"]
