@@ -2,14 +2,16 @@ ControlMaster auto
 ControlPath ~/.ssh/control/%r@%h:%p
 ControlPersist yes
 
-Host minikomputor.local
-User sheeley
+Host *
+AddKeysToAgent yes
+IdentityFile ~/.ssh/id_ed25519
 
-# ssh -f -N tunnel
+# Host minikomputor.local
+# User sheeley
 
 # tunnels
-Host tunnel2
-  HostName 10.9.186.23
-  IdentityFile ~/keys/search-api.pem
-	User stack
-  LocalForward 9000 127.0.0.1:9000
+# Host tunnel2
+#  HostName 10.9.186.23
+#  IdentityFile ~/keys/search-api.pem
+#	User stack
+#  LocalForward 9000 127.0.0.1:9000
