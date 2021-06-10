@@ -40,6 +40,11 @@ if [ ! -f ~/.ssh/id_ed25519 ]; then
     ssh-keygen -t ed25519 -C "$EMAIL"
 fi
 
+eval "$(ssh-agent -s)"
+if ! ssh-add -l -E sha256 | grep ED25519; then
+    ssh-add -K ~/.ssh/id_ed25519
+fi
+
 # store key in github
 echo "Open Github?"
 if confirm; then
