@@ -7,7 +7,7 @@ if get_input "Update brew?"; then
 fi
 
 if get_input "Dump brew bundle?"; then
-    update_brew_packages
+    HOMEBREW_NO_AUTO_UPDATE=1 update_brew_packages
 fi
 
 if get_input "Dump plists?"; then
