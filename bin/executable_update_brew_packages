@@ -1,0 +1,20 @@
+#! /usr/bin/env bash
+set -euo pipefail # x
+
+brew bundle dump -f
+BREW_CONTENTS=$(cat "$HOMEBREW_BUNDLE_FILE")
+BREW_INSTALL_FILE="$(chezmoi source-path)/run_once_before_brew_packages.sh"
+cat <<EOT >"$BREW_INSTALL_FILE"
+if [ "\$VIM" != "" ]; then
+    echo "No install within VIM"
+    exit 0
+fi
+
+brew bundle --file=- <<-EOS
+$BREW_CONTENTS    
+EOS
+
+if ! pip3 show neovim2 &>/dev/null; then
+    pip3 install neovim
+fi
+EOT
