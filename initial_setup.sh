@@ -5,7 +5,7 @@ export PATH=$PATH:~/bin
 confirm() {
     echo -n "Continue?"
     read -r CONFIRM
-    if [ "$CONFIRM" != "y" ]; then
+    if [ "$CONFIRM" != "y" ] && [ "$CONFIRM" != "yes" ]; then
         return 1
     fi
 }
@@ -17,13 +17,14 @@ fi
 
 if ! xcode-select -p; then
     xcode-select --install
+    confirm || exit 1
 fi
-
-confirm || exit 1
 
 if ! which brew; then
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 fi
+
+eval "$(/opt/homebrew/bin/brew shellenv)"
 
 # install 1Password and chezmoi - should be all the initial dependencies needed
 sh -c "$(curl -fsLS git.io/chezmoi)"
