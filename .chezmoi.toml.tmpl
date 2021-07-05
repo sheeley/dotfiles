@@ -5,7 +5,7 @@
 
 {{- $github_secret := get . "github_secret" -}}
 {{- if not $github_secret -}}
-{{-   $github_secret = promptString "Github secret" -}}
+{{-   $github_secret = = (onepassword "Homebrew Github Token").details.password -}}
 {{- end -}}
 
 {{- $slack_secret := get . "slack_secret" -}}
