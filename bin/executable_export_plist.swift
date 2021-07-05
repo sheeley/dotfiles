@@ -105,7 +105,7 @@ extension ApplicationConfig {
 
         let pipe = Pipe()
         let task = Process()
-        task.launchPath = :/usr/bin/defaults"
+        task.launchPath = "/usr/bin/defaults"
         task.arguments = args
         task.standardError = pipe
         task.standardOutput = pipe
@@ -137,9 +137,9 @@ extension ApplicationConfig {
                     }
                     return true
                 }
-                // for key in val idKeys {
-                //     print("->\(key)")
-                // }
+                for key in validKeys {
+                    print("->\(key)")
+                }
             } catch {
                 print("=> \(error)")
             }
@@ -149,12 +149,12 @@ extension ApplicationConfig {
         if let applicationToRestart = applicationToRestart, !applicationToRestart.isEmpty {
             output += "\nstart_application -r -a \"\(applicationToRestart)\""
         }
-            cmd = [
-                DS_PATH,
-                "-d",
-                domain
-            ]
-            // # def wrap_quote(arg):
+        // cmd = [
+        //     DS_PATH,
+        //     "-d",
+        //     domain,
+        // ]
+        // # def wrap_quote(arg):
         //     #     if "*" in arg or " " in arg:
         //     #         return f"'{arg}'"
         //     #    return arg
