@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-FISH="/usr/local/bin/fish"
+FISH="$(which fish)"
 
 if grep -qv "$FISH" /etc/shells; then
     echo "$FISH" | sudo tee -a /etc/shells
