@@ -33,5 +33,5 @@ Plug 'keith/swift.vim'
 " Plug 'liuchengxu/vim-which-key'
 " Plug 'junegunn/vim-peekaboo'
 Plug 'junegunn/vim-easy-align'
+Plug 'ron-rs/ron.vim'
 " end trials
-
