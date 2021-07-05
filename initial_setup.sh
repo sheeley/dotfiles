@@ -9,11 +9,7 @@ confirm() {
         return 1
     fi
 }
-
-if [ "$EMAIL" == "" ]; then
-    echo "Enter email to use for ssh key"
-    read -r EMAIL
-fi
+EMAIL=""
 
 if ! xcode-select -p; then
     xcode-select --install
@@ -38,7 +34,14 @@ confirm || exit 1
 # TODO: XCode doesn't like ed25519. Maybe generate more than one? Hrm.
 # generate ssh key
 if [ ! -f ~/.ssh/id_ed25519 ]; then
+    if [ "$EMAIL" == "" ]; then
+        echo "Enter email to use for ssh key"
+        read -r EMAIL
+    fi
+
     ssh-keygen -t ed25519 -C "$EMAIL"
+else
+    EMAIL=$(cut -d' ' -f3 <~/.ssh/id_ed25519.pub)
 fi
 
 eval "$(ssh-agent -s)"
