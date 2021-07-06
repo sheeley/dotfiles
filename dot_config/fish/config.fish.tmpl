@@ -67,6 +67,11 @@ function mkcd
     cd $argv
 end
 
+function clone
+    git clone $argv
+    cd (basename $argv .git)
+end
+
 function reload
     source "$HOME/.config/fish/config.fish"
 end
