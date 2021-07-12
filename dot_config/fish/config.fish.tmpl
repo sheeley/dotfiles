@@ -46,6 +46,10 @@ function cdgo
     cd $GOPATH/src
 end
 
+function cdproj
+    cd $HOME/projects/sheeley
+end
+
 function cdinfra
     cd $PRIVATE_TOOLS_DIR
 end
@@ -68,6 +72,10 @@ function mkcd
 end
 
 function clone
+    git clone $argv
+end
+
+function clonecd
     git clone $argv
     cd (basename $argv .git)
 end
