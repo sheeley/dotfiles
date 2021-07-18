@@ -1,0 +1,7 @@
+#! /usr/bin/env bash
+
+tldr $1 ||
+    man $1 ||
+    $1 --help 2>&1 | less ||
+    $1 -h 2>&1 | less ||
+    $1 help 2>&1 | less

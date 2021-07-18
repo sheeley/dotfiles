@@ -65,10 +65,24 @@ trustExitCode = false
 default = simple
 [rerere]
 enabled = true
-[pager]
+# [pager]
 # log = diff-highlight | less
 # show = diff-highlight | less
 # diff = diff-highlight | less
+[pager]
+    diff = delta
+    log = delta
+    reflog = delta
+    show = delta
+
+[delta]
+    plus-style = "syntax #012800"
+    minus-style = "syntax #340001"
+    syntax-theme = Monokai Extended
+    navigate = true
+
+[interactive]
+    diffFilter = delta --color-only
 [http "https://gopkg.in"]
 followRedirects = true
 [http "https://pkg.re"]
