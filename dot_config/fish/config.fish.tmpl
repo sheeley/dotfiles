@@ -28,7 +28,7 @@ set -x BORG_REPO /Volumes/money/borgbackup
 {{if .borg_secret}}set -x BORG_PASSPHRASE {{ .borg_secret }}{{end}}
 
 # order: my tools, go/rust, brew, xcode, system
-fish_add_path -m $HOME/bin $PRIVATE_TOOLS_DIR/scripts \
+fish_add_path -m $HOME/bin $PRIVATE_TOOLS_DIR/bin $PRIVATE_TOOLS_DIR/scripts \
     $GOPATH/bin $HOME/.cargo/bin \
     /opt/homebrew/bin/ \
     /usr/local/bin /usr/local/sbin \
@@ -40,6 +40,10 @@ function fish_title
         echo $_ ' '
     end
     fish_prompt_pwd_dir_length=3 prompt_pwd
+end
+
+function cdcz
+    cd (chezmoi source-path)
 end
 
 function cdgo
