@@ -9,6 +9,7 @@ profile = {{ .rclone_profile }}
 type = s3
 provider = AWS
 env_auth = true
+profile = {{ .rclone_profile }}
 region = us-east-1
 server_side_encryption = aws:kms
 sse_kms_key_id = {{ .rclone_kms }}
