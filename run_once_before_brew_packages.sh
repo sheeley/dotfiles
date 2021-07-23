@@ -5,6 +5,7 @@ if [ "$VIM" != "" ]; then
 fi
 
 brew bundle --file=- <<-EOS
+tap "afnanenayet/tap"
 tap "homebrew/bundle"
 tap "homebrew/cask"
 tap "homebrew/cask-fonts"
@@ -12,6 +13,7 @@ tap "homebrew/core"
 tap "muesli/tap"
 brew "atool"
 brew "bat"
+brew "diffsitter"
 brew "git-delta"
 brew "fish"
 brew "fzf"
@@ -55,7 +57,7 @@ cask "iterm2"
 cask "krisp"
 cask "muzzle"
 cask "omnifocus"
-cask "qlstephen"
+# cask "qlstephen"
 cask "shiftit"
 mas "Amphetamine", id: 937984704
 mas "Bear", id: 1091189122
@@ -72,7 +74,7 @@ if ! pip3 show neovim2 &>/dev/null; then
 fi
 
 # QLStephen needs this to avoid quarantine
-xattr -cr ~/Library/QuickLook/QLStephen.qlgenerator
-qlmanage -r
-qlmanage -r cache
-killall Finder
+# xattr -cr ~/Library/QuickLook/QLStephen.qlgenerator
+# qlmanage -r
+# qlmanage -r cache
+# killall Finder

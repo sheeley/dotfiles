@@ -7,6 +7,7 @@ bin/ds_test
 {{ else }}
 *_personal*
 dot_config/rclone
+
 {{- end }}
 
 initial_setup.sh
