@@ -70,5 +70,7 @@ borg_secret       = {{ $borg_secret | quote }}
 rclone_kms        = {{ $rclone_kms | quote }}
 rclone_profile    = {{ $rclone_profile | quote }}
 
+{{- /*
 [diff]
 exclude = ["scripts"]
+*/ -}}

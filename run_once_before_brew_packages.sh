@@ -57,7 +57,7 @@ cask "iterm2"
 cask "krisp"
 cask "muzzle"
 cask "omnifocus"
-# cask "qlstephen"
+cask "qlstephen"
 cask "shiftit"
 mas "Amphetamine", id: 937984704
 mas "Bear", id: 1091189122
@@ -72,9 +72,3 @@ EOS
 if ! pip3 show neovim2 &>/dev/null; then
     pip3 install neovim
 fi
-
-# QLStephen needs this to avoid quarantine
-# xattr -cr ~/Library/QuickLook/QLStephen.qlgenerator
-# qlmanage -r
-# qlmanage -r cache
-# killall Finder
