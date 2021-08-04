@@ -1,0 +1,6 @@
+#! /usr/bin/env bash
+set -euo pipefail # x
+
+# TODO: REVERSE SRC/DST
+SRC="$HOME/projects/sheeley/notes/Notes"
+rsync -avhW --no-compress "$SRC" "$HOME/Library/Mobile Documents/iCloud~md~obsidian/Documents/Notes"
