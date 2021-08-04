@@ -1,0 +1,9 @@
+#! /usr/bin/env bash
+set -euo pipefail # x
+
+DEST="$HOME/projects/sheeley/notes"
+rsync -avhW --no-compress --delete "$HOME/Library/Mobile Documents/iCloud~md~obsidian/Documents/Notes" "$DEST"
+(
+    cd "$DEST"
+    git status
+)
