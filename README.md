@@ -10,6 +10,7 @@ Set up to ignore `*_work*` and `*_personal*` outside of those contexts.
 
 ## TODO
 
+- [ ] nightshift
 - [ ] Modifier keys
 - [ ] Automate `:PlugInstall`?
 - [ ] Install `fisher` and `nvm.fish`?
