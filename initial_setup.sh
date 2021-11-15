@@ -25,11 +25,11 @@ if [ ! -f ~/.ssh/id_ed25519 ]; then
         ssh-add -K ~/.ssh/id_ed25519
     fi
     # store key in github
-    echo "Open Github?"
+    echo "Open Github to create token and save SSH key?"
     if confirm; then
         pbcopy <~/.ssh/id_ed25519.pub
-        open https://github.com/settings/keys
         open 'https://github.com/settings/tokens/new?scopes=gist,public_repo,workflow&description=Homebrew'
+        open https://github.com/settings/keys
     fi
 
     if [ "$HOMEBREW_GITHUB_API_TOKEN" == "" ]; then
@@ -47,27 +47,28 @@ if ! xcode-select -p; then
     confirm || exit 1
 fi
 
+if ! which brew; then
+    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+fi
+
+eval "$(/opt/homebrew/bin/brew shellenv)"
+
+# install 1Password and chezmoi - should be all the initial dependencies needed
+brew install 1password 1password-cli mas
+
 if ! mas account; then
     echo "Sign in to app store"
     mas open
     confirm || exit 1
 fi
 
-if ! which nix; then
-    curl -L https://nixos.org/nix/install | sh || exit 1
-fi
+# if ! which nix; then
+#     curl -L https://nixos.org/nix/install | sh || exit 1
+# fi
 
 if ! which chezmoi; then
     sh -c "$(curl -fsLS git.io/chezmoi)" || exit 1
 fi
-# if ! which brew; then
-#     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-# fi
-
-# eval "$(/opt/homebrew/bin/brew shellenv)"
-
-# install 1Password and chezmoi - should be all the initial dependencies needed
-# brew install 1password 1password-cli mas
 
 # login to 1password, setting token for futher usage
 # shellcheck disable=2034
