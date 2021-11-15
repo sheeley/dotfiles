@@ -55,12 +55,9 @@ cask "font-profont-nerd-font"
 cask "font-space-mono-nerd-font"
 cask "iterm2"
 cask "krisp"
-cask "muzzle"
-cask "omnifocus"
 cask "qlstephen"
 cask "shiftit"
 mas "Amphetamine", id: 937984704
-mas "Bear", id: 1091189122
 mas "Clocker", id: 1056643111
 mas "Expressions", id: 913158085
 mas "iA Writer", id: 775737590
