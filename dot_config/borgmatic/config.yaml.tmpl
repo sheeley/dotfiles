@@ -1,0 +1,57 @@
+# vim: set filetype=yaml :
+location:
+  source_directories:
+    - ~/projects
+    - ~/Documents
+    - ~/Music
+    - ~/Media
+    - /Volumes/money/music/
+
+  repositories:
+    - /Volumes/money/borgbackup
+{{if .borg_repo}}    - {{.borg_repo}}{{end}}
+
+  exclude_patterns:
+    - "*.pyc"
+    - ~/*/.cache
+    - /home/*/.cache/*
+    - /var/cache/*
+    - /var/tmp/*
+    - .DS_Store
+    - .nzb
+    - "*.url"
+    - "*.webloc"
+    - Thumbs.db
+    - .Trashes*
+    - .fseventsd*
+
+  exclude_if_present: .nobackup
+  one_file_system: true
+
+storage:
+  compression: auto,zstd
+  archive_name_format: "johnny {now}"
+  # johnny {now:%Y-%m-%dT%H:%M:%S}"
+  {{if .borg_secret}}encryption_passphrase: {{ .borg_secret | quote }}{{end}}
+
+retention:
+  keep_daily: 7
+  keep_weekly: 4
+  keep_monthly: 12
+  keep_yearly: 3
+  prefix: "johnny "
+
+consistency:
+  checks:
+    # - repository
+    - disabled
+
+  check_last: 3
+  prefix: "johnny "
+
+hooks:
+  before_backup:
+    - echo "`date` - Starting backup"
+
+  after_backup:
+    - echo "`date` - Finished backup"
