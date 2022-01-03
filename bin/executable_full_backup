@@ -4,8 +4,9 @@ set -euo pipefail # x
 # ensure volume is mounted before doing anything
 [ ! -d "$BORG_REPO" ] && echo "'$BORG_REPO' doesn't exist" && exit 1
 
-borg_backup
-rclone_backup
+borgmatic
+# borg_backup
+# rclone_backup
 
 echo "Total time: $SECONDS"
 # say "Total time: $SECONDS seconds"

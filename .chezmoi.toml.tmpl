@@ -28,7 +28,12 @@
 {{- $borg_secret := get . "borg_secret" -}}
 {{- $rclone_kms := get . "rclone_kms" -}}
 {{- $rclone_profile := get . "rclone_profile" -}}
+{{- $borg_repo := get . "borg_repo" -}}
 {{- if $personal -}}
+{{-	if not $borg_repo -}}
+{{-	    $borg_repo = promptString "borg repo" -}}
+{{-	end -}}
+
 {{-	if not $borg_secret -}}
 {{-	    $borg_secret = (onepassword "borg").details.password -}}
 {{-	end -}}
@@ -67,6 +72,7 @@ bartender4license = {{ $bartender4license | quote }}
 
 personal          = {{ $personal }}
 borg_secret       = {{ $borg_secret | quote }}
+borg_repo         = {{ $borg_repo | quote}}
 rclone_kms        = {{ $rclone_kms | quote }}
 rclone_profile    = {{ $rclone_profile | quote }}
 
