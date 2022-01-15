@@ -14,18 +14,20 @@ if get_input "Dump plists?"; then
     plist_export
 fi
 
-(
-    cd "$TOOLS_DIR"
-    git fetch
-    echo "$TOOLS_DIR status:"
-    git status
-)
+check_git_status() {
+    (
+        cd "$1"
+        git fetch
+        OUTPUT=$(git status --porcelain)
+        LINES=$(echo "$OUTPUT" | wc -l)
+        if [[ "$LINES" -gt 1 ]]; then
+            echo "$1 has changes:"
+            echo "$OUTPUT"
+        fi
+    )
+}
 
-(
-    cd "$PRIVATE_TOOLS_DIR"
-    git fetch
-    echo "$PRIVATE_TOOLS_DIR status:"
-    git status
-)
+check_git_status "$TOOLS_DIR"
+check_git_status "$PRIVATE_TOOLS_DIR"
 
 full_backup
