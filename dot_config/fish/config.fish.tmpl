@@ -29,7 +29,9 @@ set -x BORG_REPO /Volumes/money/borgbackup
 {{if .borg_secret}}set -x BORG_PASSPHRASE {{ .borg_secret }}{{end}}
 
 # order: my tools, go/rust, brew, xcode, system
-fish_add_path -m $HOME/bin $PRIVATE_TOOLS_DIR/bin $PRIVATE_TOOLS_DIR/scripts \
+fish_add_path -m $HOME/bin \
+    $PRIVATE_TOOLS_DIR/bin \
+    $PRIVATE_TOOLS_DIR/scripts \
     $GOPATH/bin $HOME/.cargo/bin \
     /opt/homebrew/bin/ \
     /opt/homebrew/sbin \
@@ -107,9 +109,7 @@ starship init fish | source
 function __set_git_committer
     set -l email {{ .email | quote }}
     switch $PWD
-        case "*jaxf*"
-            set email {{ .work_email | quote }}
-        case "*fanatics*"
+        case "*aplsrc*"
             set email {{ .work_email | quote }}
     end
     set -g -x GIT_COMMITTER_EMAIL $email
@@ -123,8 +123,6 @@ function __check_dir --on-variable PWD --description 'Change git committer for w
     __set_git_committer
 end
 
-set -x PATH $HOME/git/fanatics/forge/go-build-scripts/ $PATH
-set -x PATH $HOME/git/fanatics/forge/go-build-scripts/modules $PATH
 set -x GOPROXY direct
 set -x GOSUMDB off
 
