@@ -19,6 +19,7 @@ set -x PRIVATE_DATA_DIR $HOME/projects/sheeley/infrastructure/data
 set -x PRIVATE_TOOLS_DIR $HOME/projects/sheeley/infrastructure
 set -x TOOLS_DIR $HOME/projects/sheeley/tools
 set -x NOTES_DIR $HOME/projects/sheeley/notes
+set -x NIX_PATH darwin-config=$HOME/.nixpkgs/darwin-configuration.nix:$HOME/.nix-defexpr/channels:$NIX_PATH
 
 set -x GITHUB_KEY {{ .github_secret }}
 {{if .slack_secret }}set -x SLACK_KEY {{ .slack_secret }}{{end}}
@@ -126,13 +127,11 @@ end
 set -x GOPROXY direct
 set -x GOSUMDB off
 
-function cdfan
-    cd $GOPATH/src/jaxf-github.fanatics.corp
-end
-
 # function __check_dir --on-variable PWD --description 'Change git committer for work'
 #     status --is-command-substitution; and return
 #     __set_git_committer
 # end
 
 {{- end  }}
+
+# source $HOME/.nix-profile/etc/profile.d/hm-session-vars.sh
