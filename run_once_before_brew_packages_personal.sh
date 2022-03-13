@@ -5,8 +5,7 @@ if [ "$VIM" != "" ]; then
 fi
 
 brew bundle --file=- <<-EOS
-brew "borgbackup"
-brew "hugo"
+brew "borgmatic"
 brew "rclone"
 brew "rsync"
 mas "Space Gremlin", id: 414515628
