@@ -1,11 +1,12 @@
 # vim: set filetype=yaml :
+---
 location:
   source_directories:
     - ~/projects
     - ~/Documents
     - ~/Music
     - ~/Media
-    - /Volumes/money/music/
+    - ~/Pictures
 
   repositories:
     - /Volumes/money/borgbackup
@@ -30,21 +31,20 @@ location:
 
 storage:
   compression: auto,zstd
-  archive_name_format: "johnny {now}"
-  # johnny {now:%Y-%m-%dT%H:%M:%S}"
+  archive_name_format: "johnny {now:%Y-%m-%dT%H:%M:%S}"
   {{if .borg_secret}}encryption_passphrase: {{ .borg_secret | quote }}{{end}}
 
 retention:
   keep_daily: 7
   keep_weekly: 4
   keep_monthly: 12
-  keep_yearly: 3
+  keep_yearly: 10
   prefix: "johnny "
 
 consistency:
   checks:
-    # - repository
-    - disabled
+    - repository
+    - archives
 
   check_last: 3
   prefix: "johnny "
