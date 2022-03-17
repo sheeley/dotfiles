@@ -1,5 +1,7 @@
 #! /usr/bin/env bash
+# usage: zip_encrypted dirname
 set -euo pipefail # x
-
-name=${PWD##*/}
-zip -e "$name.zip" ./*.*
+name="$1"
+# name=${PWD##*/}
+[ -d "$name" ] || exit 1
+zip -re "$name.zip" "$name"
