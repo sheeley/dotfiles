@@ -7,5 +7,5 @@ if grep -qv "$FISH" /etc/shells; then
 fi
 
 if [[ "$SHELL" != "$FISH" ]]; then
-    chsh -s /usr/local/bin/fish
+    chsh -s "$FISH"
 fi
