@@ -46,12 +46,12 @@ cask "font-profont-nerd-font"
 cask "font-space-mono-nerd-font"
 cask "iterm2"
 cask "krisp"
-cask "shiftit"
 mas "Amphetamine", id: 937984704
 mas "Clocker", id: 1056643111
 mas "Expressions", id: 913158085
 mas "iA Writer", id: 775737590
 mas "Kindle", id: 405399194
+mas "Magnet", id: 441258766
 mas "Patterns", id: 429449079
 mas "Slack", id: 803453959
 mas "The Unarchiver", id: 425424353 
