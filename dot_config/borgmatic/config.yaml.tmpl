@@ -31,7 +31,7 @@ location:
 
 storage:
   compression: auto,zstd
-  archive_name_format: "johnny {now:%Y-%m-%dT%H:%M:%S}"
+  archive_name_format: "johnny-{now:%Y-%m-%d-%H%M%S}"
   {{if .borg_secret}}encryption_passphrase: {{ .borg_secret | quote }}{{end}}
 
 retention:
@@ -39,15 +39,11 @@ retention:
   keep_weekly: 4
   keep_monthly: 12
   keep_yearly: 10
-  prefix: "johnny "
+  prefix: "johnny"
 
 consistency:
   checks:
-    - repository
-    - archives
-
-  check_last: 3
-  prefix: "johnny "
+    - disabled
 
 hooks:
   before_backup:
