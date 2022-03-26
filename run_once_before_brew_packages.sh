@@ -55,6 +55,7 @@ mas "Magnet", id: 441258766
 mas "Patterns", id: 429449079
 mas "Slack", id: 803453959
 mas "The Unarchiver", id: 425424353 
+mas "Pure Paste", id: 1611378436
 EOS
 
 if ! pip3 show neovim2 &>/dev/null; then
