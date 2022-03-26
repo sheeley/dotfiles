@@ -4,8 +4,17 @@ import Foundation
 import EventKit
 import System
 
+enum action: String { case today, tomorrow }
 let subdir = "apple"
+var interactive = false
+let store = EKEventStore()
+var df: DateFormatter = { 
+    let df = DateFormatter()
+    df.dateFormat = "yyyy-MM-dd HH-mm"
+    return df
+}()
 
+// MARK: - Filters and Modifiers
 func titleModifier(_ title: String?) -> String {
     guard var title = title else { return "" }
     if let range = title.range(of: #"(( ?/ ?Johnny)|(Johnny ?/? ?))"#, options: .regularExpression) {
@@ -22,7 +31,7 @@ func attendeeFilter(_ name: String) -> Bool {
     return true
 }
 
-func eventFilterFunc(_ event: EKEvent) -> Bool {
+func eventFilter(_ event: EKEvent) -> Bool {
     guard let title = event.title, !title.contains("Status") else { return false }
     return true
 }
@@ -52,12 +61,8 @@ func filterOutWebex(_ n: String) -> String {
     return out
 }
 
-enum eventFilter: String {
-    case today, tomorrow
-}
 
-let store = EKEventStore()
-
+// MARK: - Calendar
 func requestAccess() throws {
     let sema = DispatchSemaphore(value: 0)
     store.requestAccess(to: .event) { allowed, err in
@@ -67,15 +72,15 @@ func requestAccess() throws {
     _ = sema.wait(timeout: .distantFuture)
 }
 
-func getEvents(_ filter: eventFilter) -> [EKEvent] {
-    let today = Date()
+func getEvents(_ filter: action) -> [EKEvent] {
+    let today = Calendar.current.startOfDay(for: Date())
     let tomorrow = Date().addingTimeInterval(60 * 60 * 24)
     let predicate = store.predicateForEvents(withStart: today, end: tomorrow, calendars: nil)
     let events = store.events(matching: predicate)
     return events.filter { event in
         guard event.attendees?.count ?? 0 > 1 else { return false }
         guard !event.isAllDay else { return false }
-        guard eventFilterFunc(event) else { return false }
+        guard eventFilter(event) else { return false }
 
         switch filter {
         case .today:
@@ -86,100 +91,127 @@ func getEvents(_ filter: eventFilter) -> [EKEvent] {
     }
 }
 
+// MARK: - Note Files
 struct Note {
-    let path: URL
+    let event: EKEvent
     let contents: String
-}
 
-func format(_ event: EKEvent, withTemplate template: String, andPath dir: URL) -> Note {
-    let df = DateFormatter()
-    df.dateFormat = "yyyy-MM-dd HH-mm"
-    let dateTime = df.string(from: event.startDate)
+    init(_ template: String, event: EKEvent) {
+        let dateTime = df.string(from: event.startDate)
 
-    let title = titleModifier(event.title)
-    let notePath = dir.appendingPathComponent("\(dateTime) - \(title).md")
+        var attendeeText = ""
+        if let attendees = event.attendees {
+            attendeeText = "attendees:\n"
+            attendeeText += attendees.map { a in
+                guard let name = a.name else { return "" }
+                guard attendeeFilter(name) else { return "" }
+                return "  - \"[[\(name.replacingOccurrences(of: " (V)", with: ""))]]\"\n"
+            }.joined()
+        }
 
-    var attendeeText = ""
-    if let attendees = event.attendees {
-        attendeeText = "attendees:\n"
-        attendeeText += attendees.map { a in
-            guard let name = a.name else { return "" }
-            guard attendeeFilter(name) else { return "" }
-            return "  - \"[[\(name.replacingOccurrences(of: " (V)", with: ""))]]\"\n"
-        }.joined()
+        if let url = event.url {
+            attendeeText += "\nurl: \(url.path)\n"
+        }
+
+        self.event = event
+        self.contents = template
+        .replacingOccurrences(of: "attendees: ", with: "attendees:")
+        .replacingOccurrences(of: "attendees:\n  - \"[[]]\"", with: attendeeText)
+        .replacingOccurrences(of: "{{date:YYYY-MM-DD HH:mm:ss}}", with: dateTime)
+        .replacingOccurrences(of: "{{notes}}", with: noteFilter(event.notes))
     }
 
-    if let url = event.url {
-        attendeeText += "\nurl: \(url.path)\n"
+    func filename() -> String {
+        let dateTime = df.string(from: event.startDate)
+        let title = titleModifier(event.title)
+        return "\(dateTime) - \(title).md"
     }
 
-    var text = template
-    .replacingOccurrences(of: "attendees: ", with: "attendees:")
-    .replacingOccurrences(of: "attendees:\n  - \"[[]]\"", with: attendeeText)
-    .replacingOccurrences(of: "{{date:YYYY-MM-DD HH:mm:ss}}", with: dateTime)
-
-    text = text.replacingOccurrences(of: "{{notes}}", with: noteFilter(event.notes))
-
-    return Note(path: notePath, contents: text)
+    func fullPath(dir: URL) -> URL {
+        return dir.appendingPathComponent(subdir).appendingPathComponent(filename())
+    }
 }
 
-func summarize(_ u: URL, _ f: eventFilter, _ allNotes: [Note], _ toCreate: [Note]) {
-    let prefix = u.absoluteString
-    print("Found \(allNotes.count) events for \(f.rawValue), will create \(toCreate.count):")
+func summarize(_ u: URL, _ allNotes: [Note], _ toCreate: [Note]) {
+    print("Found \(allNotes.count) events, will create \(toCreate.count):")
     toCreate.forEach{ 
-        print($0.path.absoluteString.replacingOccurrences(of: prefix, with: "").replacingOccurrences(of: "%20", with: " ")) 
-        // print($0.contents)
-        // print("")
+        print($0.fullPath(dir: u))
     }
 }
 
-func main() throws {
-    let args = CommandLine.arguments
-    var filter = eventFilter.today
-    if args.count == 2 {
-        filter = eventFilter(rawValue: args[1]) ?? filter
-    }
-
+func createNotes(_ notes: [Note], in notesURL: URL) throws {
     try requestAccess()
-
-    guard let notesDir = ProcessInfo.processInfo.environment["NOTES_DIR"] else {
-        print("$NOTES_DIR not set")
-        return
-    }
-
-    let notesURL = URL(fileURLWithPath: notesDir)
-    let template = try String(contentsOfFile: "\(notesDir)/shared/templates/meeting.md")
-
-    let events = getEvents(filter)
-    let notes = events.map { format($0, withTemplate: template, andPath: notesURL.appendingPathComponent(subdir))}
-
     var written = [Note]()
-
-    let toCreate = notes.filter { !FileManager.default.fileExists(atPath: $0.path.path) }
-    summarize(notesURL, filter, notes, toCreate)
+    let toCreate = notes.filter { 
+         !FileManager.default.fileExists(atPath: $0.fullPath(dir: notesURL).absoluteString) 
+    }
 
     if toCreate.isEmpty {
         return
     }
 
-    print("Continue? [y/N]")
-    let input = readLine()
-    if input?.trimmingCharacters(in: .whitespacesAndNewlines).lowercased() != "y" {
-        return
+    if interactive {
+        summarize(notesURL, notes, toCreate)
+        print("Continue? [y/N]")
+        let input = readLine()
+        if input?.trimmingCharacters(in: .whitespacesAndNewlines).lowercased() != "y" {
+            return
+        }
     }
 
     try toCreate.forEach { n in
-        guard !FileManager.default.fileExists(atPath: n.path.path) else {
-            print("\(n.path) exists, skipping")
+        let p = n.fullPath(dir: notesURL)
+        guard !FileManager.default.fileExists(atPath:p.absoluteString) else {
+            print("\(p) exists, skipping")
             return
         }
         guard let d = n.contents.data(using: .utf8) else {
-            print("\(n.path) couldn't convert to data")
+            print("\(p) couldn't convert to data")
             return
         }
 
-        try d.write(to: n.path)
+        try d.write(to: n.fullPath(dir: notesURL))
         written.append(n)
+    }
+}
+
+func openNote(_ note: Note) {
+    let notePath = note.filename()
+    let url = "obsidian://open?vault=Notes&file=\(notePath)"
+    let task = Process()
+    let pipe = Pipe()
+    task.standardOutput = pipe
+    task.standardError = pipe
+    task.arguments = [url]
+    task.launchPath = "/usr/bin/open"
+    task.launch()
+}
+
+// MARK: - Main
+func main() throws {
+    let args = CommandLine.arguments
+    var command = action.today
+    if args.count > 1 {
+        command = action(rawValue: args[1]) ?? command
+    }
+
+    guard let parentDir = ProcessInfo.processInfo.environment["NOTES_DIR"] else {
+        print("$NOTES_DIR not set")
+        return
+    }
+
+    let events = getEvents(command)
+    let template = try String(contentsOfFile: "\(parentDir)/shared/templates/meeting.md")
+    let notes = events.map { Note(template, event: $0) }
+
+    try createNotes(notes, in: URL(fileURLWithPath: parentDir))
+
+    if args.count == 3 {
+        if let timestamp = Double(args[2]) {
+            let meetingTime = Date(timeIntervalSince1970: timestamp)
+            notes.filter { $0.event.startDate == meetingTime }
+            .forEach { openNote($0) }
+        }
     }
 }
 try main()
