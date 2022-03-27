@@ -31,7 +31,7 @@ location:
 
 storage:
   compression: auto,zstd
-  archive_name_format: "johnny-{now:%Y-%m-%d-%H%M%S}"
+  archive_name_format: "johnny-{now}"
   {{if .borg_secret}}encryption_passphrase: {{ .borg_secret | quote }}{{end}}
 
 retention:
