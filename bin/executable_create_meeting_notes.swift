@@ -143,7 +143,7 @@ func createNotes(_ notes: [Note], in notesURL: URL) throws {
     try requestAccess()
     var written = [Note]()
     let toCreate = notes.filter { 
-         !FileManager.default.fileExists(atPath: $0.fullPath(dir: notesURL).absoluteString) 
+         !FileManager.default.fileExists(atPath: $0.fullPath(dir: notesURL).path)
     }
 
     if toCreate.isEmpty {
@@ -161,7 +161,7 @@ func createNotes(_ notes: [Note], in notesURL: URL) throws {
 
     try toCreate.forEach { n in
         let p = n.fullPath(dir: notesURL)
-        guard !FileManager.default.fileExists(atPath:p.absoluteString) else {
+        guard !FileManager.default.fileExists(atPath: p.path) else {
             print("\(p) exists, skipping")
             return
         }
@@ -169,8 +169,7 @@ func createNotes(_ notes: [Note], in notesURL: URL) throws {
             print("\(p) couldn't convert to data")
             return
         }
-
-        try d.write(to: n.fullPath(dir: notesURL))
+        try d.write(to: p)
         written.append(n)
     }
 }
