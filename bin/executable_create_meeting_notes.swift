@@ -23,7 +23,7 @@ func titleModifier(_ title: String?) -> String {
             title += " 1o1"
         }
     }
-    return title.replacingOccurrences(of: "/", with: "-")
+    return title.replacingOccurrences(of: "/", with: "-").replacingOccurrences(of: "|", with: "-")
 }
 
 func attendeeFilter(_ name: String) -> Bool {
