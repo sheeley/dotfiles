@@ -1,0 +1,4 @@
+#! /usr/bin/env bash
+set -euo pipefail # x
+
+rg -g '*.md' -g '!shared/' --files-with-matches --multiline -e '---\W+\*\W+```' "$NOTES_DIR"

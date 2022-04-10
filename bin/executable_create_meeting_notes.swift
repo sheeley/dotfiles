@@ -143,7 +143,7 @@ func createNotes(_ notes: [Note], in notesURL: URL) throws {
     try requestAccess()
     var written = [Note]()
     let toCreate = notes.filter { 
-         !FileManager.default.fileExists(atPath: $0.fullPath(dir: notesURL).path)
+        !FileManager.default.fileExists(atPath: $0.fullPath(dir: notesURL).path)
     }
 
     if toCreate.isEmpty {
@@ -186,6 +186,33 @@ func openNote(_ note: Note) {
     task.launch()
 }
 
+func shell(_ command: String) throws -> String {
+    let task = Process()
+    let pipe = Pipe()
+
+    task.standardOutput = pipe
+    task.standardError = pipe
+    task.arguments = ["-c", command]
+    task.launchPath = "/bin/zsh"
+    try task.run()
+
+    let data = pipe.fileHandleForReading.readDataToEndOfFile()
+    let output = String(data: data, encoding: .utf8)!
+
+    return output
+}
+
+func cleanEmptyNotes() throws {
+    let today = Calendar.autoupdatingCurrent.startOfDay(for: Date())
+    try shell("find_empty_notes").split(separator: "\n").forEach {
+        let path = String($0)
+        let attrs = try FileManager.default.attributesOfItem(atPath: path)
+        if let mod = attrs[.modificationDate] as? Date, mod < today {
+            try FileManager.default.removeItem(atPath: path) 
+        }
+    }
+}
+
 // MARK: - Main
 func main() throws {
     let args = CommandLine.arguments
@@ -212,5 +239,7 @@ func main() throws {
             .forEach { openNote($0) }
         }
     }
+
+    try cleanEmptyNotes()
 }
 try main()
