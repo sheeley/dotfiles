@@ -1,0 +1,14 @@
+#! /usr/bin/env bash
+set -euo pipefail # x
+
+# WARNING: This always extracts to the current directory
+# borg extract /path/to/repo::my-files
+
+# Verify whether an archive could be successfully extracted, but do not write files to disk
+# borg extract --dry-run /path/to/repo::my-files
+
+# Extract the "src" directory
+# borg extract /path/to/repo::my-files home/USERNAME/src
+LATEST=$(borg list --prefix johnny --last 1 --format='{archive}')
+# CURRENT_DIR="$(pwd | cut -c 2-)"
+borg extract "::$LATEST" "$@"
