@@ -1,25 +1,25 @@
 #!/usr/bin/env xcrun swift
-// #! /usr/bin/env swift
-import Foundation
 import EventKit
+import Foundation
 import System
 
 enum action: String { case today, tomorrow }
-let subdir = "apple"
+let subdir = "work"
 var interactive = false
 let store = EKEventStore()
-var df: DateFormatter = { 
+var df: DateFormatter = {
     let df = DateFormatter()
     df.dateFormat = "yyyy-MM-dd HH-mm"
     return df
 }()
 
 // MARK: - Filters and Modifiers
+
 func titleModifier(_ title: String?) -> String {
     guard var title = title else { return "" }
     if let range = title.range(of: #"(( ?/ ?Johnny)|(Johnny ?/? ?))"#, options: .regularExpression) {
         title = title.replacingCharacters(in: range, with: "")
-        if !title.contains("1o1") && !title.contains("1:1") {
+        if !title.contains("1o1"), !title.contains("1:1") {
             title += " 1o1"
         }
     }
@@ -27,7 +27,7 @@ func titleModifier(_ title: String?) -> String {
 }
 
 func attendeeFilter(_ name: String) -> Bool {
-    guard !name.starts(with: "Virtual") && name != "Johnny Sheeley" else { return false }
+    guard !name.starts(with: "Virtual"), name != "Johnny Sheeley" else { return false }
     return true
 }
 
@@ -46,7 +46,7 @@ func noteFilter(_ notes: String?) -> String {
 func filterOutWebex(_ n: String) -> String {
     var out = ""
     var ignoreLine = false
-    n.enumerateLines { l, _  in
+    n.enumerateLines { l, _ in
         if ignoreLine {
             if l == "---===---" {
                 ignoreLine = false
@@ -61,12 +61,12 @@ func filterOutWebex(_ n: String) -> String {
     return out
 }
 
-
 // MARK: - Calendar
+
 func requestAccess() throws {
     let sema = DispatchSemaphore(value: 0)
     store.requestAccess(to: .event) { allowed, err in
-        guard allowed && err == nil else { exit(1) }
+        guard allowed, err == nil else { exit(1) }
         sema.signal()
     }
     _ = sema.wait(timeout: .distantFuture)
@@ -92,6 +92,7 @@ func getEvents(_ filter: action) -> [EKEvent] {
 }
 
 // MARK: - Note Files
+
 struct Note {
     let event: EKEvent
     let contents: String
@@ -114,11 +115,11 @@ struct Note {
         }
 
         self.event = event
-        self.contents = template
-        .replacingOccurrences(of: "attendees: ", with: "attendees:")
-        .replacingOccurrences(of: "attendees:\n  - \"[[]]\"", with: attendeeText)
-        .replacingOccurrences(of: "{{date:YYYY-MM-DD HH:mm:ss}}", with: dateTime)
-        .replacingOccurrences(of: "{{notes}}", with: noteFilter(event.notes))
+        contents = template
+            .replacingOccurrences(of: "attendees: ", with: "attendees:")
+            .replacingOccurrences(of: "attendees:\n  - \"[[]]\"", with: attendeeText)
+            .replacingOccurrences(of: "{{date:YYYY-MM-DD HH:mm:ss}}", with: dateTime)
+            .replacingOccurrences(of: "{{notes}}", with: noteFilter(event.notes))
     }
 
     func filename() -> String {
@@ -134,7 +135,7 @@ struct Note {
 
 func summarize(_ u: URL, _ allNotes: [Note], _ toCreate: [Note]) {
     print("Found \(allNotes.count) events, will create \(toCreate.count):")
-    toCreate.forEach{ 
+    toCreate.forEach {
         print($0.fullPath(dir: u))
     }
 }
@@ -142,7 +143,7 @@ func summarize(_ u: URL, _ allNotes: [Note], _ toCreate: [Note]) {
 func createNotes(_ notes: [Note], in notesURL: URL) throws {
     try requestAccess()
     var written = [Note]()
-    let toCreate = notes.filter { 
+    let toCreate = notes.filter {
         !FileManager.default.fileExists(atPath: $0.fullPath(dir: notesURL).path)
     }
 
@@ -208,12 +209,13 @@ func cleanEmptyNotes() throws {
         let path = String($0)
         let attrs = try FileManager.default.attributesOfItem(atPath: path)
         if let mod = attrs[.modificationDate] as? Date, mod < today {
-            try FileManager.default.removeItem(atPath: path) 
+            try FileManager.default.removeItem(atPath: path)
         }
     }
 }
 
 // MARK: - Main
+
 func main() throws {
     let args = CommandLine.arguments
     var command = action.today
@@ -236,10 +238,11 @@ func main() throws {
         if let timestamp = Double(args[2]) {
             let meetingTime = Date(timeIntervalSince1970: timestamp)
             notes.filter { $0.event.startDate == meetingTime }
-            .forEach { openNote($0) }
+                .forEach { openNote($0) }
         }
     }
 
     try cleanEmptyNotes()
 }
+
 try main()

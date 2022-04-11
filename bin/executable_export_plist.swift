@@ -1,5 +1,4 @@
 #!/usr/bin/env xcrun swift
-// #! /usr/bin/env swift
 import Foundation
 import System
 
