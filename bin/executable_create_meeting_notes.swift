@@ -5,13 +5,13 @@ import System
 
 enum action: String { case today, tomorrow }
 let subdir = "work"
-var interactive = false
+var interactive = false 
 let store = EKEventStore()
 var df: DateFormatter = {
     let df = DateFormatter()
     df.dateFormat = "yyyy-MM-dd HH-mm"
     return df
-}()
+}() 
 
 // MARK: - Filters and Modifiers
 
@@ -29,10 +29,14 @@ func titleModifier(_ title: String?) -> String {
 func attendeeFilter(_ name: String) -> Bool {
     guard !name.starts(with: "Virtual"), name != "Johnny Sheeley" else { return false }
     return true
-}
+} 
 
 func eventFilter(_ event: EKEvent) -> Bool {
-    guard let title = event.title, !title.contains("Status") else { return false }
+    guard event.hasAttendees else { return false }
+    if let me = event.attendees?.filter({ $0.isCurrentUser }).first, me.participantStatus == .declined {
+        return false     
+    }
+    // guard let title = event.title, !title.contains("Status") else { return false }
     return true
 }
 
