@@ -13,6 +13,9 @@ var df: DateFormatter = {
     return df
 }() 
 
+var fileNameCharacters = NSCharacterSet.punctuationCharacters
+fileNameCharacters.remove(charactersIn: "-_.")
+
 // MARK: - Filters and Modifiers
 
 func titleModifier(_ title: String?) -> String {
@@ -23,7 +26,7 @@ func titleModifier(_ title: String?) -> String {
             title += " 1o1"
         }
     }
-    return title.replacingOccurrences(of: "/", with: "-").replacingOccurrences(of: "|", with: "-")
+    return title
 }
 
 func attendeeFilter(_ name: String) -> Bool {
@@ -124,12 +127,14 @@ struct Note {
             .replacingOccurrences(of: "attendees:\n  - \"[[]]\"", with: attendeeText)
             .replacingOccurrences(of: "{{date:YYYY-MM-DD HH:mm:ss}}", with: dateTime)
             .replacingOccurrences(of: "{{notes}}", with: noteFilter(event.notes))
+            .replacingOccurrences(of "{{title}}", with: titleModifier(event.title))
     }
 
     func filename() -> String {
         let dateTime = df.string(from: event.startDate)
-        let title = titleModifier(event.title)
-        return "\(dateTime) - \(title).md"
+        var filename = titleModifier(event.title)
+        filename.unicodeScalars.removeAll(where: {set.contains($0)})
+        return "\(dateTime) - \(filename).md"
     }
 
     func fullPath(dir: URL) -> URL {
@@ -209,12 +214,17 @@ func shell(_ command: String) throws -> String {
 
 func cleanEmptyNotes() throws {
     let today = Calendar.autoupdatingCurrent.startOfDay(for: Date())
-    try shell("find_empty_notes").split(separator: "\n").forEach {
-        let path = String($0)
-        let attrs = try FileManager.default.attributesOfItem(atPath: path)
-        if let mod = attrs[.modificationDate] as? Date, mod < today {
-            try FileManager.default.removeItem(atPath: path)
+    do {
+        let files = try shell("find_empty_notes")
+        files.split(separator: "\n").forEach {
+            let path = String($0)
+            let attrs = try FileManager.default.attributesOfItem(atPath: path)
+            if let mod = attrs[.modificationDate] as? Date, mod < today {
+                try FileManager.default.removeItem(atPath: path)
+            }
         }
+    } catch {
+        print(error)
     }
 }
 
