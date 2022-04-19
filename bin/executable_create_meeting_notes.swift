@@ -127,13 +127,13 @@ struct Note {
             .replacingOccurrences(of: "attendees:\n  - \"[[]]\"", with: attendeeText)
             .replacingOccurrences(of: "{{date:YYYY-MM-DD HH:mm:ss}}", with: dateTime)
             .replacingOccurrences(of: "{{notes}}", with: noteFilter(event.notes))
-            .replacingOccurrences(of "{{title}}", with: titleModifier(event.title))
+            .replacingOccurrences(of: "{{title}}", with: titleModifier(event.title))
     }
 
     func filename() -> String {
         let dateTime = df.string(from: event.startDate)
         var filename = titleModifier(event.title)
-        filename.unicodeScalars.removeAll(where: {set.contains($0)})
+        filename.unicodeScalars.removeAll(where: { fileNameCharacters.contains($0) })
         return "\(dateTime) - \(filename).md"
     }
 
@@ -216,7 +216,7 @@ func cleanEmptyNotes() throws {
     let today = Calendar.autoupdatingCurrent.startOfDay(for: Date())
     do {
         let files = try shell("find_empty_notes")
-        files.split(separator: "\n").forEach {
+        try files.split(separator: "\n").forEach {
             let path = String($0)
             let attrs = try FileManager.default.attributesOfItem(atPath: path)
             if let mod = attrs[.modificationDate] as? Date, mod < today {
