@@ -32,4 +32,7 @@ check_git_status "$PRIVATE_TOOLS_DIR"
 
 full_backup
 
-echo "If this is the first backup of the month, run borgmatic check --progress --only repository --only archives --only data"
+day=$(date -u +%d)
+if [[ "$day" -lt 10 ]]; then
+    borgmatic check --progress --only repository --only archives --only data
+fi
