@@ -1,18 +1,24 @@
 #! /usr/bin/env bash
 set -euo pipefail # x
 
-if get_input "Update brew?"; then
+FIRST_OF_MONTH=""
+day=$(date -u +%d)
+if [[ "$day" -lt 10 ]]; then
+    FIRST_OF_MONTH="y"
+fi
+
+if [[ "$FIRST_OF_MONTH" = "y" ]]; then
     brew update
     brew doctor
 fi
 
-if get_input "Dump brew bundle?"; then
-    HOMEBREW_NO_AUTO_UPDATE=1 update_brew_packages
-fi
+# if get_input "Dump brew bundle?"; then
+#     HOMEBREW_NO_AUTO_UPDATE=1 update_brew_packages
+# fi
 
-if get_input "Dump plists?"; then
-    plist_export
-fi
+# if get_input "Dump plists?"; then
+#     plist_export
+# fi
 
 check_git_status() {
     (
@@ -33,8 +39,7 @@ check_git_status "$PRIVATE_TOOLS_DIR"
 
 caffeinate -i full_backup
 
-day=$(date -u +%d)
-if [[ "$day" -lt 10 ]]; then
+if [[ "$FIRST_OF_MONTH" = "y" ]]; then
     caffeinate -i borgmatic check --progress --only repository --only archives --only data
 fi
 
