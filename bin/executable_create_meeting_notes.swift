@@ -5,13 +5,13 @@ import System
 
 enum action: String { case today, tomorrow }
 let subdir = "work"
-var interactive = false 
+var interactive = false
 let store = EKEventStore()
 var df: DateFormatter = {
     let df = DateFormatter()
     df.dateFormat = "yyyy-MM-dd HH-mm"
     return df
-}() 
+}()
 
 var fileNameCharacters = NSCharacterSet.punctuationCharacters
 fileNameCharacters.remove(charactersIn: "-_.")
@@ -32,12 +32,12 @@ func titleModifier(_ title: String?) -> String {
 func attendeeFilter(_ name: String) -> Bool {
     guard !name.starts(with: "Virtual"), name != "Johnny Sheeley" else { return false }
     return true
-} 
+}
 
 func eventFilter(_ event: EKEvent) -> Bool {
     guard event.hasAttendees else { return false }
     if let me = event.attendees?.filter({ $0.isCurrentUser }).first, me.participantStatus == .declined {
-        return false     
+        return false
     }
     // guard let title = event.title, !title.contains("Status") else { return false }
     return true
@@ -110,9 +110,12 @@ struct Note {
         var attendeeText = ""
         if let attendees = event.attendees {
             attendeeText = "attendees:\n"
-            attendeeText += attendees.map { a in
-                guard let name = a.name else { return "" }
-                guard attendeeFilter(name) else { return "" }
+            var seen = Set<EKParticipant>()
+            attendeeText += attendees.compactMap { a in
+                guard let name = a.name else { return nil }
+                guard attendeeFilter(name) else { return nil }
+                guard !seen.contains(a) else { return nil }
+                seen.insert(a)
                 return "  - \"[[\(name.replacingOccurrences(of: " (V)", with: ""))]]\"\n"
             }.joined()
         }
