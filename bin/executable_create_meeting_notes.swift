@@ -88,13 +88,7 @@ func getEvents(_ filter: action) -> [EKEvent] {
         guard event.attendees?.count ?? 0 > 1 else { return false }
         guard !event.isAllDay else { return false }
         guard eventFilter(event) else { return false }
-
-        switch filter {
-        case .today:
-            return Calendar.current.isDateInToday(event.startDate)
-        case .tomorrow:
-            return Calendar.current.isDateInTomorrow(event.startDate)
-        }
+        return Calendar.current.isDateInToday(event.startDate) || Calendar.current.isDateInTomorrow(event.startDate)
     }
 }
 
@@ -109,7 +103,6 @@ struct Note {
 
         var attendeeText = ""
         if let attendees = event.attendees {
-            attendeeText = "attendees:\n"
             var seen = Set<EKParticipant>()
             attendeeText += attendees.compactMap { a in
                 guard let name = a.name else { return nil }
@@ -117,8 +110,15 @@ struct Note {
                 guard !seen.contains(a) else { return nil }
                 seen.insert(a)
                 return "  - \"[[\(name.replacingOccurrences(of: " (V)", with: ""))]]\"\n"
-            }.joined()
+            }
+            .joined()
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+
         }
+        if !attendeeText.isEmpty {
+            attendeeText = "\nattendees:\n  \(attendeeText)"
+        }
+
 
         if let url = event.url {
             attendeeText += "\nurl: \(url.path)\n"
@@ -131,6 +131,7 @@ struct Note {
             .replacingOccurrences(of: "{{date:YYYY-MM-DD HH:mm:ss}}", with: dateTime)
             .replacingOccurrences(of: "{{notes}}", with: noteFilter(event.notes))
             .replacingOccurrences(of: "{{title}}", with: titleModifier(event.title))
+            .replacingOccurrences(of: "{{id}}", with: event.eventIdentifier)
     }
 
     func filename() -> String {
@@ -227,7 +228,7 @@ func cleanEmptyNotes() throws {
             }
         }
     } catch {
-        print(error)
+        print("error cleaning notes: \(error)")
     }
 }
 
@@ -251,15 +252,25 @@ func main() throws {
 
     try createNotes(notes, in: URL(fileURLWithPath: parentDir))
 
-    if args.count == 3 {
-        if let timestamp = Double(args[2]) {
+    if args.count > 2 {
+        let id = args[2]
+        var toOpen = [Note]()
+        if let timestamp = Double(id) {
             let meetingTime = Date(timeIntervalSince1970: timestamp)
-            notes.filter { $0.event.startDate == meetingTime }
-                .forEach { openNote($0) }
+            toOpen = notes.filter { $0.event.startDate == meetingTime }
+        } else {
+            toOpen = notes.filter { $0.event.calendarItemIdentifier == id }
         }
+        toOpen.forEach { openNote($0) }
     }
 
     try cleanEmptyNotes()
 }
 
-try main()
+do {
+    try main()
+} catch {
+    print(error)
+    print(Thread.callStackSymbols)
+    _ = try shell("osascript -e 'display notification \"\(error)\"'")
+}
