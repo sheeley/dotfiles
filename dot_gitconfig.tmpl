@@ -45,10 +45,20 @@ softreset = reset --soft HEAD^1
 uncommit = reset --soft HEAD^
 unstage = reset
 staged = diff --cached
+{{ if not .personal -}}
+[diff]
+tool = bc
+[merge]
+tool = bc
+[mergetool "bc"]
+trustExitCode = true
+{{else}}
 [diff]
 tool = diffmerge
 [merge]
 tool = diffmerge
+{{- end }}
+
 [difftool]
 prompt = false
 [mergetool]
@@ -83,15 +93,13 @@ enabled = true
 
 [interactive]
     diffFilter = delta --color-only
-[http "https://gopkg.in"]
-followRedirects = true
-[http "https://pkg.re"]
-followRedirects = true
-[url "ssh://git@github.com/"]
-insteadOf = https://github.com/
+# [http "https://gopkg.in"]
+# followRedirects = true
+# [http "https://pkg.re"]
+#followRedirects = true
+# [url "ssh://git@github.com/"]
+# insteadOf = https://github.com/
 {{ if not .personal -}}
-[url "ssh://git@jaxf-github.fanatics.corp/"]
-insteadOf = https://jaxf-github.fanatics.corp/
 {{- end }}
 [diff "plist"]
 textconv = plutil -convert xml1 -o -
