@@ -13,19 +13,27 @@ struct genericError: LocalizedError {
 }
 
 
-func shell(_ command: String) throws -> String {
+func shell(_ command: String, captureOutput: Bool = true, captureError: Bool = true) throws -> String {
     let task = Process()
     let pipe = Pipe()
 
-    task.standardOutput = pipe
-    task.standardError = pipe
+    if captureOutput {
+        task.standardOutput = pipe
+    }
+    if captureError {
+        task.standardError = pipe
+    }
     task.arguments = ["-c", command]
     task.launchPath = "/bin/zsh"
-    try task.run()
 
-    let data = pipe.fileHandleForReading.readDataToEndOfFile()
-    let output = String(data: data, encoding: .utf8)!
-        task.waitUntilExit()
+    try task.run()
+    task.waitUntilExit()
+
+    var output = ""
+    if captureError || captureOutput {
+        let data = pipe.fileHandleForReading.readDataToEndOfFile()
+        output = String(data: data, encoding: .utf8)!
+    }
     guard task.terminationStatus == 0 else { throw genericError(message: output) }
 
     return output
@@ -43,7 +51,7 @@ func syncDir(_ settingsPath: String) throws {
     let destDir = ensureDir(config.destination)
     
     let command = "rsync -abviuP --exclude '.ag-sync' \(sourceDir) \(destDir)"
-    _ = try shell(command)
+    _ = try shell(command, captureOutput: false, captureError: false)
 }
 
 let dirs = try shell("fd --hidden --glob .ag-sync $NOTES_DIR").split(separator: "\n").map { String($0) }
