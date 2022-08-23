@@ -1,0 +1,52 @@
+#!/usr/bin/env xcrun swift
+import Foundation
+
+struct syncConfig: Codable {
+    let destination: String
+}
+
+struct genericError: LocalizedError {
+    let message: String?
+    var errorDescription: String? {
+        message ?? "" 
+    }
+}
+
+
+func shell(_ command: String) throws -> String {
+    let task = Process()
+    let pipe = Pipe()
+
+    task.standardOutput = pipe
+    task.standardError = pipe
+    task.arguments = ["-c", command]
+    task.launchPath = "/bin/zsh"
+    try task.run()
+
+    let data = pipe.fileHandleForReading.readDataToEndOfFile()
+    let output = String(data: data, encoding: .utf8)!
+        task.waitUntilExit()
+    guard task.terminationStatus == 0 else { throw genericError(message: output) }
+
+    return output
+}
+
+func ensureDir(_ path: String) -> String {
+    return path.hasSuffix("/") ? path : path + "/"
+}
+
+func syncDir(_ settingsPath: String) throws {
+    let url = URL(fileURLWithPath: settingsPath)
+    let data = try Data(contentsOf: url)
+    let config = try JSONDecoder().decode(syncConfig.self, from: data)
+    let sourceDir = ensureDir(url.deletingLastPathComponent().path)
+    let destDir = ensureDir(config.destination)
+    
+    let command = "rsync -abviuP --exclude '.ag-sync' \(sourceDir) \(destDir)"
+    _ = try shell(command)
+}
+
+let dirs = try shell("fd --hidden --glob .ag-sync $NOTES_DIR").split(separator: "\n").map { String($0) }
+for dir in dirs {
+    try syncDir(dir)
+}
