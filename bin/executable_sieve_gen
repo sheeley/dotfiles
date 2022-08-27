@@ -4,6 +4,10 @@ set -euo pipefail # x
 (
     cd "$PRIVATE_TOOLS_DIR"
     ./bin/sieve.swift | tee aigee-mail.sieve | pbcopy
+    if [ $# -gt 0 ]; then
+        # skip for local testing
+        exit 0
+    fi
     echo "sieve copied"
     open "https://www.fastmail.com/settings/rules/sieve?u=9619409e"
 )

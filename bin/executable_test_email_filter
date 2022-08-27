@@ -1,0 +1,10 @@
+#! /usr/bin/env bash
+set -euo pipefail # x
+
+sieve_gen skip
+SIEVE="$PRIVATE_TOOLS_DIR/aigee-mail.sieve"
+TMP_SIEVE=$(mktemp)
+cp "$SIEVE" "$TMP_SIEVE"
+sed -i'' -e 's/# require/require/' "$TMP_SIEVE"
+
+sieve-test "$TMP_SIEVE" "$1"
