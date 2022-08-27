@@ -281,7 +281,10 @@ func main() throws {
         } else {
             toOpen = notes.filter { $0.event.calendarItemIdentifier == id }
         }
-        toOpen.forEach { openNote($0) }
+        toOpen.forEach { 
+            openNote($0) 
+            // TODO: open attachments
+        }
     }
 
     try cleanEmptyNotes()
