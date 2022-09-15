@@ -37,10 +37,10 @@ check_git_status "$(chezmoi source-path)"
 check_git_status "$TOOLS_DIR"
 check_git_status "$PRIVATE_TOOLS_DIR"
 
-caffeinate -i full_backup
-
 if [[ "$FIRST_OF_MONTH" = "y" ]]; then
     caffeinate -i borgmatic check --progress --only repository --only archives --only data
+else
+    caffeinate -i full_backup
 fi
 
 did=$(diskutil list -plist | scout paths -f plist "#AllDisksAndPartitions#" -v "value contains 'money'" | head -n 1 | awk -F'[^0-9]+' '{ print $2 }')
