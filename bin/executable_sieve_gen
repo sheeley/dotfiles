@@ -9,5 +9,5 @@ set -euo pipefail # x
         exit 0
     fi
     echo "sieve copied"
-    open "https://www.fastmail.com/settings/rules/sieve?u=9619409e"
+    open "https://www.fastmail.com/settings/rules/sieve?u=9619409e#v97-input"
 )
