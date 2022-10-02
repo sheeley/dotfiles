@@ -38,6 +38,9 @@ check_git_status "$TOOLS_DIR"
 check_git_status "$PRIVATE_TOOLS_DIR"
 
 # TODO: only run this on personal machines
+# if [[ something ]]; then
+# exit 0
+# fi
 if [[ "$FIRST_OF_MONTH" = "y" ]]; then
     caffeinate -i borgmatic check --progress --only repository --only archives --only data
 else

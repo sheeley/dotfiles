@@ -1,0 +1,9 @@
+[editor]
+shell = ["fish"]
+cursorline = true
+
+[keys.normal]
+# "Ctrl-/" = "toggle_comments"
+
+[keys.insert]
+";" = { ";" = "normal_mode" }
