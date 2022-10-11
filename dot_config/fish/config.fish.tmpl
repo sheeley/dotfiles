@@ -126,6 +126,7 @@ function __check_dir --on-variable PWD --description 'Change git committer for w
     __set_git_committer
 end
 
+set -x WORKMACHINE true
 set -x GOPROXY direct
 set -x GOSUMDB off
 
@@ -133,7 +134,8 @@ set -x GOSUMDB off
 #     status --is-command-substitution; and return
 #     __set_git_committer
 # end
-
+{{- else -}}
+set -x WORKMACHINE false
 {{- end  }}
 
 # source $HOME/.nix-profile/etc/profile.d/hm-session-vars.sh

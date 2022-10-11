@@ -21,6 +21,9 @@ fi
 # fi
 
 check_git_status() {
+    if [[ ! -d "$1" ]]; then
+        return 0
+    fi
     (
         cd "$1"
         git fetch
@@ -37,15 +40,7 @@ check_git_status "$(chezmoi source-path)"
 check_git_status "$TOOLS_DIR"
 check_git_status "$PRIVATE_TOOLS_DIR"
 
-# TODO: only run this on personal machines
-# if [[ something ]]; then
-# exit 0
-# fi
-if [[ "$FIRST_OF_MONTH" = "y" ]]; then
-    caffeinate -i borgmatic check --progress --only repository --only archives --only data
-else
-    caffeinate -i borgmatic --progress
+if [[ "$WORKMACHINE" = "true" ]]; then
+    exit
 fi
-
-did=$(diskutil list -plist | scout paths -f plist "#AllDisksAndPartitions#" -v "value contains 'money'" | head -n 1 | awk -F'[^0-9]+' '{ print $2 }')
-diskutil unmountDisk "/dev/disk$did"
+full_backup
