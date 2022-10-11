@@ -8,7 +8,7 @@ fi
 cat <<EOS >/opt/homebrew/etc/dovecot/dovecot.conf
 mail_home=/srv/mail/%Lu
 mail_location=sdbox:~/Mail
-
+managesieve_sieve_capability = comparator-i;octet comparator-i;ascii-casemap fileinto reject envelope encoded-character vacation subaddress comparator-i;ascii-numeric relational regex imap4flags copy include variables body enotify environment mailbox date
 ## this is sometimes needed
 #first_valid_uid = uid-of-vmail-user
 
