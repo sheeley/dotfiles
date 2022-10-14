@@ -43,7 +43,12 @@ retention:
 
 consistency:
   checks:
-    - disabled
+    - name: data
+      frequency: 1 month
+    - name: archives
+      frequency: 1 week
+    - name: repository
+      frequency: 1 week
 
 hooks:
   before_backup:

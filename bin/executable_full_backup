@@ -4,16 +4,16 @@ set -euo pipefail # x
 # ensure volume is mounted before doing anything
 [ ! -d "$BORG_REPO" ] && echo "'$BORG_REPO' doesn't exist" && exit 1
 
-FIRST_OF_MONTH=""
-day=$(date -u +%d)
-if [[ "$day" -lt 10 ]]; then
-    FIRST_OF_MONTH="y"
-fi
-if [[ "$FIRST_OF_MONTH" = "y" ]]; then
-    caffeinate -i borgmatic check --progress --only repository --only archives --only data
-else
+# FIRST_OF_MONTH=""
+# day=$(date -u +%d)
+# if [[ "$day" -lt 10 ]]; then
+#     FIRST_OF_MONTH="y"
+# fi
+# if [[ "$FIRST_OF_MONTH" = "y" ]]; then
+    # caffeinate -i borgmatic check --progress --only repository --only archives --only data
+# else
     caffeinate -i borgmatic --progress
-fi
+# fi
 
 did=$(diskutil list -plist | scout paths -f plist "#AllDisksAndPartitions#" -v "value contains 'money'" | head -n 1 | awk -F'[^0-9]+' '{ print $2 }')
 diskutil unmountDisk "/dev/disk$did"
