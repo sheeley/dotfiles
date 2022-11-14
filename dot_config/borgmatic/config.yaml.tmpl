@@ -45,10 +45,9 @@ consistency:
   checks:
     - name: data
       frequency: 1 month
-    - name: archives
-      frequency: 1 month
     - name: repository
       frequency: 1 month
+  check_last: 3
 
 hooks:
   before_backup:
