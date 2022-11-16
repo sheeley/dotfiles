@@ -1,6 +1,6 @@
 README.md
 bin/ds_test
-
+pikatea.vil
 {{- if .personal }}
 *_work*
 
