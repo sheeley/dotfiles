@@ -59,7 +59,7 @@ func filterOutWebex(_ n: String) -> String {
                 ignoreLine = false
             }
             return
-        } else if l == "----( Virtual Conference One-Time Room )----" {
+        } else if l == "----( Virtual Conference One-Time Room )----" ||  l == "----( Virtual Conference Personal Room )----"{
             ignoreLine = true
             return
         }
@@ -123,25 +123,31 @@ struct Note {
         let dateTime = df.string(from: event.startDate)
 
         var attendeeText = ""
+        var fmAttendeeText = ""
         if let attendees = event.attendees {
-            var seen = Set<EKParticipant>()
-            attendeeText += attendees.compactMap { a in
+            var seen = Set<String>()
+            let useAttendees = attendees.compactMap { a in
                 guard let name = a.name else { return nil }
                 guard attendeeFilter(name) else { return nil }
-                guard !seen.contains(a) else { return nil }
-                seen.insert(a)
-                return "  - \"[[\(name.replacingOccurrences(of: " (V)", with: ""))]]\"\n"
+                guard !seen.contains(name) else { return nil }
+                seen.insert(name)
+                return name.replacingOccurrences(of: " (V)", with: "")
+            }
+            fmAttendeeText = useAttendees.map {
+                return "  - \"[[\($0)]]\"\n"
             }
             .joined()
             .trimmingCharacters(in: .whitespacesAndNewlines)
+            
+            attendeeText = useAttendees.map { "[[\($0)]]\n" }.joined().trimmingCharacters(in: .whitespacesAndNewlines)
 
         }
-        if !attendeeText.isEmpty {
-            attendeeText = "\nattendees:\n  \(attendeeText)"
+        if !fmAttendeeText.isEmpty {
+            fmAttendeeText = "\nattendees:\n  \(attendeeText)"
         }
 
         if let url = event.url, !url.isVideoChatHost {
-            attendeeText += "\nurl: \(url.absoluteString)\n"
+            fmAttendeeText += "\nurl: \(url.absoluteString)\n"
         }
 
         self.event = event
@@ -152,6 +158,7 @@ struct Note {
             .replacingOccurrences(of: "{{notes}}", with: noteFilter(event.notes))
             .replacingOccurrences(of: "{{title}}", with: titleModifier(event.title))
             .replacingOccurrences(of: "{{id}}", with: event.eventIdentifier)
+            .replacingOccurrences(of: "{{attendees}}", with: attendeeText)
     }
 
     func filename() -> String {
