@@ -1,0 +1,5 @@
+#! /usr/bin/env bash
+set -euo pipefail # x
+
+swift build --configuration release
+EXC=$(find ./.build/release/ -perm +111 -type f)
