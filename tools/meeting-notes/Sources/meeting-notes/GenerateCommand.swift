@@ -10,6 +10,7 @@ import ArgumentParser
 import MeetingKit
 import OSLog
 import RegexBuilder
+import Darwin
 
 let logger = Logger()
 
@@ -117,13 +118,20 @@ struct Generate: ParsableCommand {
             }
             
             let events = getEvents(in: window)
+            if events.isEmpty {
+                if case .specificEvent(let id) = window {
+                    print("Couldn't find event \(id)")
+                    Darwin.exit(1)
+                }
+                Darwin.exit(0)
+            }
             verboseLog("events found: \(events.count)")
             let template = try String(contentsOfFile: "\(parentDir)/shared/templates/meeting.md")
             let meetings = events.map { Meeting(from: $0) }
             verboseLog("\(meetings)")
             try createNotes(meetings, in: baseDir, with: template, and: options)
-            if open {
-                openNote(meetings.first!)
+            if open, let meeting = meetings.first {
+                openNote(meeting)
             }
         }
     }
