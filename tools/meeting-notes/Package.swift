@@ -11,13 +11,11 @@ let package = Package(
     ],
     targets: [
         .target(name: "MeetingKit"),
-        .target(name: "NoteKit"),
         .executableTarget(
             name: "meeting-notes",
             dependencies: [
                 .product(name: "ArgumentParser", package: "swift-argument-parser"),
                 "MeetingKit",
-                "NoteKit"
             ]
         ),
         .testTarget(
@@ -26,8 +24,5 @@ let package = Package(
         .testTarget(
             name: "MeetingKitTests",
             dependencies: ["MeetingKit"]),
-        .testTarget(
-            name: "NoteKitTests",
-            dependencies: ["NoteKit"]),
     ]
 )

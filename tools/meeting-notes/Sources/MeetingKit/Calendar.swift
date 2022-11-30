@@ -20,15 +20,40 @@ public func requestAccess() throws {
     _ = sema.wait(timeout: .distantFuture)
 }
 
-public func getEvents() -> [EKEvent] {
-    let today = Calendar.current.startOfDay(for: Date())
-    let tomorrow = Date().addingTimeInterval(60 * 60 * 24)
-    let predicate = store.predicateForEvents(withStart: today, end: tomorrow, calendars: nil)
-    let events = store.events(matching: predicate)
-    return events.filter { event in
-        guard event.attendees?.count ?? 0 > 1 else { return false }
-        guard !event.isAllDay else { return false }
-        guard eventFilter(event) else { return false }
-        return Calendar.current.isDateInToday(event.startDate) || Calendar.current.isDateInTomorrow(event.startDate)
+public enum EventWindow {
+    case today, tomorrow, either, specificEvent(id: String)
+    
+    func includes(event: EKEvent) -> Bool {
+        switch self {
+        case .today:
+            return Calendar.current.isDateInToday(event.startDate)
+        case .tomorrow:
+            return Calendar.current.isDateInTomorrow(event.startDate)
+        case .either:
+            return Calendar.current.isDateInToday(event.startDate) || Calendar.current.isDateInTomorrow(event.startDate)
+        case .specificEvent(let id):
+            return event.calendarItemIdentifier == id
+        }
+    }
+}
+
+public func getEvents(in window: EventWindow) -> [EKEvent] {
+    switch window {
+    case .specificEvent(let id):
+        if let event = store.event(withIdentifier: id) {
+            return [event]
+        }
+        return []
+    default:
+        let today = Calendar.current.startOfDay(for: Date())
+        let tomorrow = Date().addingTimeInterval(60 * 60 * 24)
+        let predicate = store.predicateForEvents(withStart: today, end: tomorrow, calendars: nil)
+        let events = store.events(matching: predicate)
+        return events.filter { event in
+            guard event.attendees?.count ?? 0 > 1 else { return false }
+            guard !event.isAllDay else { return false }
+            guard eventFilter(event) else { return false }
+            return window.includes(event: event)
+        }
     }
 }

@@ -31,7 +31,7 @@ public struct Meeting {
         if let url = url, !url.isVideoChatHost {
             frontmatter["url"] = url.absoluteString
         }
-        
+        template = template.replacingOccurrences(of: "record: meeting\n", with: "")
         let idx = template.firstRange(of: "---\n")?.upperBound ?? template.startIndex
         var fms = frontmatter.string() + "\n"
         if idx == template.startIndex {
