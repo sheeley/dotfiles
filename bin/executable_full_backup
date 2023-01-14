@@ -10,9 +10,13 @@ set -euo pipefail # x
 #     FIRST_OF_MONTH="y"
 # fi
 # if [[ "$FIRST_OF_MONTH" = "y" ]]; then
-    # caffeinate -i borgmatic check --progress --only repository --only archives --only data
+# caffeinate -i borgmatic check --progress --only repository --only archives --only data
 # else
-    caffeinate -i borgmatic --progress
+# caffeinate -i borgmatic --progress
+LOG_FILE="/tmp/borg.log"
+rm -f "$LOG_FILE"
+echo "for details, tail -f $LOG_FILE"
+caffeinate -i borgmatic --progress --log-file-verbosity 2 --log-file "$LOG_FILE"
 # fi
 
 did=$(diskutil list -plist | scout paths -f plist "#AllDisksAndPartitions#" -v "value contains 'money'" | head -n 1 | awk -F'[^0-9]+' '{ print $2 }')

@@ -10,7 +10,7 @@ location:
 
   repositories:
     - /Volumes/money/borgbackup
-{{if .borg_repo}}    - {{.borg_repo}}{{end}}
+    - "{{if .borg_repo}}{{.borg_repo}}{{end}}"
 
   exclude_patterns:
     - "*.pyc"
@@ -32,7 +32,7 @@ location:
 storage:
   compression: auto,zstd
   archive_name_format: "johnny-{now}"
-  {{if .borg_secret}}encryption_passphrase: {{ .borg_secret | quote }}{{end}}
+  encryption_passphrase: "{{if .borg_secret}}{{ .borg_secret}}{{end}}"
 
 retention:
   keep_daily: 7
@@ -42,13 +42,16 @@ retention:
   prefix: "johnny"
 
 consistency:
-  checks:
-    - name: data
-      frequency: 1 month
-    - name: repository
-      frequency: 1 month
   check_last: 3
   prefix: "johnny"
+  check_repositories:
+    - /Volumes/money/borgbackup
+  checks:
+    - disabled
+#     - name: data
+#       frequency: 1 month
+#     - name: repository
+#       frequency: 2 weeks
 
 hooks:
   before_backup:
@@ -56,3 +59,9 @@ hooks:
 
   after_backup:
     - echo "`date` - Finished backup"
+
+  before_check:
+    - echo "`date` - starting checks"
+
+  after_check:
+    - echo "`date` - finished checks"
