@@ -4,7 +4,6 @@ location:
   source_directories:
     - ~/projects
     - ~/Documents
-    - ~/Music
     - ~/Media
     - ~/Pictures
 
@@ -25,6 +24,7 @@ location:
     - Thumbs.db
     - .Trashes*
     - .fseventsd*
+    - */Downloads-Music/*
 
   exclude_if_present: .nobackup
   one_file_system: true
@@ -33,6 +33,8 @@ storage:
   compression: auto,zstd
   archive_name_format: "johnny-{now}"
   encryption_passphrase: "{{if .borg_secret}}{{ .borg_secret}}{{end}}"
+  extra_borg_options:
+    create: --list --filter AME
 
 retention:
   keep_daily: 7
