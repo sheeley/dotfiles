@@ -14,17 +14,25 @@ location:
   exclude_patterns:
     - "*.pyc"
     - ~/*/.cache
-    - /home/*/.cache/*
+    - ~/.cache/*
     - /var/cache/*
     - /var/tmp/*
-    - .DS_Store
-    - .nzb
+    - "*.nzb"
     - "*.url"
     - "*.webloc"
     - Thumbs.db
-    - .Trashes*
     - .fseventsd*
-    - */Downloads-Music/*
+    - ~/Media/Music/Downloads-Music/
+    - "**/.*.swp"
+    - "**/.DS_Store"
+    - "**/.VolumeIcon.icns"
+    - "**/.DocumentRevisions-V100/"
+    - "**/.MobileBackups/"
+    - "**/.MobileBackups.trash/"
+    - "**/.Spotlight-V100/"
+    - "**/.TemporaryItems/"
+    - "**/.Trash/"
+    - "**/.Trashes/"
 
   exclude_if_present: .nobackup
   one_file_system: true
@@ -49,11 +57,10 @@ consistency:
   check_repositories:
     - /Volumes/money/borgbackup
   checks:
-    - disabled
-#     - name: data
-#       frequency: 1 month
-#     - name: repository
-#       frequency: 2 weeks
+    - name: data
+      frequency: 1 month
+    - name: repository
+      frequency: 2 weeks
 
 hooks:
   before_backup:
