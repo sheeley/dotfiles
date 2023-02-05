@@ -26,5 +26,6 @@ diskutil unmountDisk "/dev/disk$did"
 # borg_backup
 # rclone_backup
 
-echo "Total time: $SECONDS"
+echo "Total time:"
+gdate -u -d @${SECONDS} +"%T"
 # say "Total time: $SECONDS seconds"
