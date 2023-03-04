@@ -36,6 +36,7 @@ check_git_status() {
 	)
 }
 
+chezmoi update
 check_git_status "$(chezmoi source-path)"
 check_git_status "$TOOLS_DIR"
 check_git_status "$PRIVATE_TOOLS_DIR"
