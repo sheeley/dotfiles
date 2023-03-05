@@ -2,8 +2,8 @@
   description = "My first nix flake";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-22.05-darwin";
-    home-manager.url = "github:nix-community/home-manager/release-22.05";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-22.11-darwin";
+    home-manager.url = "github:nix-community/home-manager/release-22.11";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
     # nix will normally use the nixpkgs defined in home-managers inputs, we only want one copy of nixpkgs though
     darwin.url = "github:lnl7/nix-darwin";
@@ -28,9 +28,9 @@
       pkgs = legacyPackages.aarch64-darwin;
       modules = [
         home-manager.darwinModules.home-manager
+        ./home-manager.nix
         ./environment.nix
         ./installs.nix
-        ./home-manager.nix
         ./fish.nix
         ./nvim.nix
         ./system.nix

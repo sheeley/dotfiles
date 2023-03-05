@@ -8,5 +8,5 @@ if [[ "$HN" != "jmba.local" ]]; then
 fi
 
 
-nix build .#darwinConfigurations.jmba.system --extra-experimental-features nix-command --extra-experimental-features flakes
+nix build .#darwinConfigurations.jmba.system --extra-experimental-features "nix-command flakes"
 ./result/sw/bin/darwin-rebuild switch --flake .

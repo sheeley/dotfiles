@@ -1,47 +1,5 @@
 { pkgs, ... }:
 {
-  environment.systemPackages = with pkgs; [
-    pkgs._1password
-    # pkgs._1password-gui
-    pkgs.atool
-    pkgs.bat
-    pkgs.broot
-    pkgs.chezmoi
-    pkgs.coreutils-prefixed
-    pkgs.du-dust
-    pkgs.duf
-    pkgs.entr
-    pkgs.fd
-    pkgs.fish
-    pkgs.fzf
-    pkgs.git
-    pkgs.gitui
-    pkgs.go
-    pkgs.gron
-    pkgs.jid
-    pkgs.jq
-    pkgs.neovim
-    pkgs.nerdfonts
-    pkgs.nixpkgs-fmt
-    pkgs.pv
-    pkgs.python311
-    pkgs.rclone
-    pkgs.ripgrep
-    pkgs.rsync
-    pkgs.shellcheck
-    pkgs.shfmt
-    pkgs.silver-searcher
-    pkgs.ssh-copy-id
-    pkgs.starship
-    pkgs.tldr
-    pkgs.vim-vint
-    pkgs.vscode
-    pkgs.wget
-    fishPlugins.done
-    # fishPlugins.fzf-fish
-    # fishPlugins.forgit
-  ];
-
   homebrew = {
     enable = true;
     onActivation.autoUpdate = true;
