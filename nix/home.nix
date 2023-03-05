@@ -8,7 +8,7 @@
   local.dock.enable = true;
   local.dock.entries = [
     { path = "/Applications/iTerm.app/"; }
-    { path = "/Applications/Safari.app/"; }
+    { path = "/System/Volumes/Preboot/Cryptexes/App/System/Applications/Safari.app"; }
     { path = "/System/Applications/Mail.app/"; }
     { path = "/System/Applications/Calendar.app/"; }
     { path = "/System/Applications/Messages.app/"; }
@@ -44,6 +44,7 @@
     programs.zsh.enable = true;
     programs.home-manager.enable = true;
 
+
     home = {
       stateVersion = "22.05";
 
@@ -66,11 +67,11 @@
         "$HOME/bin"
         "$HOME/projects/sheeley/infrastructure/bin"
         "$HOME/projects/sheeley/infrastructure/scripts"
-        "/run/current-system/sw/bin"
+        # "/run/current-system/sw/bin"
         "$HOME/go/bin"
         "$HOME/.cargo/bin"
-        "/opt/homebrew/bin"
-        "/opt/homebrew/sbin"
+        # "/opt/homebrew/bin"
+        # "/opt/homebrew/sbin"
         "/usr/local/bin"
         "/usr/local/sbin"
         "/Applications/Xcode.app/Contents/Developer/usr/bin"
@@ -79,37 +80,48 @@
         "/bin"
         "/usr/bin"
       ];
-      # packages = pkgs.callPackage ./packages.nix { };
+
+      packages = pkgs.callPackage ./packages.nix { };
     };
-
-
 
     programs.fish = {
       enable = true;
       interactiveShellInit = builtins.readFile ./init.fish;
-      plugins = [
-        #     # Enable a plugin (here grc for colorized command output) from nixpkgs
-        #     { name = "grc"; src = pkgs.fishPlugins.grc.src; }
-        #     # Manually packaging and enable a plugin
-        #     {
-        #       name = "z";
-        #       src = pkgs.fetchFromGitHub {
-        #         owner = "jethrokuan";
-        #         repo = "z";
-        #         rev = "e0e1b9dfdba362f8ab1ae8c1afc7ccf62b89f7eb";
-        #         sha256 = "0dbnir6jbwjpjalz14snzd3cgdysgcs3raznsijd6savad3qhijc";
-        #       };
-        #     }
-      ];
     };
 
     programs.neovim = {
       enable = true;
-      extraConfig = ''
-        set number relativenumber
-      '';
+      extraConfig = builtins.readFile ../dot_config/nvim/local_init.vim;
       viAlias = true;
       vimAlias = true;
+
+      plugins = with pkgs; [
+        vimPlugins.vim-sensible
+        vimPlugins.vim-easymotion
+        vimPlugins.vim-clap
+
+        # languages
+        vimPlugins.vim-fish
+        vimPlugins.vim-shellcheck
+        vimPlugins.vim-terraform
+        vimPlugins.editorconfig-vim
+
+
+
+        # Plug 'liuchengxu/vim-clap', { 'do': ':Clap install-binary!' }
+        # Plug 'neoclide/coc.nvim', {'branch': 'release'}
+        # Plug 'jremmen/vim-ripgrep'
+        # Plug 'stefandtw/quickfix-reflector.vim'
+
+        # " languages
+        # Plug 'hashivim/vim-terraform', { 'for': 'tf' }
+        # Plug 'itspriddle/vim-shellcheck'
+        # Plug 'dag/vim-fish', { 'for': 'fish' }
+        # Plug 'editorconfig/editorconfig-vim', { 'for': 'editorconfig' }
+        # Plug 'keith/swift.vim'
+        # Plug 'junegunn/vim-easy-align'
+        # Plug 'ron-rs/ron.vim'
+      ];
     };
   };
 }

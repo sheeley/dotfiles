@@ -1,7 +1,5 @@
 { pkgs, ... }:
 {
-  environment.systemPackages = pkgs.callPackage ./packages.nix { };
-
   homebrew = {
     enable = true;
     # onActivation.autoUpdate = true;
@@ -15,7 +13,6 @@
 
     casks = [
       "1password"
-      "1password-cli"
       "bartender"
       "diffmerge"
       "iterm2"

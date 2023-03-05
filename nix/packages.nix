@@ -13,7 +13,6 @@ with pkgs; [
   duf
   entr
   fd
-  fish
   fzf
   git
   gitui
@@ -21,7 +20,6 @@ with pkgs; [
   gron
   jid
   jq
-  neovim
   nerdfonts
   nixpkgs-fmt
   pv
