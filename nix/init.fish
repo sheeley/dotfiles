@@ -6,68 +6,68 @@ function fish_user_key_bindings
 end
 
 function fish_title
-if test $_ != "fish"
-echo $_ ' '
-end
-fish_prompt_pwd_dir_length=3 prompt_pwd
+  if test $_ != "fish"
+    echo $_ ' '
+  end
+  fish_prompt_pwd_dir_length=3 prompt_pwd
 end
 
 function cdcz
-cd (chezmoi source-path)
+  cd (chezmoi source-path)
 end
 
 function cdct
-cd (chezmoi source-path)/tools
+  cd (chezmoi source-path)/tools
 end
 
 function cdgo
-cd $GOPATH/src
+  cd $GOPATH/src
 end
 
 function cdproj
-cd $HOME/projects/sheeley
+  cd $HOME/projects/sheeley
 end
 
 function cdinfra
-cd $PRIVATE_TOOLS_DIR
+  cd $PRIVATE_TOOLS_DIR
 end
 
 function cdtools
-cd $TOOLS_DIR
+  cd $TOOLS_DIR
 end
 
 function cdnotes
-cd $NOTES_DIR
+  cd $NOTES_DIR
 end
 
 function cdicloud
-cd ~/Library/Mobile\ Documents/com~apple~CloudDocs
+  cd ~/Library/Mobile\ Documents/com~apple~CloudDocs
 end
 
 function editinfra
-$EDITOR $PRIVATE_TOOLS_DIR
+  $EDITOR $PRIVATE_TOOLS_DIR
 end
 
 function edittools
-$EDITOR $TOOLS_DIR
+  $EDITOR $TOOLS_DIR
 end
 
 function mkcd
-mkdir $argv
-cd $argv
+  mkdir $argv
+  cd $argv
 end
 
 function clone
-git clone $argv
+  git clone $argv
 end
 
 function clonecd
-git clone $argv
-cd (basename $argv .git)
+  git clone $argv
+  cd (basename $argv .git)
 end
 
 function reload
-source "$HOME/.config/fish/config.fish"
+  source "$HOME/.config/fish/config.fish"
 end
 
 test -e {$HOME}/.iterm2_shell_integration.fish

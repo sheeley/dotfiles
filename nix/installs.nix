@@ -1,8 +1,10 @@
 { pkgs, ... }:
 {
+  environment.systemPackages = pkgs.callPackage ./packages.nix { };
+
   homebrew = {
     enable = true;
-    onActivation.autoUpdate = true;
+    # onActivation.autoUpdate = true;
 
     brews = [
       "borgmatic"

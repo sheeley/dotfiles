@@ -28,11 +28,9 @@
       pkgs = legacyPackages.aarch64-darwin;
       modules = [
         home-manager.darwinModules.home-manager
-        ./home-manager.nix
         ./environment.nix
         ./installs.nix
-        ./fish.nix
-        ./nvim.nix
+        ./home.nix
         ./system.nix
       ];
     };
