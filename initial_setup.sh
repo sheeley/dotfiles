@@ -47,35 +47,19 @@ if ! xcode-select -p; then
 	confirm || exit 1
 fi
 
-if ! which brew; then
-	/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-fi
 
-eval "$(/opt/homebrew/bin/brew shellenv)"
-
-# install 1Password and chezmoi - should be all the initial dependencies needed
-brew install 1password 1password-cli mas
-
-if ! mas account; then
-	echo "Sign in to app store"
-	mas open
-	confirm || exit 1
-fi
 
 if ! which nix; then
 	curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install
-	nix-build https://github.com/LnL7/nix-darwin/archive/master.tar.gz -A installer
-	./result/bin/darwin-installer
 fi
 
-if ! which chezmoi; then
-	sh -c "$(curl -fsLS git.io/chezmoi)" || exit 1
-fi
+echo "Log in to App Store"
+confirm
 
 # login to 1password, setting token for futher usage
 # shellcheck disable=2034
 eval "$(op signin my.1password.com "$EMAIL")"
 
 confirm || exit 1
-# run the actual setup
-~/bin/chezmoi init --apply git@github.com:sheeley/dotfiles.git
+# # run the actual setup
+chezmoi init --apply git@github.com:sheeley/dotfiles.git

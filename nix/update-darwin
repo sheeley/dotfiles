@@ -1,0 +1,12 @@
+ #! /usr/bin/env bash
+set -eu
+
+HN=$(hostname)
+if [[ "$HN" != "jmba.local" ]]; then
+    echo "change hostname: $HN"
+    exit 1
+fi
+
+
+nix build .#darwinConfigurations.jmba.system --extra-experimental-features nix-command --extra-experimental-features flakes
+./result/sw/bin/darwin-rebuild switch --flake .
