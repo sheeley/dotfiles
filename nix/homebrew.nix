@@ -1,8 +1,12 @@
 { pkgs, ... }:
 {
+  # environment.systemPackages = [
+  #   pkgs.nixpkgs-fmt
+  # ];
+
   homebrew = {
     enable = true;
-    # onActivation.autoUpdate = true;
+    # TODO: onActivation.autoUpdate = true;
 
     brews = [
       "borgmatic"

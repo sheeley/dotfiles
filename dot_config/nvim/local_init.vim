@@ -105,46 +105,46 @@ let g:pymode_lint_ignore = ['E501', 'W',]
 " }}} end python-mode
 
 " ale {{{
-let g:ale_set_quickfix = 1
-let g:ale_set_highlight = 1
-" highlight ALEWarning ctermbg=DarkMagenta
-let g:ale_sign_column_always = 1
-let g:ale_fix_on_save = 1
-let g:ale_change_sign_column_color = 1
-let g:ale_echo_msg_error_str = 'E'
-let g:ale_echo_msg_warning_str = 'W'
-let g:ale_echo_msg_format = '[%linter%] %s [%severity%]'
-let g:ale_open_list = 1
-:call extend(g:ale_linters, {
-  \    'css': ['eslint', 'prettier'],
-  \    'javascript': ['eslint', 'prettier'],
-  \    'json': ['jsonlint'],
-  \    'markdown': ['remark-lint'],
-  \    'python': [],
-  \    'rust': ['rls', 'rustfmt'],
-  \    'scala': [],
-  \    'sh': ['language_server', 'shellcheck'],
-  \    'sql': ['sqlint'],
-  \    'swift': ['swiftformat'],
-  \    'vim': ['vint']
-  \})
-
-:call extend(g:ale_fixers, {
-  \    'css': ['prettier', 'eslint'],
-  \    'javascript': ['prettier', 'eslint', 'jq'],
-  \    'json': ['prettier', 'eslint', 'jq'],
-  \    'markdown': ['remark-lint'],
-  \    'python': ['isort', 'black'],
-  \    'rust': ['rustfmt'],
-  \    'scala': ['scalafmt'],
-  \    'sh': ['shfmt'],
-  \    'sql': ['sqlformat'],
-  \    'swift': ['swiftformat'],
-  \    '*': ['remove_trailing_lines', 'trim_whitespace']
-  \})
-
-let g:vim_swift_format_use_ale = 1
-" }}}
+" let g:ale_set_quickfix = 1
+" let g:ale_set_highlight = 1
+" " highlight ALEWarning ctermbg=DarkMagenta
+" let g:ale_sign_column_always = 1
+" let g:ale_fix_on_save = 1
+" let g:ale_change_sign_column_color = 1
+" let g:ale_echo_msg_error_str = 'E'
+" let g:ale_echo_msg_warning_str = 'W'
+" let g:ale_echo_msg_format = '[%linter%] %s [%severity%]'
+" let g:ale_open_list = 1
+" :call extend(g:ale_linters, {
+"   \    'css': ['eslint', 'prettier'],
+"   \    'javascript': ['eslint', 'prettier'],
+"   \    'json': ['jsonlint'],
+"   \    'markdown': ['remark-lint'],
+"   \    'python': [],
+"   \    'rust': ['rls', 'rustfmt'],
+"   \    'scala': [],
+"   \    'sh': ['language_server', 'shellcheck'],
+"   \    'sql': ['sqlint'],
+"   \    'swift': ['swiftformat'],
+"   \    'vim': ['vint']
+"   \})
+" 
+" :call extend(g:ale_fixers, {
+"   \    'css': ['prettier', 'eslint'],
+"   \    'javascript': ['prettier', 'eslint', 'jq'],
+"   \    'json': ['prettier', 'eslint', 'jq'],
+"   \    'markdown': ['remark-lint'],
+"   \    'python': ['isort', 'black'],
+"   \    'rust': ['rustfmt'],
+"   \    'scala': ['scalafmt'],
+"   \    'sh': ['shfmt'],
+"   \    'sql': ['sqlformat'],
+"   \    'swift': ['swiftformat'],
+"   \    '*': ['remove_trailing_lines', 'trim_whitespace']
+"   \})
+" 
+" let g:vim_swift_format_use_ale = 1
+" " }}}
 
 " coc {{{
 let g:coc_global_extensions = ['coc-json', 'coc-git', 'coc-pyright', 'coc-markdownlint',

@@ -62,4 +62,8 @@ eval "$(op signin my.1password.com "$EMAIL")"
 
 confirm || exit 1
 # # run the actual setup
-chezmoi init --apply git@github.com:sheeley/dotfiles.git
+# chezmoi init --apply git@github.com:sheeley/dotfiles.git
+
+git clone git@github.com:sheeley/dotfiles.git
+cd dotfiles/nix
+./update-darwin

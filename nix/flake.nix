@@ -29,7 +29,7 @@
       modules = [
         home-manager.darwinModules.home-manager
         ./environment.nix
-        ./installs.nix
+        ./homebrew.nix
         ./home.nix
         ./system.nix
       ];
