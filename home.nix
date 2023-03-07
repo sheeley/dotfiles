@@ -97,7 +97,6 @@
 
       sessionPath = [
         "$HOME/bin"
-        "$HOME/scripts"
         "/etc/profiles/per-user/sheeley/bin/"
         "$HOME/projects/sheeley/infrastructure/bin"
         "$HOME/projects/sheeley/infrastructure/scripts"
@@ -123,9 +122,9 @@
         ".swiftlint.yml".text = builtins.readFile ./.swiftlint.yml;
         ".mongorc.js".text = builtins.readFile ./dot_mongorc.js;
         ".vim/ftdetect/toml.vim".text = "autocmd BufNewFile,BufRead *.toml set filetype=toml";
+        ".config/borgmatic/config.yaml".text = builtins.readFile ./dot_config/borgmatic/config.yaml.tmpl;
 
-        "scripts".source = config.lib.file.mkOutOfStoreSymlink ./bin;
-        # ".config/borgmatic".source = config.lib.file.mkOutOfStoreSymlink ./dot_config/borgmatic;
+        "bin".source = config.lib.file.mkOutOfStoreSymlink ./bin;
       };
     };
 
@@ -206,8 +205,8 @@ AddKeysToAgent yes";
       extraConfig = {
         init.defaultBranch = "main";
 
-        delta = {
-          "side-by-side" = true;
+        branch = {
+          autosetuprebase = "always";
         };
 
         color = {
@@ -240,11 +239,22 @@ AddKeysToAgent yes";
           editor = "nvim";
         };
 
-        branch = {
-          autosetuprebase = "always";
+        delta = {
+          "side-by-side" = true;
+          plus-style = "syntax #012800";
+          minus-style = "syntax #340001";
+          syntax-theme = "Monokai Extended";
+          navigate = true;
+        };
+
+        diff = {
+          plist = {
+            textconv = "plutil -convert xml1 -o -";
+          };
         };
 
         pull.rebase = true;
+        push.default = "simple";
         # url = {
         #   "ssh://git@github.com" = {
         #     insteadOf = "https://github.com/";
@@ -713,7 +723,6 @@ AddKeysToAgent yes";
         "coverage"
       ];
 
-      # TODO:
       includes = [{
         condition = "gitdir:~/src/dir";
         contents = {
@@ -738,7 +747,18 @@ AddKeysToAgent yes";
       enableFishIntegration = true;
       enableZshIntegration = true;
       settings = {
-        format = "$time | $directory$git_branch$git_commit$git_state\${custom.git_status_simplified}$jobs$cmd_duration$line_break$character";
+        format = lib.concatStrings [
+          "$time | "
+          "$directory"
+          "$git_branch"
+          "$git_commit"
+          "$git_state"
+          "\${custom.git_status_simplified}"
+          "$jobs"
+          "$cmd_duration"
+          "$line_break"
+          "$character"
+        ];
 
         git_branch = {
           format = "[$symbol$branch]($style) ";
@@ -760,17 +780,18 @@ AddKeysToAgent yes";
           min_time = 100;
           show_milliseconds = true;
           style = "";
-
-          character = {
-            success_symbol = "[➜](bold green) ";
-            error_symbol = "[✗](bold red) ";
-          };
-
-          directory = {
-            truncation_length = 5;
-            truncate_to_repo = true;
-          };
         };
+
+        character = {
+          success_symbol = "[➜](bold green) ";
+          error_symbol = "[✗](bold red) ";
+        };
+
+        directory = {
+          truncation_length = 5;
+          truncate_to_repo = true;
+        };
+
 
         custom = {
           git_status_simplified = {
