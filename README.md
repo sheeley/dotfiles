@@ -16,7 +16,4 @@
 - [ ] borgmatic config
 - [ ] nightshift
 - [ ] Modifier keys
-- [ ] Choose photos library (option + open Photos.app)
-- [ ] Choose Music library
-- [ ] allow running apps from other developers
 - [ ] notifications settings
