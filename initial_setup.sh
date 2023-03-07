@@ -58,7 +58,7 @@ confirm
 
 # login to 1password, setting token for futher usage
 # shellcheck disable=2034
-eval "$(op signin my.1password.com "$EMAIL")"
+# eval "$(op signin my.1password.com "$EMAIL")"
 
 confirm || exit 1
 # # run the actual setup

@@ -69,6 +69,7 @@
   home-manager = {
     useGlobalPkgs = true;
     useUserPackages = true;
+    # verbose = true;
   };
 
   home-manager.users.sheeley = { config, lib, pkgs, ... }: {
@@ -96,6 +97,7 @@
 
       sessionPath = [
         "$HOME/bin"
+        "$HOME/scripts"
         "/etc/profiles/per-user/sheeley/bin/"
         "$HOME/projects/sheeley/infrastructure/bin"
         "$HOME/projects/sheeley/infrastructure/scripts"
@@ -122,9 +124,8 @@
         ".mongorc.js".text = builtins.readFile ./dot_mongorc.js;
         ".vim/ftdetect/toml.vim".text = "autocmd BufNewFile,BufRead *.toml set filetype=toml";
 
-        "bin".source = config.lib.file.mkOutOfStoreSymlink "./bin";
-        ".config/borgmatic".source = config.lib.file.mkOutOfStoreSymlink "./dot_config/borgmatic";
-
+        "scripts".source = config.lib.file.mkOutOfStoreSymlink ./bin;
+        # ".config/borgmatic".source = config.lib.file.mkOutOfStoreSymlink ./dot_config/borgmatic;
       };
     };
 
@@ -133,15 +134,9 @@
       controlMaster = "auto";
       controlPath = "~/.ssh/control/%r@%h:%p";
       controlPersist = "10m";
-      matchBlocks = {
-        "any" = {
-          hostname = "*";
-          identityFile = "IdentityFile ~/.ssh/id_ed25519";
-          extraOptions = {
-            AddKeysToAgent = "yes";
-          };
-        };
-      };
+      extraConfig = "
+IdentityFile ~/.ssh/id_ed25519
+AddKeysToAgent yes";
     };
 
     programs.helix = {
@@ -201,12 +196,20 @@
 
     programs.git = {
       enable = true;
+
       attributes = [
         "*.plist diff=plist"
       ];
+
       delta.enable = true;
+
       extraConfig = {
         init.defaultBranch = "main";
+
+        delta = {
+          "side-by-side" = true;
+        };
+
         color = {
           ui = "auto";
 
@@ -735,15 +738,7 @@
       enableFishIntegration = true;
       enableZshIntegration = true;
       settings = {
-        format = lib.concatStrings [
-          "$time | "
-          "$directory"
-          "$git_branch$git_commit$git_state\${custom.git_status_simplified}"
-          "$jobs"
-          "$cmd_duration"
-          "$line_break"
-          "$character"
-        ];
+        format = "$time | $directory$git_branch$git_commit$git_state\${custom.git_status_simplified}$jobs$cmd_duration$line_break$character";
 
         git_branch = {
           format = "[$symbol$branch]($style) ";
@@ -774,7 +769,6 @@
           directory = {
             truncation_length = 5;
             truncate_to_repo = true;
-
           };
         };
 

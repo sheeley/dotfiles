@@ -5,7 +5,6 @@ with pkgs; [
   #_1password-gui
   atool
   bat
-  chezmoi
   coreutils-prefixed
   dockutil
   # dovecot
