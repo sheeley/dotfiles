@@ -7,7 +7,6 @@
 ## Update
 
 ```sh
-cd nix
 ./update-darwin
 ```
 

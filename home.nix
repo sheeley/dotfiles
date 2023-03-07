@@ -117,12 +117,14 @@
         "Screenshots/.keep".text = "";
         "projects/sheeley/.keep".text = "";
 
-        ".swiftformat".text = builtins.readFile ../.swiftformat;
-        ".swiftlint.yml".text = builtins.readFile ../.swiftlint.yml;
-        ".mongorc.js".text = builtins.readFile ../dot_mongorc.js;
+        ".swiftformat".text = builtins.readFile ./.swiftformat;
+        ".swiftlint.yml".text = builtins.readFile ./.swiftlint.yml;
+        ".mongorc.js".text = builtins.readFile ./dot_mongorc.js;
+        ".vim/ftdetect/toml.vim".text = "autocmd BufNewFile,BufRead *.toml set filetype=toml";
 
-        "bin".source = config.lib.file.mkOutOfStoreSymlink "../bin";
-        ".config/borgmatic".source = config.lib.file.mkOutOfStoreSymlink "../dot_config/borgmatic";
+        "bin".source = config.lib.file.mkOutOfStoreSymlink "./bin";
+        ".config/borgmatic".source = config.lib.file.mkOutOfStoreSymlink "./dot_config/borgmatic";
+
       };
     };
 
@@ -144,26 +146,49 @@
 
     programs.helix = {
       enable = true;
-      config = builtins.readFile ../dot_config/helix/config.toml;
+
+      settings = {
+        editor = {
+          shell = [ "fish" ];
+          cursorline = true;
+        };
+
+        "keys.normal" = {
+          "g" = {
+            "c" = {
+              "c" = "toggle_comments";
+            };
+          };
+          # "Ctrl-/" = "toggle_comments"
+        };
+
+        "keys.insert" = {
+          ";" = {
+            ";" = "normal_mode";
+          };
+        };
+      };
     };
 
+
     programs.fish = {
-      # TODO: robbyrussell theme?
+
       enable = true;
       interactiveShellInit = builtins.readFile ./init.fish;
       plugins = with pkgs; [
         { name = "foreign-env"; src = fishPlugins.foreign-env.src; }
         { name = "done"; src = fishPlugins.done.src; }
-        {
-          name = "robbyrussell";
-          src = pkgs.fetchFromGithub
-            {
-              owner = "oh-my-fish/";
-              repo = "theme-robbyrussell";
-              rev = "93944745b7a2ede0be548e0c8fc160d7f2cc6af7";
-              sha256 = "0c5i7sdrsp0q3vbziqzdyqn4fmp235ax4mn4zslrswvn8g3fvdyh";
-            };
-        }
+        # {
+        #   # TODO: robbyrussell theme?
+        #   name = "robbyrussell";
+        #   src = pkgs.fetchFromGitHub
+        #     {
+        #       owner = "oh-my-fish/";
+        #       repo = "theme-robbyrussell";
+        #       rev = "93944745b7a2ede0be548e0c8fc160d7f2cc6af7";
+        #       sha256 = "l/fctaS58IZKM5/MsYC+WQZ0GWZGZ6SWT+bA5QoODbU=";
+        #     };
+        # }
       ];
 
       functions = {
@@ -181,30 +206,30 @@
       ];
       delta.enable = true;
       extraConfig = {
-        color =
-          {
-            ui = "auto";
+        init.defaultBranch = "main";
+        color = {
+          ui = "auto";
 
-            branch = {
-              current = "yellow reverse";
-              local = "yellow";
-              remote = "green";
-            };
-
-            diff = {
-              meta = "yellow bold";
-              frag = "magenta bold";
-              old = "red bold";
-              new = "green bold";
-              whitespace = "red reverse";
-            };
-
-            status = {
-              added = "yellow";
-              changed = "green";
-              untracked = "cyan";
-            };
+          branch = {
+            current = "yellow reverse";
+            local = "yellow";
+            remote = "green";
           };
+
+          diff = {
+            meta = "yellow bold";
+            frag = "magenta bold";
+            old = "red bold";
+            new = "green bold";
+            whitespace = "red reverse";
+          };
+
+          status = {
+            added = "yellow";
+            changed = "green";
+            untracked = "cyan";
+          };
+        };
 
         core = {
           whitespace = "fix,-indent-with-non-tab,trailing-space,cr-at-eol,space-before-tab";
@@ -215,6 +240,8 @@
         branch = {
           autosetuprebase = "always";
         };
+
+        pull.rebase = true;
         # url = {
         #   "ssh://git@github.com" = {
         #     insteadOf = "https://github.com/";
@@ -699,8 +726,8 @@
 
     programs.gitui = {
       enable = true;
-      keyConfig = builtins.readFile ../dot_config/gitui/key_bindings.ron;
-      theme = builtins.readFile ../dot_config/gitui/theme.ron;
+      keyConfig = builtins.readFile ./dot_config/gitui/key_bindings.ron;
+      theme = builtins.readFile ./dot_config/gitui/theme.ron;
     };
 
     programs.starship = {
@@ -784,11 +811,11 @@
       # defaultEditor = true;
       viAlias = true;
       vimAlias = true;
-      extraConfig = builtins.readFile ../dot_config/nvim/local_init.vim;
+      extraConfig = builtins.readFile ./dot_config/nvim/local_init.vim;
 
       coc = {
         enable = true;
-        settings = builtins.readFile ../dot_config/nvim/coc-settings.json;
+        settings = builtins.readFile ./dot_config/nvim/coc-settings.json;
       };
 
       extraPackages = with pkgs; [
