@@ -6,7 +6,13 @@
 
   homebrew = {
     enable = true;
-    # TODO: onActivation.autoUpdate = true;
+
+    onActivation = {
+      # TODO: 
+      # autoUpdate = true;
+      # cleanup = true;
+      # upgrade = true;
+    };
 
     brews = [
       "borgmatic"
@@ -30,6 +36,7 @@
       "iA Writer" = 775737590;
       "Magnet" = 441258766;
       "Patterns" = 429449079;
+      "Peek" = 1554235898;
       "Pure Paste" = 1611378436;
       "Reeder" = 1529448980;
       "Space Gremlin" = 414515628;

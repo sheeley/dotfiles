@@ -1,4 +1,3 @@
-# vim: set filetype=yaml :
 ---
 location:
   source_directories:
@@ -9,7 +8,7 @@ location:
 
   repositories:
     - /Volumes/money/borgbackup
-    - "{{if .borg_repo}}{{.borg_repo}}{{end}}"
+    - "@repo@"
 
   exclude_patterns:
     - "*.pyc"
@@ -41,7 +40,7 @@ location:
 storage:
   compression: auto,zstd
   archive_name_format: "johnny-{now}"
-  encryption_passphrase: "{{if .borg_secret}}{{ .borg_secret}}{{end}}"
+  encryption_passphrase: "@secret@"
   extra_borg_options:
     create: --list --filter AME
 

@@ -3,14 +3,23 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-22.11-darwin";
-    home-manager.url = "github:nix-community/home-manager/release-22.11";
-    home-manager.inputs.nixpkgs.follows = "nixpkgs";
-    # nix will normally use the nixpkgs defined in home-managers inputs, we only want one copy of nixpkgs though
-    darwin.url = "github:lnl7/nix-darwin";
-    darwin.inputs.nixpkgs.follows = "nixpkgs";
+
+    home-manager = {
+      url = "github:nix-community/home-manager/release-22.11";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    darwin = {
+      url = "github:lnl7/nix-darwin";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = { self, nixpkgs, home-manager, darwin }@inputs: rec {
+    # nixosModules = [
+    #   "${nix-private.outPath}/private.nix"
+    # ];
+
     legacyPackages = nixpkgs.lib.genAttrs [ "aarch64-darwin" ] (system:
       import inputs.nixpkgs {
         inherit system;
@@ -22,7 +31,6 @@
       }
     );
 
-    # you can have multiple darwinConfigurations per flake, one per hostname
     darwinConfigurations."jmba" = darwin.lib.darwinSystem {
       system = "aarch64-darwin";
       pkgs = legacyPackages.aarch64-darwin;
@@ -33,6 +41,9 @@
         ./home.nix
         ./system.nix
       ];
+      # inputs = {
+      #   inherit darwin home-manager nixpkgs;
+      # };
     };
   };
 }

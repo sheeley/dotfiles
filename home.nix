@@ -1,5 +1,7 @@
-{ pkgs, ... }:
-
+{ config, pkgs, lib, ... }:
+let
+  private = pkgs.callPackage ~/.nix-private/private.nix { };
+in
 {
   imports = [
     # <home-manager/nix-darwin>
@@ -77,7 +79,6 @@
     # programs.zsh.enable = true;
     programs.home-manager.enable = true;
 
-
     home = {
       stateVersion = "22.05";
 
@@ -93,6 +94,7 @@
         PRIVATE_TOOLS_DIR = "$HOME/projects/sheeley/infrastructure";
         TOOLS_DIR = "$HOME/projects/sheeley/tools";
         NOTES_DIR = "$HOME/projects/sheeley/notes";
+        GITHUB_TOKEN = "${private.githubSecret}";
       };
 
       sessionPath = [
@@ -102,6 +104,8 @@
         "$HOME/projects/sheeley/infrastructure/scripts"
         "$HOME/go/bin"
         "$HOME/.cargo/bin"
+        # TODO: can this be injected by the homebrew program setup?
+        "/opt/homebrew/bin"
         "/usr/local/bin"
         "/usr/local/sbin"
         "/Applications/Xcode.app/Contents/Developer/usr/bin"
@@ -122,7 +126,13 @@
         ".swiftlint.yml".text = builtins.readFile ./.swiftlint.yml;
         ".mongorc.js".text = builtins.readFile ./dot_mongorc.js;
         ".vim/ftdetect/toml.vim".text = "autocmd BufNewFile,BufRead *.toml set filetype=toml";
-        ".config/borgmatic/config.yaml".text = builtins.readFile ./dot_config/borgmatic/config.yaml.tmpl;
+
+        ".config/borgmatic/config.yaml".source = pkgs.substituteAll {
+          name = "config.yaml";
+          src = ./dot_config/borgmatic/config.yaml;
+          secret = "${private.borgSecret}";
+          repo = "${private.borgRepo}";
+        };
 
         "bin".source = config.lib.file.mkOutOfStoreSymlink ./bin;
       };
@@ -723,17 +733,17 @@ AddKeysToAgent yes";
         "coverage"
       ];
 
+      userName = "Johnny Sheeley";
+      userEmail = "${private.email}";
+
       includes = [{
-        condition = "gitdir:~/src/dir";
+        condition = "gitdir:~/work";
         contents = {
           user = {
-            email = "sheeley@apple.com";
+            email = "${private.workEmail}";
           };
         };
       }];
-
-      userEmail = "sheeley@aigee.org";
-      userName = "Johnny Sheeley";
     };
 
     programs.gitui = {

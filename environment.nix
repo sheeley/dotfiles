@@ -5,7 +5,9 @@
   programs.zsh.enable = true;
   programs.fish.enable = true;
   environment.shells = with pkgs; [ fish zsh ];
+  # TODO: figure out how to correctly set default shell
   # users.defaultUserShell = pkgs.fish;
+  # environment.loginShell = pkgs.fish;
   users.users.sheeley = {
     shell = pkgs.fish;
     name = "sheeley";

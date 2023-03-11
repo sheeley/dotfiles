@@ -7,5 +7,7 @@ if [[ "$HN" != "jmba.local" && "$HN" != "jmba.localdomain" ]]; then
     exit 1
 fi
 
-nix build .#darwinConfigurations.jmba.system --extra-experimental-features "nix-command flakes"
-./result/sw/bin/darwin-rebuild switch --flake .
+# TODO: nix flake update?
+nix build .#darwinConfigurations.jmba.system --extra-experimental-features "nix-command flakes" --impure
+echo "built"
+./result/sw/bin/darwin-rebuild switch --flake . --impure
