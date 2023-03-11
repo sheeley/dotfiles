@@ -122,14 +122,14 @@ in
         "Screenshots/.keep".text = "";
         "projects/sheeley/.keep".text = "";
 
-        ".swiftformat".text = builtins.readFile ./.swiftformat;
-        ".swiftlint.yml".text = builtins.readFile ./.swiftlint.yml;
-        ".mongorc.js".text = builtins.readFile ./dot_mongorc.js;
+        ".swiftformat".text = builtins.readFile ./files/.swiftformat;
+        ".swiftlint.yml".text = builtins.readFile ./files/.swiftlint.yml;
+        ".mongorc.js".text = builtins.readFile ./files/.mongorc.js;
         ".vim/ftdetect/toml.vim".text = "autocmd BufNewFile,BufRead *.toml set filetype=toml";
 
         ".config/borgmatic/config.yaml".source = pkgs.substituteAll {
           name = "config.yaml";
-          src = ./dot_config/borgmatic/config.yaml;
+          src = ./files/borgmatic/config.yaml;
           secret = "${private.borgSecret}";
           repo = "${private.borgRepo}";
         };
@@ -178,7 +178,7 @@ AddKeysToAgent yes";
     programs.fish = {
 
       enable = true;
-      interactiveShellInit = builtins.readFile ./init.fish;
+      interactiveShellInit = builtins.readFile ./files/init.fish;
       plugins = with pkgs; [
         { name = "foreign-env"; src = fishPlugins.foreign-env.src; }
         { name = "done"; src = fishPlugins.done.src; }
@@ -748,8 +748,7 @@ AddKeysToAgent yes";
 
     programs.gitui = {
       enable = true;
-      keyConfig = builtins.readFile ./dot_config/gitui/key_bindings.ron;
-      theme = builtins.readFile ./dot_config/gitui/theme.ron;
+      keyConfig = builtins.readFile ./files/gitui/key_bindings.ron;
     };
 
     programs.starship = {
@@ -836,11 +835,11 @@ AddKeysToAgent yes";
       # defaultEditor = true;
       viAlias = true;
       vimAlias = true;
-      extraConfig = builtins.readFile ./dot_config/nvim/local_init.vim;
+      extraConfig = builtins.readFile ./files/nvim/local_init.vim;
 
       coc = {
         enable = true;
-        settings = builtins.readFile ./dot_config/nvim/coc-settings.json;
+        settings = builtins.readFile ./files/nvim/coc-settings.json;
       };
 
       extraPackages = with pkgs; [
