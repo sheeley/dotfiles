@@ -11,9 +11,9 @@
 
 ## TODO
 
+- [ ] support variable account names
+- [ ] notifications settings
+- [ ] load username and private data once, cascade throughout expressions
 - [ ] nightshift
 - [ ] Modifier keys
-- [ ] notifications settings
-- [ ] support variable account names
-- [ ] load username and private data once, cascade throughout expressions
 - [ ] various TODOs spread throughout repo

@@ -1,8 +1,0 @@
-#! /usr/bin/env bash
-set -euo pipefail # x
-
-# QLStephen needs this to avoid quarantine
-xattr -cr ~/Library/QuickLook/QLStephen.qlgenerator
-qlmanage -r
-qlmanage -r cache
-killall Finder

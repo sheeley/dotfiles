@@ -4,15 +4,11 @@ in
 {
   services.nix-daemon.enable = true;
 
-  programs.zsh.enable = true;
-  programs.fish.enable = true;
   environment.shells = with pkgs; [ fish zsh ];
 
-  # users.defaultUserShell = pkgs.fish;
-  # environment.loginShell = pkgs.fish;
   users.users.${user} = {
-    # TODO: figure out how to correctly set default shell
-    shell = pkgs.zsh;
+    # BUMMER: shell needs to be set manually on darwin
+    # shell = pkgs.zsh;
     name = user;
     home = "/Users/${user}";
   };

@@ -1,5 +1,0 @@
-#! /usr/bin/env bash
-set -euo pipefail # x
-
-eval $(op signin my)
-chezmoi update

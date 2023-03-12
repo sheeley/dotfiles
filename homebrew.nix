@@ -38,7 +38,7 @@
       "Space Gremlin" = 414515628;
       "The Unarchiver" = 425424353;
       "Watchdog" = 734258109;
-      # TODO "Xcode" = 497799835;
+      "Xcode" = 497799835;
     };
 
     taps = [
@@ -47,7 +47,5 @@
       "homebrew/core"
       "abridoux/formulae"
     ];
-
-    # TODO: tuist?
   };
 }

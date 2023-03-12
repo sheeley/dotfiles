@@ -71,3 +71,5 @@ confirm
 git clone git@github.com:sheeley/dotfiles.git
 cd dotfiles
 ./update-darwin
+
+sudo chsh -s /run/current-system/sw/bin/fish

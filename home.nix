@@ -79,14 +79,16 @@ in
 
       sessionPath = [
         "$HOME/bin"
-        "/etc/profiles/per-user/sheeley/bin/"
         "$HOME/projects/sheeley/infrastructure/bin"
         "$HOME/projects/sheeley/infrastructure/scripts"
         "$HOME/go/bin"
         "$HOME/.cargo/bin"
-        # TODO: can this be injected by the homebrew program setup?
+
+        "/etc/profiles/per-user/sheeley/bin/"
+
         "/opt/homebrew/bin"
         "/Applications/Xcode.app/Contents/Developer/usr/bin"
+
         "/sbin"
         "/usr/sbin"
         "/bin"
