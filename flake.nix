@@ -41,9 +41,6 @@
         ./home.nix
         ./system.nix
       ];
-      # inputs = {
-      #   inherit darwin home-manager nixpkgs;
-      # };
     };
   };
 }

@@ -4,16 +4,16 @@
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/sheeley/dotfiles/main/initial_setup.sh)"
 ```
 
-## Update
-
 ```sh
-./update-darwin
+./update
+./apply
 ```
 
 ## TODO
 
-- [ ] injecting config/secrets
-- [ ] borgmatic config
 - [ ] nightshift
 - [ ] Modifier keys
 - [ ] notifications settings
+- [ ] support variable account names
+- [ ] load username and private data once, cascade throughout expressions
+- [ ] various TODOs spread throughout repo

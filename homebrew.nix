@@ -1,22 +1,19 @@
 { pkgs, ... }:
 {
-  # environment.systemPackages = [
-  #   pkgs.nixpkgs-fmt
-  # ];
-
   homebrew = {
     enable = true;
 
     onActivation = {
-      # TODO: 
-      # autoUpdate = true;
-      # cleanup = true;
-      # upgrade = true;
+      autoUpdate = true;
+      cleanup = "uninstall"; # zap removes configuration and cache also
+      upgrade = true;
     };
 
     brews = [
       "borgmatic"
+      "dovecot"
       "git-delta"
+      "scout"
       "swiftformat"
       "swiftlint"
     ];
@@ -24,7 +21,6 @@
     casks = [
       "1password"
       "bartender"
-      "diffmerge"
       "iterm2"
       "shortcat"
     ];
@@ -49,6 +45,7 @@
       "homebrew/bundle"
       "homebrew/cask"
       "homebrew/core"
+      "abridoux/formulae"
     ];
 
     # TODO: tuist?

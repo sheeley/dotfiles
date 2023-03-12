@@ -47,8 +47,6 @@ if ! xcode-select -p; then
 	confirm || exit 1
 fi
 
-
-
 if ! which nix; then
 	curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install
 fi
@@ -69,9 +67,6 @@ cp private.nix ~/.nix-private/private.nix
 
 echo "set values in ~/.nix-private/private.nix"
 confirm
-
-# TODO: is this necessary?
-# nix-channel --add https://github.com/nix-community/home-manager/archive/master.tar.gz home-manager
 
 git clone git@github.com:sheeley/dotfiles.git
 cd dotfiles

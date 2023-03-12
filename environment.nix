@@ -1,18 +1,25 @@
 { pkgs, ... }:
+let user = "sheeley";
+in
 {
   services.nix-daemon.enable = true;
 
   programs.zsh.enable = true;
   programs.fish.enable = true;
   environment.shells = with pkgs; [ fish zsh ];
-  # TODO: figure out how to correctly set default shell
+
   # users.defaultUserShell = pkgs.fish;
   # environment.loginShell = pkgs.fish;
-  users.users.sheeley = {
-    shell = pkgs.fish;
-    name = "sheeley";
-    home = "/Users/sheeley";
+  users.users.${user} = {
+    # TODO: figure out how to correctly set default shell
+    shell = pkgs.zsh;
+    name = user;
+    home = "/Users/${user}";
   };
+
+  # environment.systemPackages = [
+  #   pkgs.nixpkgs-fmt
+  # ];
 
   # fonts.enableFontDir = true;
   fonts.fonts = [
@@ -21,4 +28,7 @@
 
   #system.keyboard.enableKeyMapping = true;
   security.pam.enableSudoTouchIdAuth = true;
+
+  # TODO:
+  # "/opt/homebrew/etc/dovecot/dovecot.conf".source = ./files/dovecot.conf;
 }
