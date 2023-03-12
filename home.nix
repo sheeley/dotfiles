@@ -46,6 +46,7 @@ in
         TOOLS_DIR = "$HOME/projects/sheeley/tools";
         NOTES_DIR = "$HOME/projects/sheeley/notes";
         GITHUB_TOKEN = "${private.githubSecret}";
+        EDITOR = "nvim";
       };
 
       sessionPath = [

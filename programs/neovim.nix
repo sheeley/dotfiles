@@ -46,6 +46,15 @@
 
     extraPackages = with pkgs; [
       shfmt
+      yaml-language-server
+      nodePackages.bash-language-server
+      rnix-lsp
+      nil
+      pyright
+      python310Packages.python-lsp-server
+      # flake8
+      # pycodestyle
+      python310Packages.autopep8
     ];
 
     plugins = with pkgs.vimPlugins; [
@@ -65,6 +74,9 @@
       vim-shellcheck
       vim-terraform
       editorconfig-vim
+
+      # theme
+      sonokai
 
 
 
