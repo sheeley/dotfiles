@@ -8,14 +8,53 @@
 
     coc = {
       enable = true;
-      settings = builtins.readFile ../files/nvim/coc-settings.json;
+      # settings = {
+      #   "suggest.noselect" = true;
+      #   "suggest.enablePreview" = true;
+      #   "suggest.enablePreselect" = false;
+      #   "suggest.disableKind" = true;
+      #   "diagnostic.displayByAle" = true;
+      #   "coc.preferences.formatOnSaveFiletypes" = [
+      #     "css"
+      #     "markdown"
+      #     "javascript"
+      #     "typescript"
+      #     "javascriptreact"
+      #     "typescriptreact"
+      #     "json"
+      #     "python"
+      #     "go"
+      #     "yaml"
+      #     "sh"
+      #     "toml"
+      #     "fish"
+      #     "swift"
+      #   ];
+      #   "diagnostic.checkCurrentLine" = true;
+      #   "languageserver" = {
+      #     "swift" = {
+      #       "command" = "sourcekit-lsp";
+      #       "args" = [ ];
+      #       "filetypes" = [
+      #         "swift"
+      #       ];
+      #     };
+      #   };
+      # };
     };
+
 
     extraPackages = with pkgs; [
       shfmt
     ];
 
     plugins = with pkgs.vimPlugins; [
+      coc-sh
+      coc-go
+      coc-yaml
+      coc-json
+      coc-prettier
+
       vim-sensible
       vim-easymotion
       vim-clap
@@ -26,6 +65,9 @@
       vim-shellcheck
       vim-terraform
       editorconfig-vim
+
+
+
 
       # Plug 'liuchengxu/vim-clap', { 'do': ':Clap install-binary!' }
       # Plug 'neoclide/coc.nvim', {'branch': 'release'}

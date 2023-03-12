@@ -35,5 +35,6 @@ with pkgs; [
   vim-vint
   vscode
   wget
+  yarn
 ]
 

@@ -1,4 +1,8 @@
-{ ... }: {
+{ pkgs, ... }: {
+  programs.bash.enable = true;
+  programs.zsh.enable = true;
+  programs.home-manager.enable = true;
+
   programs.broot = {
     enable = true;
     enableFishIntegration = true;

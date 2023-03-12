@@ -54,22 +54,24 @@ fi
 echo "Log in to App Store"
 confirm
 
-# login to 1password, setting token for futher usage
-# shellcheck disable=2034
-# eval "$(op signin my.1password.com "$EMAIL")"
+if [ ! -f ~/.nix-private/private.nix ]; then
+	mkdir -p ~/.nix-private
+	cp private.nix ~/.nix-private/private.nix
 
-confirm || exit 1
-# # run the actual setup
-# chezmoi init --apply git@github.com:sheeley/dotfiles.git
+	echo "set values in ~/.nix-private/private.nix"
+	confirm
+fi
 
-mkdir -p ~/.nix-private
-cp private.nix ~/.nix-private/private.nix
+if [ ! -f ~/dotfiles ]; then
+	git clone git@github.com:sheeley/dotfiles.git
+	cd dotfiles
+	./update-darwin
+fi
 
-echo "set values in ~/.nix-private/private.nix"
-confirm
-
-git clone git@github.com:sheeley/dotfiles.git
-cd dotfiles
-./update-darwin
-
-sudo chsh -s /run/current-system/sw/bin/fish
+if [[ "$SHELL" != "/run/current-system/sw/bin/fish" ]]; then
+	if cat /etc/shells | grep /run/current-system/sw/bin/fish; then
+		chsh -s /run/current-system/sw/bin/fish
+	else
+		echo "couldn't set shell to fish"
+	fi
+fi
