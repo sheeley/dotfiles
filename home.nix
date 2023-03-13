@@ -1,7 +1,7 @@
 { config, pkgs, lib, ... }:
 let
   private = pkgs.callPackage ~/.nix-private/private.nix { };
-  user = "sheeley";
+  user = "johnnysheeley";
 in
 {
   imports = [
@@ -40,23 +40,23 @@ in
         LESS = "-R";
         BORG_REPO = "/Volumes/money/borgbackup";
         GOPATH = "$HOME/go";
-        PRIVATE_CMD_DIR = "$HOME/projects/sheeley/infrastructure/cmd";
-        PRIVATE_DATA_DIR = "$HOME/projects/sheeley/infrastructure/data";
-        PRIVATE_TOOLS_DIR = "$HOME/projects/sheeley/infrastructure";
-        TOOLS_DIR = "$HOME/projects/sheeley/tools";
-        NOTES_DIR = "$HOME/projects/sheeley/notes";
+        PRIVATE_CMD_DIR = "$HOME/projects/${user}/infrastructure/cmd";
+        PRIVATE_DATA_DIR = "$HOME/projects/${user}/infrastructure/data";
+        PRIVATE_TOOLS_DIR = "$HOME/projects/${user}/infrastructure";
+        TOOLS_DIR = "$HOME/projects/${user}/tools";
+        NOTES_DIR = "$HOME/projects/${user}/notes";
         GITHUB_TOKEN = "${private.githubSecret}";
         EDITOR = "nvim";
       };
 
       sessionPath = [
         "$HOME/bin"
-        "$HOME/projects/sheeley/infrastructure/bin"
-        "$HOME/projects/sheeley/infrastructure/scripts"
+        "$HOME/projects/${user}/infrastructure/bin"
+        "$HOME/projects/${user}/infrastructure/scripts"
         "$HOME/go/bin"
         "$HOME/.cargo/bin"
 
-        "/etc/profiles/per-user/sheeley/bin/"
+        "/etc/profiles/per-user/${user}/bin/"
 
         "/opt/homebrew/bin"
         "/Applications/Xcode.app/Contents/Developer/usr/bin"
@@ -72,13 +72,14 @@ in
       file = {
         ".ssh/control/.keep".text = "";
         "Screenshots/.keep".text = "";
-        "projects/sheeley/.keep".text = "";
+        "projects/${user}/.keep".text = "";
 
         ".swiftformat".text = builtins.readFile ./files/.swiftformat;
         ".swiftlint.yml".text = builtins.readFile ./files/.swiftlint.yml;
         ".mongorc.js".text = builtins.readFile ./files/.mongorc.js;
         ".vim/ftdetect/toml.vim".text = "autocmd BufNewFile,BufRead *.toml set filetype=toml";
 
+# TODO: if personal
         ".config/borgmatic/config.yaml".source = pkgs.substituteAll {
           name = "config.yaml";
           src = ./files/borgmatic/config.yaml;

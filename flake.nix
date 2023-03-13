@@ -31,7 +31,20 @@
       }
     );
 
-    darwinConfigurations."jmba" = darwin.lib.darwinSystem {
+#    darwinConfigurations."jmba" = darwin.lib.darwinSystem {
+#      system = "aarch64-darwin";
+#      pkgs = legacyPackages.aarch64-darwin;
+#      modules = [
+#        home-manager.darwinModules.home-manager
+#        ./environment.nix
+#        ./homebrew.nix
+#        ./home.nix
+#        ./system.nix
+#      ];
+#      inputs = { inherit nixpkgs home-manager darwin; user = "sheeley"; };
+#    };
+
+    darwinConfigurations."Sheeley-MBP" = darwin.lib.darwinSystem {
       system = "aarch64-darwin";
       pkgs = legacyPackages.aarch64-darwin;
       modules = [
@@ -41,6 +54,7 @@
         ./home.nix
         ./system.nix
       ];
+#      inputs = { inherit nixpkgs home-manager darwin; user = "sheeley"; };
     };
   };
 }

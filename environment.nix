@@ -1,5 +1,8 @@
 { pkgs, ... }:
-let user = "sheeley";
+let
+  private = pkgs.callPackage ~/.nix-private/private.nix { };
+  # TODO: dynamic
+  user = "johnnysheeley";
 in
 {
   services.nix-daemon.enable = true;

@@ -1,4 +1,7 @@
 { ... }:
+# TODO: dynamic
+let user = "johnnysheeley";
+in
 {
   imports = [
     ./dock
@@ -22,12 +25,12 @@
       options = "--sort name --view grid --display folder";
     }
     {
-      path = "/Users/sheeley/Downloads";
+      path = "/Users/${user}/Downloads";
       section = "others";
       options = "--sort dateadded --view fan --display stack";
     }
     {
-      path = "/Users/sheeley/Screenshots";
+      path = "/Users/${user}/Screenshots";
       section = "others";
       options = "--sort dateadded --view fan --display stack";
     }

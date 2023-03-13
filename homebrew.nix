@@ -10,7 +10,9 @@
     };
 
     brews = [
+      # TODO: if personal
       "borgmatic"
+      
       "dovecot"
       "git-delta"
       "scout"

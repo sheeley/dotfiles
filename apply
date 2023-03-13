@@ -1,12 +1,12 @@
  #! /usr/bin/env bash
 set -eu
 
-HN=$(hostname)
-if [[ "$HN" != "jmba.local" && "$HN" != "jmba.localdomain" ]]; then
+HN=$(hostname | cut -d '.' -f 1)
+if [[ "$HN" != "jmba" && "$HN" != "Sheeley-MBP" ]]; then
     echo "change hostname: $HN"
     exit 1
 fi
 
 git add .
-nix build .#darwinConfigurations.jmba.system --extra-experimental-features "nix-command flakes" --impure
+nix build .#darwinConfigurations.${HN}.system --extra-experimental-features "nix-command flakes" --impure
 ./result/sw/bin/darwin-rebuild switch --flake . --impure

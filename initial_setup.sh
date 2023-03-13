@@ -49,6 +49,10 @@ fi
 
 if ! which nix; then
 	curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install
+	# TODO: . /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.fish
+	# TODO: create /run
+	# printf 'run\tprivate/var/run\n' | sudo tee -a /etc/synthetic.conf
+	# /System/Library/Filesystems/apfs.fs/Contents/Resources/apfs.util -t
 fi
 
 echo "Log in to App Store"
@@ -63,9 +67,9 @@ if [ ! -f ~/.nix-private/private.nix ]; then
 fi
 
 if [ ! -f ~/dotfiles ]; then
-	git clone git@github.com:sheeley/dotfiles.git
-	cd dotfiles
-	./update-darwin
+	git clone git@github.com:sheeley/dotfiles.git ~/dotfiles
+	cd ~/dotfiles
+	./apply
 fi
 
 if [[ "$SHELL" != "/run/current-system/sw/bin/fish" ]]; then
