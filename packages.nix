@@ -22,6 +22,7 @@ with pkgs; [
   lz4
   nerdfonts
   nixpkgs-fmt
+  obsidian
   pv
   python311
   rclone
