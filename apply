@@ -8,5 +8,5 @@ if [[ "$HN" != "jmba" && "$HN" != "Sheeley-MBP" ]]; then
 fi
 
 git add .
-nix build .#darwinConfigurations.${HN}.system --extra-experimental-features "nix-command flakes" --impure
+nix build .#darwinConfigurations.${HN}.system --impure # --extra-experimental-features "nix-command flakes" 
 ./result/sw/bin/darwin-rebuild switch --flake . --impure

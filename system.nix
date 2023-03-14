@@ -1,5 +1,9 @@
 { pkgs, user, ... }:
 {
+nix = {
+    extraOptions = "experimental-features = nix-command flakes";
+  };
+
   system.defaults = {
 
     dock = {
