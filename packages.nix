@@ -12,6 +12,7 @@ with pkgs; [
   duf
   entr
   fd
+  findutils
   fzf
   git
   gitui

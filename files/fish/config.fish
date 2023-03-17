@@ -5,6 +5,16 @@ set -U fish_escape_delay_ms 300
 #     bind \e. 'history-token-search-backward'
 # end
 
+fish_add_path -P "$HOME/bin" \
+  "$HOME/projects/sheeley/infrastructure/bin" \
+  "$HOME/projects/sheeley/infrastructure/scripts" \
+  "$HOME/go/bin" \
+  "$HOME/.cargo/bin" \
+  "/etc/profiles/per-user/default/bin/" \
+  "/opt/homebrew/bin" \
+  "/Applications/Xcode.app/Contents/Developer/usr/bin" \
+  /sbin /usr/sbin /bin /usr/bin
+
 function fish_title
   if test $_ != "fish"
     echo $_ ' '
@@ -12,37 +22,9 @@ function fish_title
   fish_prompt_pwd_dir_length=3 prompt_pwd
 end
 
-function cdgo
-  cd $GOPATH/src
-end
-
-function cdproj
-  cd $HOME/projects/sheeley
-end
-
-function cdinfra
-  cd $PRIVATE_TOOLS_DIR
-end
-
-function cdtools
-  cd $TOOLS_DIR
-end
-
-function cdnotes
-  cd $NOTES_DIR
-end
-
-function cdicloud
-  cd ~/Library/Mobile\ Documents/com~apple~CloudDocs
-end
-
 function mkcd
   mkdir $argv
   cd $argv
-end
-
-function clone
-  git clone $argv
 end
 
 function clonecd

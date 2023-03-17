@@ -1,26 +1,23 @@
-{ pkgs, ... }:
+{ pkgs, user, ... }:
 let
   private = pkgs.callPackage ~/.nix-private/private.nix { };
-  # TODO: dynamic
-  user = "johnnysheeley";
 in
 {
   services.nix-daemon.enable = true;
 
   programs.zsh.enable = true;
   programs.fish.enable = true;
-  environment.shells = with pkgs; [ fish zsh ];
+  environment.shells = with pkgs; [
+    fish
+    zsh
+  ];
 
   users.users.${user} = {
-    # TODO: figure out how to correctly set default shell
+    # TODO: nix-darwin can't manage login shell yet
     shell = pkgs.zsh;
     name = user;
     home = "/Users/${user}";
   };
-
-  # environment.systemPackages = [
-  #   pkgs.nixpkgs-fmt
-  # ];
 
   # fonts.enableFontDir = true;
   fonts.fonts = [
@@ -31,5 +28,5 @@ in
   security.pam.enableSudoTouchIdAuth = true;
 
   # TODO:
-  # "/opt/homebrew/etc/dovecot/dovecot.conf".source = ./files/dovecot.conf;
+  environment.etc."dovecot.conf".source = ./files/dovecot.conf;
 }

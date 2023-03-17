@@ -1,6 +1,5 @@
 {
   description = "System setup";
-
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-22.11-darwin";
 
@@ -13,6 +12,11 @@
       url = "github:lnl7/nix-darwin";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    # nixvim = {
+    #   url = github:pta2002/nixvim;
+    #   inputs.nixpkgs.follows = "nixpkgs";
+    # };
   };
 
   outputs = { self, nixpkgs, home-manager, darwin }@inputs: rec {
@@ -36,6 +40,7 @@
       pkgs = legacyPackages.aarch64-darwin;
       modules = [
         home-manager.darwinModules.home-manager
+        # inputs.nixvim.homeManagerModules.nixvim
         ./environment.nix
         ./homebrew.nix
         ./home.nix
@@ -53,6 +58,7 @@
       pkgs = legacyPackages.aarch64-darwin;
       modules = [
         home-manager.darwinModules.home-manager
+        # inputs.nixvim.nixDarwinModules.nixvim
         ./environment.nix
         ./homebrew.nix
         ./home.nix

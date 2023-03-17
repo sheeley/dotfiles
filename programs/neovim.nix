@@ -1,13 +1,20 @@
 { pkgs, ... }: {
+
+  # nixvim.homeManagerModules.nixvim
+  # programs.nixvim = {
+  #   enable = true;
+  #   # plugins.lightline.enable = true;
+  # };
+
   programs.neovim = {
     enable = true;
     # defaultEditor = true;
     viAlias = true;
     vimAlias = true;
-    extraConfig = builtins.readFile ../files/nvim/local_init.vim;
+    # extraConfig = builtins.readFile ../files/nvim/local_init.vim;
 
     coc = {
-      enable = true;
+      enable = false;
       # settings = {
       #   "suggest.noselect" = true;
       #   "suggest.enablePreview" = true;
@@ -58,11 +65,11 @@
     ];
 
     plugins = with pkgs.vimPlugins; [
-      coc-sh
-      coc-go
-      coc-yaml
-      coc-json
-      coc-prettier
+      # coc-sh
+      # coc-go
+      # coc-yaml
+      # coc-json
+      # coc-prettier
 
       vim-sensible
       vim-easymotion
@@ -77,9 +84,6 @@
 
       # theme
       sonokai
-
-
-
 
       # Plug 'liuchengxu/vim-clap', { 'do': ':Clap install-binary!' }
       # Plug 'neoclide/coc.nvim', {'branch': 'release'}

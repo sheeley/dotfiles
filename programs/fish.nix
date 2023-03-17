@@ -2,6 +2,7 @@
   programs.fish = {
     enable = true;
     interactiveShellInit = builtins.readFile ../files/fish/config.fish;
+    loginShellInit = "fish_add_path --move --prepend --path $HOME/.nix-profile/bin /run/wrappers/bin /etc/profiles/per-user/$USER/bin /nix/var/nix/profiles/default/bin /run/current-system/sw/bin";
 
     plugins = with pkgs; [
       { name = "foreign-env"; src = fishPlugins.foreign-env.src; }

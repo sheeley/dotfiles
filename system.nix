@@ -1,6 +1,6 @@
 { pkgs, user, ... }:
 {
-nix = {
+  nix = {
     extraOptions = "experimental-features = nix-command flakes";
   };
 

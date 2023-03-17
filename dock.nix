@@ -1,7 +1,4 @@
-{ ... }:
-# TODO: dynamic
-let user = "johnnysheeley";
-in
+{ user, ... }:
 {
   imports = [
     ./dock
@@ -20,17 +17,17 @@ in
     { path = "/Applications/Slack.app/"; }
 
     {
-      path = "/Applications";
+      path = "/Applications/";
       section = "others";
       options = "--sort name --view grid --display folder";
     }
     {
-      path = "/Users/${user}/Downloads";
+      path = "/Users/${user}/Downloads/";
       section = "others";
       options = "--sort dateadded --view fan --display stack";
     }
     {
-      path = "/Users/${user}/Screenshots";
+      path = "/Users/${user}/Screenshots/";
       section = "others";
       options = "--sort dateadded --view fan --display stack";
     }

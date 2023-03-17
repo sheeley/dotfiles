@@ -1,7 +1,6 @@
-{ config, pkgs, lib, ... }:
+{ config, pkgs, lib, user, ... }:
 let
   private = pkgs.callPackage ~/.nix-private/private.nix { };
-  user = "johnnysheeley";
 in
 {
   imports = [
@@ -9,6 +8,7 @@ in
   ];
 
   home-manager = {
+    backupFileExtension = "bak";
     useGlobalPkgs = true;
     useUserPackages = true;
     # verbose = true;
@@ -16,7 +16,6 @@ in
 
   home-manager.users.${user} = { config, lib, pkgs, ... }: {
     programs.bash.enable = true;
-    programs.zsh.enable = true;
     programs.home-manager.enable = true;
 
     imports = [
@@ -28,6 +27,7 @@ in
       ./programs/neovim.nix
       ./programs/ssh.nix
       ./programs/starship.nix
+      ./programs/zsh.nix
     ];
 
     home = {
@@ -49,37 +49,42 @@ in
         EDITOR = "nvim";
       };
 
+      # TODO: this doesn't actually work
+      # https://github.com/LnL7/nix-darwin/issues/122
       sessionPath = [
         "$HOME/bin"
-        "$HOME/projects/${user}/infrastructure/bin"
-        "$HOME/projects/${user}/infrastructure/scripts"
+        "$HOME/nix-bin"
+
+        "$HOME/projects/sheeley/infrastructure/bin"
+        "$HOME/projects/sheeley/infrastructure/scripts"
         "$HOME/go/bin"
         "$HOME/.cargo/bin"
-
-        "/etc/profiles/per-user/${user}/bin/"
+        "$HOME/non-nix-bin"
 
         "/opt/homebrew/bin"
         "/Applications/Xcode.app/Contents/Developer/usr/bin"
 
-        "/sbin"
-        "/usr/sbin"
-        "/bin"
-        "/usr/bin"
+        # "/sbin"
+        # "/usr/sbin"
+        # "/bin"
+        # "/usr/bin"
       ];
 
       packages = pkgs.callPackage ./packages.nix { };
 
       file = {
-        ".ssh/control/.keep".text = "";
-        "Screenshots/.keep".text = "";
-        "projects/${user}/.keep".text = "";
+        # TODO: how to make directories?
+        # ".ssh/control/.keep".text = "";
+        # "Screenshots/.keep".text = "";
+        # "projects/${user}/.keep".text = "";
+        # "bin/.keep".text = "";
 
         ".swiftformat".text = builtins.readFile ./files/.swiftformat;
         ".swiftlint.yml".text = builtins.readFile ./files/.swiftlint.yml;
         ".mongorc.js".text = builtins.readFile ./files/.mongorc.js;
         ".vim/ftdetect/toml.vim".text = "autocmd BufNewFile,BufRead *.toml set filetype=toml";
 
-# TODO: if personal
+        # TODO: if personal
         ".config/borgmatic/config.yaml".source = pkgs.substituteAll {
           name = "config.yaml";
           src = ./files/borgmatic/config.yaml;
@@ -87,7 +92,18 @@ in
           repo = "${private.borgRepo}";
         };
 
-        "bin".source = config.lib.file.mkOutOfStoreSymlink ./bin;
+        "nix-bin".source = config.lib.file.mkOutOfStoreSymlink ./bin;
+      };
+
+      shellAliases = {
+        cdgo = "cd $GOPATH/src";
+        cdproj = "cd $HOME/projects/sheeley";
+        cdinfra = "cd $PRIVATE_TOOLS_DIR";
+        cdtools = "cd $TOOLS_DIR";
+        cdnotes = "cd $NOTES_DIR";
+        cdicloud = "cd ~/Library/Mobile\ Documents/com~apple~CloudDocs";
+        dotfiles = "cd ~/dotfiles";
+        clone = "git clone";
       };
     };
   };

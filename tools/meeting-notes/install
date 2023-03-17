@@ -2,5 +2,5 @@
 set -euo pipefail # x
 
 swift build --configuration release
-EXC=$(gfind ./.build/release/ -type f -executable)
+EXC=$(find ./.build/release/ -type f -executable)
 mv "$EXC" ~/bin/
