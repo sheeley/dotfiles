@@ -7,12 +7,6 @@ if [[ "$HN" != "jmba" && "$HN" != "Sheeley-MBP" ]]; then
     exit 1
 fi
 
-# TODO: move to nix?
-mkdir -p "~/.ssh/control" 
-mkdir -p "~/Screenshots" 
-mkdir -p "~/projects/sheeley" 
-mkdir -p "~/bin"
-
 nix build .#darwinConfigurations.${HN}.system --impure --extra-experimental-features "nix-command flakes"
 
 echo "darwin-rebuild"

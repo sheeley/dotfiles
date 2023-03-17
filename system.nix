@@ -254,15 +254,8 @@
 
 # TODO: review these
 # to_export = {
-#     "ai.krisp.krispMac": global_rules,
-#     "codes.rambo.AirBuddy": global_rules.and_rules(application="AirBuddy"),
 #     "com.abhishek.Clocker": global_rules.and_rules(application="Clocker",
 #                                                    exclusions=["iVersionLastChecked"]),
-#     "com.apple.controlcenter": Rules(application="Control Center"),
-#     "com.apple.dock": global_rules.and_rules(application="Dock", exclusions=[
-#         "mod-count",
-#         "trash-full",
-#     ]),
 #     "com.apple.finder": global_rules.and_rules(application="Finder", exclusions=[
 #         "FXRecentFolders",
 #         "FXSidebarUpgraded*",
@@ -275,20 +268,12 @@
 #         "NewWindowTargetPath",
 #         "FXPreferencesWindow..*"
 #     ]),
-#     "com.apple.screencapture": only(application="SystemUIServer", include=["location"]),
 #     "com.apple.symbolichotkeys": None,
 #     "com.googlecode.iterm2": global_rules,
 #     "com.if.Amphetamine": Rules(application="Amphetamine", exclusions=[
 #         "Session Durations",
 #         "Total Session Run Time"
 #     ]),
-#     "com.omnigroup.OmniFocus3": global_rules.and_rules(exclusions=[
-#         "LastArchiveRequestTimeInterval",
-#         "LastAutomaticBackupDate",
-#         "LastAutomaticBackupTailTransactionIdentifier",
-#         "LastExportDirectory",
-#     ]),
-#     "com.sourcegear.DiffMerge": global_rules,
 #     "com.surteesstudios.Bartender": only(application="Bartender 4", include=[
 #         "SUAutomaticallyUpdate",
 #         "ShowForUpdateSettings",
@@ -299,7 +284,6 @@
 #         "license2HoldersName",
 #         "license4HoldersName",
 #        ]),
-#     "org.shiftitapp.ShiftIt": global_rules.and_rules(application="ShiftIt"),
 #     "com.apple.Safari": only(include=[
 #         "AlwaysRestoreSessionAtLaunch",
 #         "AutoFillPasswords",
@@ -371,17 +355,4 @@
 #         "ShortcutRecorder GlobalActivation",
 #         "ShortcutRecorder GlobalLock"
 #     ]),
-#     "net.shinyfrog.bear": only(application="Bear", include=[
-#         "SFAppIconMatchesTheme",
-#         "SFAppThemeName",
-#         "SFAutoGrabURLTitles",
-#         "SFEditorLineWidthMultiplier",
-#         "SFFirstLaunchNotes",
-#         "SFFoldCompletedTodo",
-#         "SFNoteTextViewAutomaticSpellingCorrectionEnabled",
-#         "SFNoteTextViewContinuousSpellCheckingEnabled",
-#         "SFNoteTextViewGrammarCheckingEnabled",
-#         "SFTagsListSortAscending",
-#         "SFTagsListSortBy",
-#     ])
 # }

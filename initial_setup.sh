@@ -49,7 +49,7 @@ fi
 
 if ! which nix; then
 	curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install
-	# TODO: . /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.fish
+	. /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
 	# TODO: create /run
 	# printf 'run\tprivate/var/run\n' | sudo tee -a /etc/synthetic.conf
 	# /System/Library/Filesystems/apfs.fs/Contents/Resources/apfs.util -t

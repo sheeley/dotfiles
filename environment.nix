@@ -29,4 +29,11 @@ in
 
   # TODO:
   environment.etc."dovecot.conf".source = ./files/dovecot.conf;
+
+  system.activationScripts.makeEmptyDirs.text = ''
+    mkdir -p "~/.ssh/control" 
+    mkdir -p "~/Screenshots" 
+    mkdir -p "~/projects/sheeley" 
+    mkdir -p "~/bin"
+  '';
 }
