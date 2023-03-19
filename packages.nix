@@ -35,7 +35,6 @@ with pkgs; [
   ssh-copy-id
   tldr
   vim-vint
-  vscode
   wget
   yarn
 ]

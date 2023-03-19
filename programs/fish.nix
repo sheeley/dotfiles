@@ -1,12 +1,12 @@
-{ pkgs, ... }: {
+{ pkgs, lib, ... }: {
   programs.fish = {
     enable = true;
     interactiveShellInit = builtins.readFile ../files/fish/config.fish;
     loginShellInit = "fish_add_path --move --prepend --path $HOME/.nix-profile/bin /run/wrappers/bin /etc/profiles/per-user/$USER/bin /nix/var/nix/profiles/default/bin /run/current-system/sw/bin";
 
-    plugins = with pkgs; [
-      { name = "foreign-env"; src = fishPlugins.foreign-env.src; }
-      { name = "done"; src = fishPlugins.done.src; }
+    plugins = [
+      { name = "foreign-env"; src = pkgs.fishPlugins.foreign-env.src; }
+      { name = "done"; src = pkgs.fishPlugins.done.src; }
     ];
 
     functions = {

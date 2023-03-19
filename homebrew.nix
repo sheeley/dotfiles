@@ -10,7 +10,7 @@
     };
 
     brews = [
-      # TODO: if personal
+      # TODO: if personal & swap to home-manager
       "borgmatic"
 
       "dovecot"

@@ -40,9 +40,6 @@ nnoremap <expr> <C-l> winnr('l') == winnr() ? ':vsp<CR>' : '<C-w>l'
 " }}}
 
 " Key mappings {{{
-" Edit vim configuration
-map <leader>config :tabe ~/local/share/chezmoi/dot_vimrc<cr>
-map <leader>vimrc :tabe ~/local/share/chezmoi/dot_vimrc<cr>
 " run current file
 nnoremap <leader>r :!%:p<Enter>
 imap ;; <Esc>

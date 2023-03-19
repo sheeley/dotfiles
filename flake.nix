@@ -13,62 +13,64 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # nixvim = {
-    #   url = github:pta2002/nixvim;
-    #   inputs.nixpkgs.follows = "nixpkgs";
-    # };
-  };
-
-  outputs = { self, nixpkgs, home-manager, darwin }@inputs: rec {
-    # nixosModules = [
-    #   "${nix-private.outPath}/private.nix"
-    # ];
-
-    legacyPackages = nixpkgs.lib.genAttrs [ "aarch64-darwin" ] (system:
-      import inputs.nixpkgs {
-        inherit system;
-        # NOTE: Using `nixpkgs.config` in your NixOS config won't work
-        # Instead, you should set nixpkgs configs here
-        # (https://nixos.org/manual/nixpkgs/stable/#idm140737322551056)
-
-        config.allowUnfree = true;
-      }
-    );
-
-    darwinConfigurations."jmba" = darwin.lib.darwinSystem {
-      system = "aarch64-darwin";
-      pkgs = legacyPackages.aarch64-darwin;
-      modules = [
-        home-manager.darwinModules.home-manager
-        # inputs.nixvim.homeManagerModules.nixvim
-        ./environment.nix
-        ./homebrew.nix
-        ./home.nix
-        ./system.nix
-      ];
-
-      specialArgs = {
-        inherit inputs;
-        user = "sheeley";
-      };
+    nixvim = {
+      url = github:pta2002/nixvim;
+      inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    darwinConfigurations."Sheeley-MBP" = darwin.lib.darwinSystem {
-      system = "aarch64-darwin";
-      pkgs = legacyPackages.aarch64-darwin;
-      modules = [
-        home-manager.darwinModules.home-manager
-        # inputs.nixvim.nixDarwinModules.nixvim
-        ./environment.nix
-        ./homebrew.nix
-        ./home.nix
-        ./system.nix
-      ];
+    # flake-utils.url = "github:numtide/flake-utils";
 
-      specialArgs = {
-        inherit inputs;
-        user = "johnnysheeley";
+  };
+
+  outputs = { self, nixpkgs, home-manager, darwin, nixvim }@inputs:
+    let
+      legacyPackages = nixpkgs.lib.genAttrs [ "aarch64-darwin" ] (system:
+        import inputs.nixpkgs {
+          inherit system;
+          # NOTE: Using `nixpkgs.config` in your NixOS config won't work
+          # Instead, you should set nixpkgs configs here
+          # (https://nixos.org/manual/nixpkgs/stable/#idm140737322551056)
+
+          config.allowUnfree = true;
+        }
+      );
+      # private = import ~/.nix-private/private.nix { };
+    in
+    {
+      darwinConfigurations."jmba" = darwin.lib.darwinSystem {
+        system = "aarch64-darwin";
+        pkgs = legacyPackages.aarch64-darwin;
+        modules = [
+          home-manager.darwinModules.home-manager
+          ./environment.nix
+          ./homebrew.nix
+          ./home.nix
+          ./system.nix
+        ];
+
+        specialArgs = {
+          inherit inputs;
+          user = "sheeley";
+          # private = private;
+        };
+      };
+
+      darwinConfigurations."Sheeley-MBP" = darwin.lib.darwinSystem {
+        system = "aarch64-darwin";
+        pkgs = legacyPackages.aarch64-darwin;
+        modules = [
+          home-manager.darwinModules.home-manager
+          ./environment.nix
+          ./homebrew.nix
+          ./home.nix
+          ./system.nix
+        ];
+
+        specialArgs = {
+          inherit inputs;
+          user = "johnnysheeley";
+          # private = private;
+        };
       };
     };
-  };
 }

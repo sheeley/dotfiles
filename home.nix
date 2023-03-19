@@ -1,4 +1,4 @@
-{ config, pkgs, lib, user, ... }:
+{ config, pkgs, lib, user, inputs, ... }:
 let
   private = pkgs.callPackage ~/.nix-private/private.nix { };
 in
@@ -19,6 +19,8 @@ in
     programs.home-manager.enable = true;
 
     imports = [
+      inputs.nixvim.homeManagerModules.nixvim
+      ./programs/borgmatic.nix
       ./programs/fish.nix
       ./programs/general.nix
       ./programs/git.nix
@@ -27,6 +29,7 @@ in
       ./programs/neovim.nix
       ./programs/ssh.nix
       ./programs/starship.nix
+      ./programs/vscode.nix
       ./programs/zsh.nix
     ];
 
@@ -73,15 +76,9 @@ in
       packages = pkgs.callPackage ./packages.nix { };
 
       file = {
-        # TODO: how to make directories?
-        # ".ssh/control/.keep".text = "";
-        # "Screenshots/.keep".text = "";
-        # "projects/${user}/.keep".text = "";
-        # "bin/.keep".text = "";
-
+        ".mongorc.js".text = builtins.readFile ./files/.mongorc.js;
         ".swiftformat".text = builtins.readFile ./files/.swiftformat;
         ".swiftlint.yml".text = builtins.readFile ./files/.swiftlint.yml;
-        ".mongorc.js".text = builtins.readFile ./files/.mongorc.js;
         ".vim/ftdetect/toml.vim".text = "autocmd BufNewFile,BufRead *.toml set filetype=toml";
 
         # TODO: if personal
@@ -96,14 +93,16 @@ in
       };
 
       shellAliases = {
+        cat = "bat";
         cdgo = "cd $GOPATH/src";
-        cdproj = "cd $HOME/projects/sheeley";
-        cdinfra = "cd $PRIVATE_TOOLS_DIR";
-        cdtools = "cd $TOOLS_DIR";
-        cdnotes = "cd $NOTES_DIR";
         cdicloud = "cd ~/Library/Mobile\ Documents/com~apple~CloudDocs";
-        dotfiles = "cd ~/dotfiles";
+        cdinfra = "cd $PRIVATE_TOOLS_DIR";
+        cdnotes = "cd $NOTES_DIR";
+        cdproj = "cd $HOME/projects/sheeley";
+        cdtools = "cd $TOOLS_DIR";
         clone = "git clone";
+        dotfiles = "cd ~/dotfiles";
+        la = "ls -la";
       };
     };
   };
