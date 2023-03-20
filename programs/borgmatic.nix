@@ -1,7 +1,7 @@
-{ ... }:
+{ pkgs, ... }:
 {
   programs.borgmatic = {
-    # TODO
+    # TODO: borgmatic
     enable = false;
   };
 }

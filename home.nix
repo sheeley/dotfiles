@@ -52,7 +52,7 @@ in
         EDITOR = "nvim";
       };
 
-      # TODO: this doesn't actually work
+      # TODO: this sometimes doesn't work with fish
       # https://github.com/LnL7/nix-darwin/issues/122
       sessionPath = [
         "$HOME/bin"
