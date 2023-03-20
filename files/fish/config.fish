@@ -1,9 +1,5 @@
 set fish_greeting # Disable greeting
 set -U fish_escape_delay_ms 300
-# function fish_user_key_bindings
-#     # bind \c. 'history-token-search-backward'
-#     bind \e. 'history-token-search-backward'
-# end
 
 fish_add_path -P "$HOME/bin" \
   "$HOME/projects/sheeley/infrastructure/bin" \

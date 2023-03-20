@@ -1,8 +1,13 @@
-{ config, pkgs, lib, user, inputs, ... }:
-let
-  private = pkgs.callPackage ~/.nix-private/private.nix { };
-in
 {
+  config,
+  pkgs,
+  lib,
+  user,
+  inputs,
+  ...
+}: let
+  private = pkgs.callPackage ~/.nix-private/private.nix {};
+in {
   imports = [
     ./dock.nix
   ];
@@ -14,7 +19,12 @@ in
     # verbose = true;
   };
 
-  home-manager.users.${user} = { config, lib, pkgs, ... }: {
+  home-manager.users.${user} = {
+    config,
+    lib,
+    pkgs,
+    ...
+  }: {
     programs.bash.enable = true;
     programs.home-manager.enable = true;
 
@@ -66,14 +76,9 @@ in
 
         "/opt/homebrew/bin"
         "/Applications/Xcode.app/Contents/Developer/usr/bin"
-
-        # "/sbin"
-        # "/usr/sbin"
-        # "/bin"
-        # "/usr/bin"
       ];
 
-      packages = pkgs.callPackage ./packages.nix { };
+      packages = pkgs.callPackage ./packages.nix {};
 
       file = {
         ".mongorc.js".text = builtins.readFile ./files/.mongorc.js;

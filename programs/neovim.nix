@@ -327,12 +327,12 @@
       };
 
       servers = {
-        nil_ls = {
-          enable = true;
-          settings = {
-            formatting.command = [ "alejandra" "--quiet" ];
-          };
-        };
+        # nil_ls = {
+        #   enable = true;
+        #   settings = {
+        #     formatting.command = [ "alejandra" "--quiet" ];
+          # };
+        # };
         bashls.enable = true;
         dartls.enable = true;
       };
