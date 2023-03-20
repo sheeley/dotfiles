@@ -73,9 +73,10 @@ if [ ! -f ~/dotfiles ]; then
 fi
 
 if [[ "$SHELL" != "/run/current-system/sw/bin/fish" ]]; then
-	if cat /etc/shells | grep /run/current-system/sw/bin/fish; then
-		chsh -s /run/current-system/sw/bin/fish
-	else
-		echo "couldn't set shell to fish"
-	fi
+	echo "Shell isn't fish - may want to chsh!"
+	# if cat /etc/shells | grep /run/current-system/sw/bin/fish; then
+	# 	chsh -s /run/current-system/sw/bin/fish
+	# else
+	# 	echo "couldn't set shell to fish"
+	# fi
 fi
