@@ -17,3 +17,4 @@
 - [ ] nightshift
 - [ ] Modifier keys
 - [ ] various TODOs spread throughout repo
+- [ ] various FUTUREs spread throughout repo

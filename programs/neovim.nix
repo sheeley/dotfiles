@@ -67,14 +67,14 @@
         clear = true;
       };
     };
-    
+
     maps = {
       insert = {
         ";;" = "<Esc>";
       };
       visual = {
         # TODO: folding
-# "<Space>" = "zf"; #folding
+        # "<Space>" = "zf"; #folding
       };
       normal = {
         # (un)indent with Tab
@@ -387,48 +387,32 @@
     };
 
     extraPlugins = with pkgs.vimPlugins; [
+      editorconfig-nvim
+      ron-vim
       telescope-ui-select-nvim
-      vim-nix
+      vim-clap
       vim-fish
+      vim-nix
+      vim-prettier
+      vim-sensible
       vim-shellcheck
       vim-terraform
-      editorconfig-vim
-      vim-sensible
-      vim-clap
 
       # TODO: more vim plugins
-      #shfmt
-      #   # coc-sh
-      #   # coc-go
-      #   # coc-yaml
-      #   # coc-json
-      #   # coc-prettier
-      #   # Plug 'liuchengxu/vim-clap', { 'do': ':Clap install-binary!' }
-      #   # Plug 'neoclide/coc.nvim', {'branch': 'release'}
       #   # Plug 'jremmen/vim-ripgrep'
-      #   # Plug 'stefandtw/quickfix-reflector.vim'
-
-      #   # " languages
-      #   # Plug 'hashivim/vim-terraform', { 'for': 'tf' }
-      #   # Plug 'itspriddle/vim-shellcheck'
-      #   # Plug 'dag/vim-fish', { 'for': 'fish' }
-      #   # Plug 'editorconfig/editorconfig-vim', { 'for': 'editorconfig' }
       #   # Plug 'keith/swift.vim'
-      #   # Plug 'junegunn/vim-easy-align'
-      #   # Plug 'ron-rs/ron.vim'
-      # ];
     ];
-    # extraPackages = with pkgs; [
-    #   shfmt
-    #   yaml-language-server
-    #   nodePackages.bash-language-server
-    #   rnix-lsp
-    #   nil
-    #   pyright
-    #   python310Packages.python-lsp-server
-    #   # flake8
-    #   # pycodestyle
-    #   python310Packages.autopep8
-    # ];
+
+    extraPackages = with pkgs; [
+      shfmt
+      yaml-language-server
+      nodePackages.bash-language-server
+      rnix-lsp
+      nil
+      pyright
+      python310Packages.python-lsp-server
+      python310Packages.flake8
+      python310Packages.autopep8
+    ];
   };
 }
