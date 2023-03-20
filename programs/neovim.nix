@@ -23,6 +23,7 @@
       cmdheight = 2;
       colorcolumn = "100";
       cot = [ "menu" "menuone" "noselect" ];
+      foldmethod = "syntax";
       hidden = true;
       number = true;
       scrolloff = 7;
@@ -31,7 +32,7 @@
       spell = true;
       tabstop = 4;
       termguicolors = true;
-      undodir = "$HOME/.nvim/undodir/";
+      undodir = ~/.nvim/undodir;
       undofile = true;
       updatetime = 100;
       shortmess = "c";
@@ -39,8 +40,6 @@
       # can't use this with noice
       # lazyredraw = true; 
     };
-
-
 
     plugins.nix = {
       enable = true;
@@ -68,39 +67,48 @@
         clear = true;
       };
     };
-    # " TODO: folding {{{
-    # set foldmethod=syntax
-    # nnoremap <silent> <Space> @=(foldlevel('.')?'za':"\<Space>")<CR>
-    # vnoremap <Space> zf
-    # " }}} folding
+    
     maps = {
       insert = {
         ";;" = "<Esc>";
       };
+      visual = {
+        # TODO: folding
+# "<Space>" = "zf"; #folding
+      };
       normal = {
         # (un)indent with Tab
         "<Tab>" = "<C-t>";
-        "<S-Tab>" = "<C-d";
+        "<S-Tab>" = "<C-d>";
+        # TODO: folding
+        # "<Space>" = {
+        #   silent = true;
+        #   command = "@=(foldlevel('.')?'za':\"\<Space>\")<CR>";
+        # };
 
         # windows
         # automatically create a split if none doesn't exist, otherwise navigate in
         # TODO: these do not work.
-        # "<C-j>" = "<C-w>j"; # noremap <C-j> <C-w>j
-        # "<C-k>" = "<C-w>k"; # noremap <C-k> <C-w>k
-        # "<C-h>" = "<C-w>h"; # noremap <C-h> <C-w>h
-        # "<expr>" = "<C-l> winnr('l') == winnr() ? ':vsp<CR>' : '<C-w>l'"; # nnoremap <expr> <C-l> winnr('l') == winnr() ? ':vsp<CR>' : '<C-w>l'
-        # this one is separate / 
+        # "<C-j>" = { 
+        #   command = "<C-w>j"; # noremap <C-j> <C-w>j
+        #   remap = true;
+        #   };
+        # "<C-k>" = { 
+        #   command = "<C-w>k"; # noremap <C-k> <C-w>k
+        #   remap = true;
+        #   };
+        # "<C-h>" = { 
+        #   command = "<C-w>h"; # noremap <C-h> <C-w>h
+        #   remap = true;
+        #   };
+        # "<expr>" ={ 
+        #   command =  "<C-l> winnr('l') == winnr() ? ':vsp<CR>' : '<C-w>l'"; # nnoremap <expr> <C-l> winnr('l') == winnr() ? ':vsp<CR>' : '<C-w>l'
+        #   remap = true;
+        #   };
+        # this one is separate 
         # "<expr>" = "<C-k> winnr('k') == '1' ? ':sp<CR>' : '<C-w>k'"; # nnoremap <expr> <C-k> winnr('k') == '1' ? ':sp<CR>' : '<C-w>k'
       };
     };
-
-    # TODO: this doesn't exist?
-    # filetype = {
-    #   extension = {
-    #     toml = "toml";
-    #     # ".vim/ftdetect/toml.vim".text = "autocmd BufNewFile,BufRead *.toml set filetype=toml";
-    #   };
-    # };
 
     plugins.null-ls = {
       enable = true;
@@ -112,7 +120,6 @@
         };
         code_actions = {
           shellcheck.enable = true;
-          #gitsigns.enable = true;
         };
         formatting = {
           alejandra.enable = true;
@@ -209,45 +216,31 @@
       enable = true;
       indent = true;
 
-      # TODO: error: attribute 'plugins' missing
-      # grammarPackages = with config.plugins.treesitter.package.passthru.builtGrammars; [
-      #   arduino
-      #   bash
-      #   c
-      #   cpp
-      #   cuda
-      #   dart
-      #   devicetree
-      #   diff
-      #   dockerfile
-      #   gitattributes
-      #   gitcommit
-      #   gitignore
-      #   git_rebase
-      #   help
-      #   html
-      #   ini
-      #   json
-      #   lalrpop
-      #   latex
-      #   lua
-      #   make
-      #   markdown
-      #   markdown_inline
-      #   meson
-      #   ninja
-      #   nix
-      #   python
-      #   regex
-      #   rst
-      #   rust
-      #   slint
-      #   sql
-      #   tlaplus
-      #   toml
-      #   vim
-      #   yaml
-      # ];
+      grammarPackages = with config.programs.nixvim.plugins.treesitter.package.passthru.builtGrammars; [
+        arduino
+        bash
+        c
+        cpp
+        cuda
+        dart
+        devicetree
+        diff
+        dockerfile
+        gitattributes
+        gitignore
+        git_rebase
+        help
+        html
+        json
+        markdown
+        markdown_inline
+        nix
+        python
+        regex
+        toml
+        vim
+        yaml
+      ];
     };
 
     # TODO: completion
@@ -356,11 +349,6 @@
       enable = true;
       autocmd.enabled = true;
     };
-
-    # TODO: this doesn't exist?
-    # plugins.lsp_signature = {
-    #   enable = true;
-    # };
 
     plugins.inc-rename = {
       enable = true;

@@ -42,12 +42,12 @@ in
         GOSUMDB = "off";
         LESS = "-R";
         BORG_REPO = "/Volumes/money/borgbackup";
-        GOPATH = "$HOME/go";
-        PRIVATE_CMD_DIR = "$HOME/projects/${user}/infrastructure/cmd";
-        PRIVATE_DATA_DIR = "$HOME/projects/${user}/infrastructure/data";
-        PRIVATE_TOOLS_DIR = "$HOME/projects/${user}/infrastructure";
-        TOOLS_DIR = "$HOME/projects/${user}/tools";
-        NOTES_DIR = "$HOME/projects/${user}/notes";
+        GOPATH = toString ~/go;
+        PRIVATE_CMD_DIR = toString ~/projects/sheeley/infrastructure/cmd;
+        PRIVATE_DATA_DIR = toString ~/projects/sheeley/infrastructure/data;
+        PRIVATE_TOOLS_DIR = toString ~/projects/sheeley/infrastructure;
+        TOOLS_DIR = toString ~/projects/sheeley/tool;
+        NOTES_DIR = toString ~/projects/sheeley/notes;
         GITHUB_TOKEN = "${private.githubSecret}";
         EDITOR = "nvim";
       };

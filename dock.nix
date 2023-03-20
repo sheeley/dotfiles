@@ -1,4 +1,4 @@
-{ user, ... }:
+{ ... }:
 {
   imports = [
     ./dock
@@ -22,12 +22,12 @@
       options = "--sort name --view grid --display folder";
     }
     {
-      path = "/Users/${user}/Downloads/";
+      path = toString ~/Downloads;
       section = "others";
       options = "--sort dateadded --view fan --display stack";
     }
     {
-      path = "/Users/${user}/Screenshots/";
+      path = toString ~/Screenshots;
       section = "others";
       options = "--sort dateadded --view fan --display stack";
     }
