@@ -34,7 +34,7 @@ enum DeleteWindow: String, CaseIterable {
 extension DeleteWindow: ExpressibleByArgument {}
 
 struct GlobalOptions: ParsableArguments {
-    @Option(name: .long, help: "'today', 'tomorrow', 'both', or a specific note id")
+    @Option(name: .long, help: "'today', 'tomorrow', 'both', or a specific note ID")
     var create: String?
     
     @Option(name:.long, help: "Subdirectory to use")
@@ -42,6 +42,9 @@ struct GlobalOptions: ParsableArguments {
     
     @Option(name: .long, help: ArgumentHelp(DeleteWindow.allCases.map { $0.rawValue }.joined(separator: ", ")))
     var clean = DeleteWindow.none
+    
+    @Option(name: .long, help: "ID of note to open")
+    var openNoteID: String?
     
     @Flag
     var verbose = false
@@ -116,6 +119,7 @@ struct Generate: ParsableCommand {
                 open = true
                 break
             }
+            verboseLog("cleaning \(create)")
             
             let events = getEvents(in: window)
             if events.isEmpty {
@@ -132,6 +136,13 @@ struct Generate: ParsableCommand {
             try createNotes(meetings, in: baseDir, with: template, and: options)
             if open, let meeting = meetings.first {
                 openNote(meeting)
+            }
+            
+            if let openNoteID = options.openNoteID {
+                verboseLog("attempting to open \(openNoteID)")
+                if let event = getEvents(in: EventWindow.specificEvent(id: openNoteID)).first {
+                    openNote(Meeting(from: event))
+                }
             }
         }
     }
@@ -172,6 +183,7 @@ struct Generate: ParsableCommand {
             }
             
             if !options.dryRun {
+                verboseLog("creating \(p.absoluteString)")
                 try d.write(to: p)
                 written.append(n)
             }
