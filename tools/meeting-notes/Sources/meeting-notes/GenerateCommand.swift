@@ -14,17 +14,21 @@ import Darwin
 
 let logger = Logger()
 
+//let startOfToday = Calendar.current.startOfDay(for: Date())
+//let endOfToday = Calendar.current.startOfDay(for: Calendar.current.date(byAdding: DateComponents(day: 1), to: Date())!)
+
 enum DeleteWindow: String, CaseIterable {
     case past, future, all, none
     
     func includes(date: Date) -> Bool {
+//        print("\(self) \(Date()) \(date)")
         switch self {
         case .none:
             return false
         case .past:
-            return date < Date()
+            return date < Date() // startOfToday
         case .future:
-            return date > Date()
+            return date > Date() // endOfToday
         case .all:
             return true
         }
@@ -119,7 +123,7 @@ struct Generate: ParsableCommand {
                 open = true
                 break
             }
-            verboseLog("cleaning \(create)")
+            verboseLog("create: \(create)")
             
             let events = getEvents(in: window)
             if events.isEmpty {
@@ -239,6 +243,17 @@ let dateRegex = Regex {
     Capture {
         Repeat(.digit, count: 2)
     } transform: { Int($0) }
+    
+    Optionally {
+        " "
+        Capture {
+            Repeat(.digit, count: 2)
+        } transform: { Int($0) }
+        "-"
+        Capture {
+            Repeat(.digit, count: 2)
+        } transform: { Int($0) }
+    }
 }
 
 func cleanEmptyNotes(using options: GlobalOptions) throws {
@@ -249,14 +264,10 @@ func cleanEmptyNotes(using options: GlobalOptions) throws {
             let path = String($0)
             guard path.contains(options.subDirectory) else { return }
             
-            let matches = path.matches(of: dateRegex)
-            if matches.count != 1 { return }
-            let match = matches.first!
-            let year = match.output.1
-            let month = match.output.2
-            let day = match.output.3
+            guard let match = path.firstMatch(of: dateRegex) else { return }            
+            let (_, year, month, day, hour, minutes) = match.output
             
-            if let fileDate = Calendar.current.date(from: DateComponents(year: year, month: month, day: day)),
+            if let fileDate = Calendar.current.date(from: DateComponents(year: year, month: month, day: day, hour: hour ?? 0, minute: minutes ?? 0)),
                options.clean.includes(date: fileDate) {
                 print("Deleting \(path)")
                 if !options.dryRun {
