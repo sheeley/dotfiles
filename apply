@@ -3,11 +3,13 @@ set -eu
 
 HN=$(hostname | cut -d '.' -f 1)
 if [[ "$HN" != "jmba" && "$HN" != "Sheeley-MBP" ]]; then
-    echo "change hostname: $HN"
-    exit 1
+	echo "change hostname: $HN"
+	exit 1
 fi
 
 nix build .#darwinConfigurations.${HN}.system --impure --extra-experimental-features "nix-command flakes"
 
 echo "darwin-rebuild"
 ./result/sw/bin/darwin-rebuild switch --flake . --impure
+
+date >last-applied.txt

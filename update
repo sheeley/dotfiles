@@ -2,3 +2,5 @@
 set -eu
 
 nix flake update # --extra-experimental-features "nix-command flakes" # --impure
+
+date >last-updated.txt

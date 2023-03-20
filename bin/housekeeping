@@ -8,17 +8,12 @@ if [[ "$day" -lt 10 ]]; then
 fi
 
 if [[ "$FIRST_OF_MONTH" = "y" ]]; then
-	brew upgrade
-	brew doctor
+	echo "Nix last updated"
+	cat ~/dotfiles/last-updated.txt
+
+	echo "Nix last applied"
+	cat ~/dotfiles/last-applied.txt
 fi
-
-# if get_input "Dump brew bundle?"; then
-#     HOMEBREW_NO_AUTO_UPDATE=1 update_brew_packages
-# fi
-
-# if get_input "Dump plists?"; then
-#     plist_export
-# fi
 
 check_git_status() {
 	if [[ ! -d "$1" ]]; then
@@ -36,12 +31,11 @@ check_git_status() {
 	)
 }
 
-# chezmoi update
-# check_git_status "$(chezmoi source-path)"
 check_git_status "$TOOLS_DIR"
 check_git_status "$PRIVATE_TOOLS_DIR"
 
 if [[ "$WORKMACHINE" = "true" ]]; then
 	exit
 fi
+
 full_backup
