@@ -1,8 +1,10 @@
-{ pkgs, user, ... }:
-let
-  private = pkgs.callPackage ~/.nix-private/private.nix { };
-in
 {
+  pkgs,
+  user,
+  ...
+}: let
+  private = pkgs.callPackage ~/.nix-private/private.nix {};
+in {
   services.nix-daemon.enable = true;
 
   programs.zsh.enable = true;
@@ -30,14 +32,18 @@ in
   # TODO:
   environment.etc."dovecot.conf".source = ./files/dovecot.conf;
 
-  system.activationScripts.createEmptyDirs.text = ''
-    mkdir -p "~/.ssh/control" 
-    mkdir -p "~/Screenshots" 
-    mkdir -p "~/projects/sheeley" 
-    mkdir -p "~/bin"
-  '';
+  system.activationScripts = {
+    createEmptyDirs.text = ''
+      mkdir -p "~/.ssh/control"
+      mkdir -p "~/Screenshots"
+      mkdir -p "~/projects/sheeley"
+      mkdir -p "~/bin"
+      mkdir -p "~/scratch"
+      echo "directories made"
+    '';
 
-  system.activationScripts.installMeetingNotes.text = ''
-    ./tools/meeting-notes/install
-  '';
+    installMeetingNotes.text = ''
+      ./tools/meeting-notes/install
+    '';
+  };
 }

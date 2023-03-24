@@ -133,6 +133,19 @@
         "type": "github"
       }
     },
+    "nix-private": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1678655299,
+        "narHash": "sha256-wh+osWrEGD8c4LFLBZYNTbRas35KLVIM3JNNkPyOJyo=",
+        "path": "/Users/johnnysheeley/.nix-private",
+        "type": "path"
+      },
+      "original": {
+        "path": "/Users/johnnysheeley/.nix-private",
+        "type": "path"
+      }
+    },
     "nixpkgs": {
       "locked": {
         "lastModified": 1679282725,
@@ -244,6 +257,7 @@
       "inputs": {
         "darwin": "darwin",
         "home-manager": "home-manager",
+        "nix-private": "nix-private",
         "nixpkgs": "nixpkgs",
         "nixvim": "nixvim"
       }

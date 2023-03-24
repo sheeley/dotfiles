@@ -4,8 +4,10 @@
   lib,
   user,
   inputs,
+  # private,
   ...
 }: let
+  # private = inputs.private {};
   private = pkgs.callPackage ~/.nix-private/private.nix {};
 in {
   imports = [
@@ -53,6 +55,7 @@ in {
         LESS = "-R";
         BORG_REPO = "/Volumes/money/borgbackup";
         GOPATH = toString ~/go;
+        DOTFILES_DIR = toString ~/dotfiles;
         PRIVATE_CMD_DIR = toString ~/projects/sheeley/infrastructure/cmd;
         PRIVATE_DATA_DIR = toString ~/projects/sheeley/infrastructure/data;
         PRIVATE_TOOLS_DIR = toString ~/projects/sheeley/infrastructure;
@@ -106,7 +109,8 @@ in {
         cdproj = "cd $HOME/projects/sheeley";
         cdtools = "cd $TOOLS_DIR";
         clone = "git clone";
-        dotfiles = "cd ~/dotfiles";
+        cddot = "cd ~/dotfiles";
+        cdscratch = "cd ~/scratch";
         la = "ls -la";
       };
     };
