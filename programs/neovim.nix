@@ -1,10 +1,10 @@
-{ pkgs
-, inputs
-, config
-, helpers
-, ...
+{
+  pkgs,
+  inputs,
+  config,
+  helpers,
+  ...
 }: {
-
   programs.nixvim = {
     enable = true;
     viAlias = true;
@@ -22,7 +22,7 @@
     options = {
       cmdheight = 2;
       colorcolumn = "100";
-      cot = [ "menu" "menuone" "noselect" ];
+      cot = ["menu" "menuone" "noselect"];
       foldmethod = "syntax";
       hidden = true;
       number = true;
@@ -38,7 +38,7 @@
       shortmess = "c";
       shell = "${pkgs.zsh}/bin/zsh";
       # can't use this with noice
-      # lazyredraw = true; 
+      # lazyredraw = true;
     };
 
     plugins.nix = {
@@ -47,16 +47,16 @@
 
     autoCmd = [
       {
-        event = [ "BufWritePre" ];
+        event = ["BufWritePre"];
         command = "lua vim.lsp.buf.formatting_sync()";
       }
       {
-        event = [ "BufEnter" "FocusGained" "InsertLeave" ];
+        event = ["BufEnter" "FocusGained" "InsertLeave"];
         command = "set relativenumber";
         group = "numberToggle";
       }
       {
-        event = [ "BufLeave" "FocusLost" "InsertEnter" ];
+        event = ["BufLeave" "FocusLost" "InsertEnter"];
         command = "set norelativenumber";
         group = "numberToggle";
       }
@@ -74,39 +74,46 @@
       };
       visual = {
         # TODO: folding
-        # "<Space>" = "zf"; #folding
+        "<Space>" = {
+          action = "zf";
+          remap = false;
+        };
       };
       normal = {
         # (un)indent with Tab
         "<Tab>" = "<C-t>";
         "<S-Tab>" = "<C-d>";
-        # TODO: folding
-        # "<Space>" = {
-        #   silent = true;
-        #   command = "@=(foldlevel('.')?'za':\"\<Space>\")<CR>";
-        # };
 
-        # windows
+        # folding
+        "<Space>" = {
+          silent = true;
+          action = "@=(foldlevel('.')?'za':\"\<Space>\")<CR>";
+          remap = false;
+        };
+
+        # windows/splits
         # automatically create a split if none doesn't exist, otherwise navigate in
-        # TODO: these do not work.
-        # "<C-j>" = { 
-        #   command = "<C-w>j"; # noremap <C-j> <C-w>j
-        #   remap = true;
-        #   };
-        # "<C-k>" = { 
-        #   command = "<C-w>k"; # noremap <C-k> <C-w>k
-        #   remap = true;
-        #   };
-        # "<C-h>" = { 
-        #   command = "<C-w>h"; # noremap <C-h> <C-w>h
-        #   remap = true;
-        #   };
-        # "<expr>" ={ 
-        #   command =  "<C-l> winnr('l') == winnr() ? ':vsp<CR>' : '<C-w>l'"; # nnoremap <expr> <C-l> winnr('l') == winnr() ? ':vsp<CR>' : '<C-w>l'
-        #   remap = true;
-        #   };
-        # this one is separate 
-        # "<expr>" = "<C-k> winnr('k') == '1' ? ':sp<CR>' : '<C-w>k'"; # nnoremap <expr> <C-k> winnr('k') == '1' ? ':sp<CR>' : '<C-w>k'
+        "<C-l>" = {
+          action = "<C-w>l";
+          remap = false;
+        };
+        "<C-j>" = {
+          action = "<C-w>j";
+          remap = false;
+        };
+        "<C-k>" = {
+          action = "<C-w>k";
+          remap = false;
+        };
+        "<C-h>" = {
+          action = "<C-w>h";
+          remap = false;
+        };
+        # TODO: this doesn't actually create new windows
+        "<expr>" = {
+          action = "<C-l> winnr('l') == winnr() ? ':vsp<CR>' : '<C-w>l'"; # nnoremap <expr> <C-l> winnr('l') == winnr() ? ':vsp<CR>' : '<C-w>l'
+          remap = false;
+        };
       };
     };
 
@@ -190,17 +197,17 @@
       };
 
       sources = [
-        { name = "luasnip"; }
-        { name = "nvim_lsp"; }
-        { name = "path"; }
-        { name = "buffer"; }
-        { name = "calc"; }
+        {name = "luasnip";}
+        {name = "nvim_lsp";}
+        {name = "path";}
+        {name = "buffer";}
+        {name = "calc";}
       ];
     };
 
     plugins.telescope = {
       enable = true;
-      enabledExtensions = [ "ui-select" ];
+      enabledExtensions = ["ui-select"];
       extensionConfig = {
         ui-select = {
           __raw = ''
@@ -249,19 +256,19 @@
     # " " other plugin before putting this into your config.
     # " inoremap <silent><expr> <TAB> pumvisible() ? "\<C-n>" : <SID>check_back_space() ? "\<TAB>" : coc#refresh()
     # " inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
-    # " 
+    # "
     # " function! s:check_back_space() abort
     # " 	let col = col('.') - 1
     # " 	return !col || getline('.')[col - 1]  =~# '\s'
     # " endfunction
-    # " 
+    # "
     # " " Use <c-space> to trigger completion.
     # " if has('nvim')
     # " 	inoremap <silent><expr> <c-space> coc#refresh()
     # " else
     # " 	inoremap <silent><expr> <c-@> coc#refresh()
     # " endif
-    # " 
+    # "
     # " " Make <CR> auto-select the first completion item and notify coc.nvim to
     # " " format on enter, <cr> could be remapped by other vim plugin
     # " inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm() : "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
@@ -331,7 +338,7 @@
         #   enable = true;
         #   settings = {
         #     formatting.command = [ "alejandra" "--quiet" ];
-          # };
+        # };
         # };
         bashls.enable = true;
         dartls.enable = true;
@@ -386,22 +393,34 @@
       };
     };
 
-    extraPlugins = with pkgs.vimPlugins; [
-      editorconfig-nvim
-      ron-vim
-      telescope-ui-select-nvim
-      vim-clap
-      vim-fish
-      vim-nix
-      vim-prettier
-      vim-sensible
-      vim-shellcheck
-      vim-terraform
+    extraPlugins =
+      with pkgs.vimPlugins; [
+        editorconfig-nvim
+        ron-vim
+        telescope-ui-select-nvim
+        vim-clap
+        vim-fish
+        vim-nix
+        vim-prettier
+        vim-sensible
+        vim-shellcheck
+        vim-terraform
 
-      # TODO: more vim plugins
-      #   # Plug 'jremmen/vim-ripgrep'
-      #   # Plug 'keith/swift.vim'
-    ];
+        # TODO: more vim plugins
+        #   # Plug 'jremmen/vim-ripgrep'
+        #   # Plug 'keith/swift.vim'
+      ]
+      #   ++ [vimUtils.buildVimPluginFrom2Nix {
+      #   name = "vim-ripgrep-2021-11-30";
+      #   src = fetchFromGitHub {
+      #     owner = "jremmen";
+      #     repo = "vim-ripgrep";
+      #     rev = "2bb2425387b449a0cd65a54ceb85e123d7a320b8";
+      #     sha256 = "sha256-OvQPTEiXOHI0uz0+6AVTxyJ/TUMg6kd3BYTAbnCI7W8=";
+      #   };
+      #   dependencies = [];
+      # }]
+      ;
 
     extraPackages = with pkgs; [
       shfmt
