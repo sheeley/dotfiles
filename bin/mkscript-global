@@ -1,7 +1,7 @@
 #! /usr/bin/env bash
 set -eu
 
-FILE="$1"
+FILE="$HOME/dotfiles/bin/executable_$1"
 
 if [[ -f "$FILE" ]]; then
 	echo "script exists"
