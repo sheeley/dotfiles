@@ -69,7 +69,7 @@ in {
       # https://github.com/LnL7/nix-darwin/issues/122
       sessionPath = [
         "$HOME/bin"
-        "$HOME/nix-bin"
+        "$HOME/dotfiles/bin"
 
         "$HOME/projects/sheeley/infrastructure/bin"
         "$HOME/projects/sheeley/infrastructure/scripts"
@@ -97,7 +97,7 @@ in {
           repo = "${private.borgRepo}";
         };
 
-        "nix-bin".source = config.lib.file.mkOutOfStoreSymlink ./bin;
+        # "nix-bin".source = config.lib.file.mkOutOfStoreSymlink ./bin;
       };
 
       shellAliases = {
