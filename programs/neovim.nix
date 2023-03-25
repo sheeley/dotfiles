@@ -21,6 +21,7 @@
 
     options = {
       cmdheight = 2;
+      clipboard = "unnamed";
       colorcolumn = "100";
       cot = ["menu" "menuone" "noselect"];
       foldmethod = "syntax";

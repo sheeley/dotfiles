@@ -1,5 +1,10 @@
-{ pkgs, ... }:
 {
+  pkgs,
+  lib,
+  ...
+}: let
+  private = pkgs.callPackage ~/.nix-private/private.nix {};
+in {
   homebrew = {
     enable = true;
 
@@ -9,16 +14,19 @@
       upgrade = true;
     };
 
-    brews = [
-      # TODO: if personal & swap to home-manager
-      "borgmatic"
-
-      "dovecot"
-      "git-delta"
-      "scout"
-      "swiftformat"
-      "swiftlint"
-    ];
+    brews =
+      [
+        "dovecot"
+        "git-delta"
+        "scout"
+        "swiftformat"
+        "swiftlint"
+      ]
+      ++ (lib.optionals private.personal [
+        # TODO: swap to home-manager
+        "borgbackup"
+        "borgmatic"
+      ]);
 
     casks = [
       "1password"
