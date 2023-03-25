@@ -33,17 +33,19 @@ in {
   environment.etc."dovecot.conf".source = ./files/dovecot.conf;
 
   system.activationScripts = {
-    createEmptyDirs.text = ''
-      mkdir -p "~/.ssh/control"
-      mkdir -p "~/Screenshots"
-      mkdir -p "~/projects/sheeley"
-      mkdir -p "~/bin"
-      mkdir -p "~/scratch"
-      echo "directories made"
+    preActivation.text = ''
+      mkdir -p "$HOME/.ssh/control"
+      mkdir -p "$HOME/Screenshots"
+      mkdir -p "$HOME/projects/sheeley"
+      mkdir -p "$HOME/bin"
+      mkdir -p "$HOME/scratch"
+      mkdir -p "$HOME/scratch"
     '';
 
-    installMeetingNotes.text = ''
-      ./tools/meeting-notes/install
-    '';
+    # postActivation.text = ''
+    # (
+    #   cd ./tools/meeting-notes
+    #   ./install
+    # )
   };
 }
