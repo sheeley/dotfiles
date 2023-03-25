@@ -49,7 +49,7 @@
     autoCmd = [
       {
         event = ["BufWritePre"];
-        command = "lua vim.lsp.buf.formatting_sync()";
+        command = "lua vim.lsp.buf.format()";
       }
       {
         event = ["BufEnter" "FocusGained" "InsertLeave"];
