@@ -33,19 +33,7 @@ in {
   environment.etc."dovecot.conf".source = ./files/dovecot.conf;
 
   system.activationScripts = {
-    preActivation.text = ''
-      mkdir -p "$HOME/.ssh/control"
-      mkdir -p "$HOME/Screenshots"
-      mkdir -p "$HOME/projects/sheeley"
-      mkdir -p "$HOME/bin"
-      mkdir -p "$HOME/scratch"
-      mkdir -p "$HOME/scratch"
-    '';
-
-    # postActivation.text = ''
-    # (
-    #   cd ./tools/meeting-notes
-    #   ./install
-    # )
+    preActivation.source = ./pre.sh;
+    postActivation.source = ./post.sh;
   };
 }
