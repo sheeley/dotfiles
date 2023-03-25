@@ -1,9 +1,8 @@
-{
-  pkgs,
-  inputs,
-  config,
-  helpers,
-  ...
+{ pkgs
+, inputs
+, config
+, helpers
+, ...
 }: {
   programs.nixvim = {
     enable = true;
@@ -23,7 +22,7 @@
       cmdheight = 2;
       clipboard = "unnamed";
       colorcolumn = "100";
-      cot = ["menu" "menuone" "noselect"];
+      cot = [ "menu" "menuone" "noselect" ];
       foldmethod = "syntax";
       hidden = true;
       number = true;
@@ -48,16 +47,16 @@
 
     autoCmd = [
       {
-        event = ["BufWritePre"];
+        event = [ "BufWritePre" ];
         command = "lua vim.lsp.buf.format()";
       }
       {
-        event = ["BufEnter" "FocusGained" "InsertLeave"];
+        event = [ "BufEnter" "FocusGained" "InsertLeave" ];
         command = "set relativenumber";
         group = "numberToggle";
       }
       {
-        event = ["BufLeave" "FocusLost" "InsertEnter"];
+        event = [ "BufLeave" "FocusLost" "InsertEnter" ];
         command = "set norelativenumber";
         group = "numberToggle";
       }
@@ -74,7 +73,6 @@
         ";;" = "<Esc>";
       };
       visual = {
-        # TODO: folding
         "<Space>" = {
           action = "zf";
           remap = false;
@@ -198,17 +196,17 @@
       };
 
       sources = [
-        {name = "luasnip";}
-        {name = "nvim_lsp";}
-        {name = "path";}
-        {name = "buffer";}
-        {name = "calc";}
+        { name = "luasnip"; }
+        { name = "nvim_lsp"; }
+        { name = "path"; }
+        { name = "buffer"; }
+        { name = "calc"; }
       ];
     };
 
     plugins.telescope = {
       enable = true;
-      enabledExtensions = ["ui-select"];
+      enabledExtensions = [ "ui-select" ];
       extensionConfig = {
         ui-select = {
           __raw = ''
@@ -411,17 +409,20 @@
         #   # Plug 'jremmen/vim-ripgrep'
         #   # Plug 'keith/swift.vim'
       ]
-      #   ++ [vimUtils.buildVimPluginFrom2Nix {
-      #   name = "vim-ripgrep-2021-11-30";
-      #   src = fetchFromGitHub {
-      #     owner = "jremmen";
-      #     repo = "vim-ripgrep";
-      #     rev = "2bb2425387b449a0cd65a54ceb85e123d7a320b8";
-      #     sha256 = "sha256-OvQPTEiXOHI0uz0+6AVTxyJ/TUMg6kd3BYTAbnCI7W8=";
-      #   };
-      #   dependencies = [];
-      # }]
-      ;
+      # ++ [
+      #   pkgs.vimUtils.buildVimPluginFrom2Nix
+      #   {
+      #     name = "vim-ripgrep-2021-11-30";
+      #     src = pkgs.fetchFromGitHub {
+      #       owner = "jremmen";
+      #       repo = "vim-ripgrep";
+      #       rev = "2bb2425387b449a0cd65a54ceb85e123d7a320b8";
+      #       sha256 = "sha256-OvQPTEiXOHI0uz0+6AVTxyJ/TUMg6kd3BYTAbnCI7W8=";
+      #     };
+      #     dependencies = [ ];
+      #   }
+      # ]
+    ;
 
     extraPackages = with pkgs; [
       shfmt

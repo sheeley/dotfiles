@@ -27,16 +27,18 @@
     # flake-utils.url = "github:numtide/flake-utils";
   };
 
-  outputs = {
-    self,
-    nixpkgs,
-    home-manager,
-    darwin,
-    nixvim,
-    nix-private,
-  } @ inputs: let
-    legacyPackages = nixpkgs.lib.genAttrs ["aarch64-darwin"] (
-      system:
+  outputs =
+    { self
+    , nixpkgs
+    , home-manager
+    , darwin
+    , nixvim
+    , nix-private
+    ,
+    } @ inputs:
+    let
+      legacyPackages = nixpkgs.lib.genAttrs [ "aarch64-darwin" ] (
+        system:
         import inputs.nixpkgs {
           inherit system;
           # NOTE: Using `nixpkgs.config` in your NixOS config won't work
@@ -45,44 +47,45 @@
 
           config.allowUnfree = true;
         }
-    );
-    # private = import ./.nix-private/private.nix {};
-    private = "${nix-private}/private.nix";
-  in {
-    darwinConfigurations."jmba" = darwin.lib.darwinSystem {
-      system = "aarch64-darwin";
-      pkgs = legacyPackages.aarch64-darwin;
-      modules = [
-        home-manager.darwinModules.home-manager
-        ./environment.nix
-        ./homebrew.nix
-        ./home.nix
-        ./system.nix
-      ];
+      );
+      # private = import ./.nix-private/private.nix {};
+      private = "${nix-private}/private.nix";
+    in
+    {
+      darwinConfigurations."jmba" = darwin.lib.darwinSystem {
+        system = "aarch64-darwin";
+        pkgs = legacyPackages.aarch64-darwin;
+        modules = [
+          home-manager.darwinModules.home-manager
+          ./environment.nix
+          ./homebrew.nix
+          ./home.nix
+          ./system.nix
+        ];
 
-      specialArgs = {
-        inherit inputs;
-        user = "sheeley";
+        specialArgs = {
+          inherit inputs;
+          user = "sheeley";
+        };
+      };
+
+      darwinConfigurations."Sheeley-MBP" = darwin.lib.darwinSystem {
+        system = "aarch64-darwin";
+        pkgs = legacyPackages.aarch64-darwin;
+        modules = [
+          home-manager.darwinModules.home-manager
+          ./environment.nix
+          ./homebrew.nix
+          ./home.nix
+          ./system.nix
+        ];
+        # extraModules = [private];
+
+        specialArgs = {
+          inherit inputs private nix-private;
+          user = "johnnysheeley";
+          # private = private;
+        };
       };
     };
-
-    darwinConfigurations."Sheeley-MBP" = darwin.lib.darwinSystem {
-      system = "aarch64-darwin";
-      pkgs = legacyPackages.aarch64-darwin;
-      modules = [
-        home-manager.darwinModules.home-manager
-        ./environment.nix
-        ./homebrew.nix
-        ./home.nix
-        ./system.nix
-      ];
-      # extraModules = [private];
-
-      specialArgs = {
-        inherit inputs private nix-private;
-        user = "johnnysheeley";
-        # private = private;
-      };
-    };
-  };
 }

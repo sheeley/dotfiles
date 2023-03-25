@@ -1,10 +1,11 @@
+{ pkgs
+, lib
+, ...
+}:
+let
+  private = pkgs.callPackage ~/.nix-private/private.nix { };
+in
 {
-  pkgs,
-  lib,
-  ...
-}: let
-  private = pkgs.callPackage ~/.nix-private/private.nix {};
-in {
   homebrew = {
     enable = true;
 
@@ -23,7 +24,7 @@ in {
         "swiftlint"
       ]
       ++ (lib.optionals private.personal [
-        # TODO: swap to home-manager
+        # TODO: swap borgmatic to home-manager
         "borgbackup"
         "borgmatic"
       ]);

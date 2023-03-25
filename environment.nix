@@ -1,10 +1,11 @@
+{ pkgs
+, user
+, ...
+}:
+let
+  private = pkgs.callPackage ~/.nix-private/private.nix { };
+in
 {
-  pkgs,
-  user,
-  ...
-}: let
-  private = pkgs.callPackage ~/.nix-private/private.nix {};
-in {
   services.nix-daemon.enable = true;
 
   programs.zsh.enable = true;
