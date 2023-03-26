@@ -1,8 +1,9 @@
-{ pkgs, ... }:
-let
-  private = pkgs.callPackage ~/.nix-private/private.nix { };
-in
 {
+  pkgs,
+  private,
+  ...
+}: let
+in {
   programs.borgmatic = {
     # TODO: swap borgmatic to home-manager
     enable = false;

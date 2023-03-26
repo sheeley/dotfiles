@@ -198,163 +198,58 @@
       };
 
       # "com.crowdcafe.windowmagnet" = {
-      #   centerWindowComboKey = { };
-      #   expandWindowCenterThirdComboKey = { };
-      #   expandWindowEastComboKey = {
-      #     keyCode = 124;
-      #     modifierFlags = 1835008;
-      #   };
-      #   expandWindowLeftThirdComboKey = { };
-      #   expandWindowLeftTwoThirdsComboKey = { };
-      #   expandWindowNorthComboKey = {
-      #     keyCode = 126;
-      #     modifierFlags = 1835008;
-      #   };
-      #   expandWindowNorthEastComboKey = {
-      #     keyCode = 19;
-      #     modifierFlags = 1835008;
-      #   };
-      #   expandWindowNorthWestComboKey = {
-      #     keyCode = 18;
-      #     modifierFlags = 1835008;
-      #   };
-      #   expandWindowRightThirdComboKey = { };
-      #   expandWindowRightTwoThirdsComboKey = { };
-      #   expandWindowSouthComboKey = {
-      #     keyCode = 125;
-      #     modifierFlags = 1835008;
-      #   };
-      #   expandWindowSouthEastComboKey = {
-      #     keyCode = 21;
-      #     modifierFlags = 1835008;
-      #   };
-      #   expandWindowSouthWestComboKey = {
-      #     keyCode = 20;
-      #     modifierFlags = 1835008;
-      #   };
-      #   expandWindowWestComboKey = {
-      #     keyCode = 123;
-      #     modifierFlags = 1835008;
-      #   };
-      #   maximizeWindowComboKey = {
-      #     keyCode = 3;
-      #     modifierFlags = 1835008;
-      #   };
-      #   moveWindowToNextDisplay = {
-      #     keyCode = 123;
-      #     modifierFlags = 1310720;
-      #   };
-      #   moveWindowToPreviousDisplay = {
-      #     keyCode = 124;
-      #     modifierFlags = 1310720;
-      #   };
-      #   restoreWindowComboKey = { };
+        # centerWindowComboKey = { };
+        # expandWindowCenterThirdComboKey = { };
+        # expandWindowEastComboKey = {
+        #   keyCode = 124;
+        #   modifierFlags = 1835008;
+        # };
+        # expandWindowLeftThirdComboKey = { };
+        # expandWindowLeftTwoThirdsComboKey = { };
+        # expandWindowNorthComboKey = {
+        #   keyCode = 126;
+        #   modifierFlags = 1835008;
+        # };
+        # expandWindowNorthEastComboKey = {
+        #   keyCode = 19;
+        #   modifierFlags = 1835008;
+        # };
+        # expandWindowNorthWestComboKey = {
+        #   keyCode = 18;
+        #   modifierFlags = 1835008;
+        # };
+        # expandWindowRightThirdComboKey = { };
+        # expandWindowRightTwoThirdsComboKey = { };
+        # expandWindowSouthComboKey = {
+        #   keyCode = 125;
+        #   modifierFlags = 1835008;
+        # };
+        # expandWindowSouthEastComboKey = {
+        #   keyCode = 21;
+        #   modifierFlags = 1835008;
+        # };
+        # expandWindowSouthWestComboKey = {
+        #   keyCode = 20;
+        #   modifierFlags = 1835008;
+        # };
+        # expandWindowWestComboKey = {
+        #   keyCode = 123;
+        #   modifierFlags = 1835008;
+        # };
+        # maximizeWindowComboKey = {
+        #   keyCode = 3;
+        #   modifierFlags = 1835008;
+        # };
+        # moveWindowToNextDisplay = {
+        #   keyCode = 123;
+        #   modifierFlags = 1310720;
+        # };
+        # moveWindowToPreviousDisplay = {
+        #   keyCode = 124;
+        #   modifierFlags = 1310720;
+        # };
+        # restoreWindowComboKey = { };
       # };
     };
   };
 }
-
-# TODO: review these
-# to_export = {
-#     "com.abhishek.Clocker": global_rules.and_rules(application="Clocker",
-#                                                    exclusions=["iVersionLastChecked"]),
-#     "com.apple.finder": global_rules.and_rules(application="Finder", exclusions=[
-#         "FXRecentFolders",
-#         "FXSidebarUpgraded*",
-#         "FavoriteTagNames",
-#         "GoToField",
-#         "GoToFieldHistory",
-#         "LastTrashState",
-#         "RecentMoveAndCopyDestinations",
-#         "QuickLookPreview*",
-#         "NewWindowTargetPath",
-#         "FXPreferencesWindow..*"
-#     ]),
-#     "com.apple.symbolichotkeys": None,
-#     "com.googlecode.iterm2": global_rules,
-#     "com.if.Amphetamine": Rules(application="Amphetamine", exclusions=[
-#         "Session Durations",
-#         "Total Session Run Time"
-#     ]),
-#     "com.surteesstudios.Bartender": only(application="Bartender 4", include=[
-#         "SUAutomaticallyUpdate",
-#         "ShowForUpdateSettings",
-#         "ProfileSettings",
-#         "UseBartenderBar",
-#         "appSettings",
-#         "statusBarImageNamed",
-#         "license2HoldersName",
-#         "license4HoldersName",
-#        ]),
-#     "com.apple.Safari": only(include=[
-#         "AlwaysRestoreSessionAtLaunch",
-#         "AutoFillPasswords",
-#         "FindOnPageMatchesWordStartsOnly",
-#         "HomePage",
-#         "IncludeDevelopMenu",
-#         "SearchProviderIdentifier",
-#         "ShowFavoritesBar-v2",
-#         "ShowOverlayStatusBar",
-#         "ShowSidebarInNewWindows",
-#         "ShowSidebarInTopSites",
-#         "SidebarViewModeIdentifier",
-#         "UniversalSearchEnabled",
-#         "WebKitDeveloperExtrasEnabledPreferenceKey",
-#         "WebKitPreferences.*",
-#     ]),
-#     "NSGlobalDomain": only(include=[
-#         "AppleActionOnDoubleClick",
-#         "AppleMiniaturizeOnDoubleClick",
-#         "AppleScrollerPagingBehavior",
-#         "AppleShowAllExtensions",
-#         "NSAutomaticCapitalizationEnabled",
-#         "NSAutomaticDashSubstitutionEnabled",
-#         "NSAutomaticPeriodSubstitutionEnabled",
-#         "NSAutomaticQuoteSubstitutionEnabled",
-#         "NSAutomaticSpellingCorrectionEnabled",
-#         "NSAutomaticTextCompletionEnabled",
-#         "NSQuitAlwaysKeepsWindows",
-#         "NSUserDictionaryReplacementItems",
-#         "WebAutomaticSpellingCorrectionEnabled",
-#         "com.apple.mouse.scaling",
-#         "com.apple.sound.beep.flash",
-#         "com.apple.sound.beep.volume",
-#         "com.apple.sound.uiaudio.enabled",
-#         "com.apple.springing.delay",
-#         "com.apple.springing.enabled",
-#         "com.apple.trackpad.forceClick",
-#     ]),
-#     "NSGlobalDomainCurrentHost": only(domain="NSGlobalDomain", current_host=True, include=[
-#         "AppleActionOnDoubleClick",
-#         "AppleAntiAliasingThreshold",
-#         "AppleInterfaceStyle",
-#         "AppleInterfaceStyleSwitchesAutomatically",
-#         "AppleMiniaturizeOnDoubleClick",
-#         "AppleScrollerPagingBehavior",
-#         "AppleShowAllExtensions",
-#         "NSAutomaticCapitalizationEnabled",
-#         "NSAutomaticDashSubstitutionEnabled",
-#         "NSAutomaticPeriodSubstitutionEnabled",
-#         "NSAutomaticQuoteSubstitutionEnabled",
-#         "NSAutomaticSpellingCorrectionEnabled",
-#         "NSAutomaticTextCompletionEnabled",
-#         "NSPreferredWebServices",
-#         "NSQuitAlwaysKeepsWindows",
-#         "WebAutomaticSpellingCorrectionEnabled",
-#         "com.apple.mouse.scaling",
-#         "com.apple.sound.beep.flash",
-#         "com.apple.sound.beep.volume",
-#         "com.apple.sound.uiaudio.enabled",
-#         "com.apple.springing.delay",
-#         "com.apple.springing.enabled",
-#         "com.apple.trackpad.forceClick",
-#     ]),
-#     "com.agilebits.onepassword7": only(application="1Password 7", include=[
-#         "OPPrefShowSafariInlineMenu",
-#         "OPPrefShowSafariInlineMenuAutomatically",
-#         "OPPreferencesNotifyCompromisedWebsites",
-#         "ShortcutRecorder BrowserActivation",
-#         "ShortcutRecorder GlobalActivation",
-#         "ShortcutRecorder GlobalLock"
-#     ]),
-# }

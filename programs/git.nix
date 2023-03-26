@@ -1,8 +1,9 @@
-{ pkgs, ... }:
-let
-  private = pkgs.callPackage ~/.nix-private/private.nix { };
-in
 {
+  pkgs,
+  private,
+  ...
+}: let
+in {
   programs.git = {
     enable = true;
 
@@ -75,14 +76,16 @@ in
     userName = "Johnny Sheeley";
     userEmail = "${private.email}";
 
-    includes = [{
-      condition = "gitdir:~/work";
-      contents = {
-        user = {
-          email = "${private.workEmail}";
+    includes = [
+      {
+        condition = "gitdir:~/work";
+        contents = {
+          user = {
+            email = "${private.workEmail}";
+          };
         };
-      };
-    }];
+      }
+    ];
 
     ignores = [
       ### Vim ###
@@ -446,7 +449,6 @@ in
       # Add this line if you want to avoid checking in source code from Carthage dependencies.
       # Carthage/Checkouts
 
-
       # fastlane
       #
       # It is recommended to not store the screenshots in the git repo. Instead, use fastlane to re-generate the
@@ -515,7 +517,6 @@ in
       # Add this line if you want to avoid checking in source code from Carthage dependencies.
       # Carthage/Checkouts
 
-
       # fastlane
       #
       # It is recommended to not store the screenshots in the git repo. Instead, use fastlane to re-generate the
@@ -523,13 +524,10 @@ in
       # For more information about the recommended setup visit:
       # https://docs.fastlane.tools/best-practices/source-control/#source-control
 
-
       # Code Injection
       #
       # After new code Injection tools there's a generated folder /iOSInjectionProject
       # https://github.com/johnno1962/injectionforxcode
-
-
 
       ### Xcode Patch ###
       "*.xcodeproj/*"

@@ -1,11 +1,10 @@
-{ pkgs
-, user
-, ...
-}:
-let
-  private = pkgs.callPackage ~/.nix-private/private.nix { };
-in
 {
+  pkgs,
+  user,
+  private,
+  ...
+}: let
+in {
   services.nix-daemon.enable = true;
 
   programs.zsh.enable = true;
@@ -16,7 +15,7 @@ in
   ];
 
   users.users.${user} = {
-    # TODO: nix-darwin can't manage login shell yet
+    # FUTURE: nix-darwin can't manage login shell yet
     shell = pkgs.zsh;
     name = user;
     home = "/Users/${user}";
@@ -30,7 +29,7 @@ in
   #system.keyboard.enableKeyMapping = true;
   security.pam.enableSudoTouchIdAuth = true;
 
-  # TODO:
+  # TODO: configure dovecot
   environment.etc."dovecot.conf".source = ./files/dovecot.conf;
 
   system.activationScripts = {

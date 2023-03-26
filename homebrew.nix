@@ -1,11 +1,10 @@
-{ pkgs
-, lib
-, ...
-}:
-let
-  private = pkgs.callPackage ~/.nix-private/private.nix { };
-in
 {
+  pkgs,
+  lib,
+  private,
+  ...
+}: let
+in {
   homebrew = {
     enable = true;
 
