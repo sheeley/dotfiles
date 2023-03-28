@@ -1,8 +1,9 @@
-{ pkgs
-, inputs
-, config
-, helpers
-, ...
+{
+  pkgs,
+  inputs,
+  config,
+  helpers,
+  ...
 }: {
   programs.nixvim = {
     enable = true;
@@ -22,7 +23,7 @@
       cmdheight = 2;
       clipboard = "unnamed";
       colorcolumn = "100";
-      cot = [ "menu" "menuone" "noselect" ];
+      cot = ["menu" "menuone" "noselect"];
       foldmethod = "syntax";
       hidden = true;
       number = true;
@@ -47,16 +48,16 @@
 
     autoCmd = [
       {
-        event = [ "BufWritePre" ];
+        event = ["BufWritePre"];
         command = "lua vim.lsp.buf.format()";
       }
       {
-        event = [ "BufEnter" "FocusGained" "InsertLeave" ];
+        event = ["BufEnter" "FocusGained" "InsertLeave"];
         command = "set relativenumber";
         group = "numberToggle";
       }
       {
-        event = [ "BufLeave" "FocusLost" "InsertEnter" ];
+        event = ["BufLeave" "FocusLost" "InsertEnter"];
         command = "set norelativenumber";
         group = "numberToggle";
       }
@@ -91,11 +92,6 @@
         };
 
         # windows/splits
-        # automatically create a split if none doesn't exist, otherwise navigate in
-        "<C-l>" = {
-          action = "<C-w>l";
-          remap = false;
-        };
         "<C-j>" = {
           action = "<C-w>j";
           remap = false;
@@ -108,9 +104,10 @@
           action = "<C-w>h";
           remap = false;
         };
-        # TODO: this doesn't actually create new windows
-        "<expr>" = {
-          action = "<C-l> winnr('l') == winnr() ? ':vsp<CR>' : '<C-w>l'"; # nnoremap <expr> <C-l> winnr('l') == winnr() ? ':vsp<CR>' : '<C-w>l'
+        # automatically create a split if none doesn't exist, otherwise navigate
+        "<C-l>" = {
+          action = "winnr('l') == winnr() ? ':vsp<CR>' : '<C-w>l'";
+          expr = true;
           remap = false;
         };
       };
@@ -196,17 +193,17 @@
       };
 
       sources = [
-        { name = "luasnip"; }
-        { name = "nvim_lsp"; }
-        { name = "path"; }
-        { name = "buffer"; }
-        { name = "calc"; }
+        {name = "luasnip";}
+        {name = "nvim_lsp";}
+        {name = "path";}
+        {name = "buffer";}
+        {name = "calc";}
       ];
     };
 
     plugins.telescope = {
       enable = true;
-      enabledExtensions = [ "ui-select" ];
+      enabledExtensions = ["ui-select"];
       extensionConfig = {
         ui-select = {
           __raw = ''
@@ -422,7 +419,7 @@
       #     dependencies = [ ];
       #   }
       # ]
-    ;
+      ;
 
     extraPackages = with pkgs; [
       shfmt
