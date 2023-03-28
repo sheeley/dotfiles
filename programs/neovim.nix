@@ -3,8 +3,31 @@
   inputs,
   config,
   helpers,
+  # vimUtils,
+  # fetchFromGitHub,
   ...
-}: {
+}: let
+  vim-ripgrep = pkgs.vimUtils.buildVimPluginFrom2Nix {
+    name = "vim-ripgrep-2021-11-30";
+    src = pkgs.fetchFromGitHub {
+      owner = "jremmen";
+      repo = "vim-ripgrep";
+      rev = "2bb2425387b449a0cd65a54ceb85e123d7a320b8";
+      sha256 = "sha256-OvQPTEiXOHI0uz0+6AVTxyJ/TUMg6kd3BYTAbnCI7W8=";
+    };
+    dependencies = [];
+  };
+  vim-swift = pkgs.vimUtils.buildVimPluginFrom2Nix {
+    name = "vim-swift";
+    src = pkgs.fetchFromGitHub {
+      owner = "keith";
+      repo = "swift.vim";
+      rev = "ba6f6cef58d08ac741aaf1626d3799d476cd43b6";
+      sha256 = "sha256-A91OR+54Uie9i0nlfuIuh2JTMNyJ9rtABoJAvOefS2w=";
+    };
+    dependencies = [];
+  };
+in {
   programs.nixvim = {
     enable = true;
     viAlias = true;
@@ -22,7 +45,7 @@
     options = {
       cmdheight = 2;
       clipboard = "unnamed";
-      colorcolumn = "100";
+      # colorcolumn = "100";
       cot = ["menu" "menuone" "noselect"];
       foldmethod = "syntax";
       hidden = true;
@@ -78,12 +101,11 @@
           action = "zf";
           remap = false;
         };
-      };
-      normal = {
         # (un)indent with Tab
         "<Tab>" = "<C-t>";
         "<S-Tab>" = "<C-d>";
-
+      };
+      normal = {
         # folding
         "<Space>" = {
           silent = true;
@@ -389,37 +411,20 @@
       };
     };
 
-    extraPlugins =
-      with pkgs.vimPlugins; [
-        editorconfig-nvim
-        ron-vim
-        telescope-ui-select-nvim
-        vim-clap
-        vim-fish
-        vim-nix
-        vim-prettier
-        vim-sensible
-        vim-shellcheck
-        vim-terraform
-
-        # TODO: more vim plugins
-        #   # Plug 'jremmen/vim-ripgrep'
-        #   # Plug 'keith/swift.vim'
-      ]
-      # ++ [
-      #   pkgs.vimUtils.buildVimPluginFrom2Nix
-      #   {
-      #     name = "vim-ripgrep-2021-11-30";
-      #     src = pkgs.fetchFromGitHub {
-      #       owner = "jremmen";
-      #       repo = "vim-ripgrep";
-      #       rev = "2bb2425387b449a0cd65a54ceb85e123d7a320b8";
-      #       sha256 = "sha256-OvQPTEiXOHI0uz0+6AVTxyJ/TUMg6kd3BYTAbnCI7W8=";
-      #     };
-      #     dependencies = [ ];
-      #   }
-      # ]
-      ;
+    extraPlugins = with pkgs.vimPlugins; [
+      editorconfig-nvim
+      ron-vim
+      telescope-ui-select-nvim
+      vim-clap
+      vim-fish
+      vim-nix
+      vim-prettier
+      vim-sensible
+      vim-shellcheck
+      vim-terraform
+      vim-ripgrep
+      vim-swift
+    ];
 
     extraPackages = with pkgs; [
       shfmt
