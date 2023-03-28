@@ -33,7 +33,25 @@ in {
   environment.etc."dovecot.conf".source = ./files/dovecot.conf;
 
   system.activationScripts = {
-    preActivation.source = ./pre.sh;
-    postActivation.source = ./post.sh;
+    preActivation.text = ''
+      DIRS=(
+      	"$HOME/.ssh/control"
+      	"$HOME/Screenshots"
+      	"$HOME/projects/sheeley"
+      	"$HOME/bin"
+      	"$HOME/scratch"
+      )
+      for DIR in "''${DIRS[@]}"; do
+      	mkdir -p "$DIR"
+      	chown -R ${user} "$DIR"
+      done
+    '';
+
+    # postActivation.text = ''
+    #   (
+    #   	cd ./tools/meeting-notes
+    #   	./install
+    #   )
+    # '';
   };
 }

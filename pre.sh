@@ -1,6 +1,0 @@
-mkdir -p "$HOME/.ssh/control"
-mkdir -p "$HOME/Screenshots"
-mkdir -p "$HOME/projects/sheeley"
-mkdir -p "$HOME/bin"
-mkdir -p "$HOME/scratch"
-mkdir -p "$HOME/scratch"
