@@ -29,9 +29,6 @@ in {
   #system.keyboard.enableKeyMapping = true;
   security.pam.enableSudoTouchIdAuth = true;
 
-  # TODO: configure dovecot
-  environment.etc."dovecot.conf".source = ./files/dovecot.conf;
-
   system.activationScripts = {
     preActivation.text = ''
       DIRS=(

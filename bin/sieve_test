@@ -1,0 +1,11 @@
+#! /usr/bin/env bash
+set -euo pipefail # x
+
+(
+	cd "$PRIVATE_TOOLS_DIR"
+	TMP_SIEVE=$(mktemp)
+	cp aigee-mail.sieve "$TMP_SIEVE"
+	sed -i'' -e 's/# require/require/' "$TMP_SIEVE"
+
+	sieve-test -c ~/dotfiles/files/dovecot.conf "$TMP_SIEVE" "$1"
+)
