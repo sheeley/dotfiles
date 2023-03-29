@@ -51,7 +51,11 @@
     darwinConfigurations."jmba" = darwin.lib.darwinSystem {
       system = "aarch64-darwin";
       pkgs = legacyPackages.aarch64-darwin;
-      modules = sharedModules;
+      modules =
+        sharedModules
+        ++ [
+          ./personal.nix
+        ];
 
       specialArgs = {
         inherit inputs;

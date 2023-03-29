@@ -47,7 +47,6 @@ in {
       ]
       ++ (lib.optionals private.personal [
         ./programs/borgmatic.nix
-        ./personal.nix
       ]);
 
     home = {
