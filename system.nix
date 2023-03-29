@@ -1,5 +1,8 @@
-{ pkgs, user, ... }:
 {
+  pkgs,
+  user,
+  ...
+}: {
   nix = {
     settings = {
       auto-optimise-store = true;
@@ -8,7 +11,6 @@
   };
 
   system.defaults = {
-
     dock = {
       autohide = true;
       launchanim = false;
@@ -41,7 +43,7 @@
         "media-folder-url" = "file:///Users/${user}/Media/Music/";
       };
 
-      # TODO: try this
+      # FUTURE: try this
       # "com.apple.photolibraryd" = {
       #   SystemLibraryPath = "/Users/${user}/Media/Photos Library.photoslibrary";
       # };
@@ -51,12 +53,11 @@
         IncludeDevelopMenu = true;
       };
 
-      "com.abhishek.Clocker" =
-        {
-          "com.abhishek.menubarCompactMode" = 0;
-          "com.abhishek.shouldDefaultToCompactMode" = true;
-          "com.abhishek.switchToCompactMode" = true;
-          menubarFavourites = "<array>
+      "com.abhishek.Clocker" = {
+        "com.abhishek.menubarCompactMode" = 0;
+        "com.abhishek.shouldDefaultToCompactMode" = true;
+        "com.abhishek.switchToCompactMode" = true;
+        menubarFavourites = "<array>
   <data>
   YnBsaXN0MDDUAQIDBAUGPT5YJHZlcnNpb25YJG9iamVjdHNZJGFyY2hpdmVy
   VCR0b3ASAAGGoKwHCCgpKissMDY3ODlVJG51bGzfEBAJCgsMDQ4PEBESExQV
@@ -153,8 +154,7 @@
   AAAAAAACNQ==
   </data>
 </array>";
-
-        };
+      };
 
       "com.agilebits.onepassword7" = {
         OPPrefShowSafariInlineMenu = false;
@@ -198,57 +198,57 @@
       };
 
       # "com.crowdcafe.windowmagnet" = {
-        # centerWindowComboKey = { };
-        # expandWindowCenterThirdComboKey = { };
-        # expandWindowEastComboKey = {
-        #   keyCode = 124;
-        #   modifierFlags = 1835008;
-        # };
-        # expandWindowLeftThirdComboKey = { };
-        # expandWindowLeftTwoThirdsComboKey = { };
-        # expandWindowNorthComboKey = {
-        #   keyCode = 126;
-        #   modifierFlags = 1835008;
-        # };
-        # expandWindowNorthEastComboKey = {
-        #   keyCode = 19;
-        #   modifierFlags = 1835008;
-        # };
-        # expandWindowNorthWestComboKey = {
-        #   keyCode = 18;
-        #   modifierFlags = 1835008;
-        # };
-        # expandWindowRightThirdComboKey = { };
-        # expandWindowRightTwoThirdsComboKey = { };
-        # expandWindowSouthComboKey = {
-        #   keyCode = 125;
-        #   modifierFlags = 1835008;
-        # };
-        # expandWindowSouthEastComboKey = {
-        #   keyCode = 21;
-        #   modifierFlags = 1835008;
-        # };
-        # expandWindowSouthWestComboKey = {
-        #   keyCode = 20;
-        #   modifierFlags = 1835008;
-        # };
-        # expandWindowWestComboKey = {
-        #   keyCode = 123;
-        #   modifierFlags = 1835008;
-        # };
-        # maximizeWindowComboKey = {
-        #   keyCode = 3;
-        #   modifierFlags = 1835008;
-        # };
-        # moveWindowToNextDisplay = {
-        #   keyCode = 123;
-        #   modifierFlags = 1310720;
-        # };
-        # moveWindowToPreviousDisplay = {
-        #   keyCode = 124;
-        #   modifierFlags = 1310720;
-        # };
-        # restoreWindowComboKey = { };
+      # centerWindowComboKey = { };
+      # expandWindowCenterThirdComboKey = { };
+      # expandWindowEastComboKey = {
+      #   keyCode = 124;
+      #   modifierFlags = 1835008;
+      # };
+      # expandWindowLeftThirdComboKey = { };
+      # expandWindowLeftTwoThirdsComboKey = { };
+      # expandWindowNorthComboKey = {
+      #   keyCode = 126;
+      #   modifierFlags = 1835008;
+      # };
+      # expandWindowNorthEastComboKey = {
+      #   keyCode = 19;
+      #   modifierFlags = 1835008;
+      # };
+      # expandWindowNorthWestComboKey = {
+      #   keyCode = 18;
+      #   modifierFlags = 1835008;
+      # };
+      # expandWindowRightThirdComboKey = { };
+      # expandWindowRightTwoThirdsComboKey = { };
+      # expandWindowSouthComboKey = {
+      #   keyCode = 125;
+      #   modifierFlags = 1835008;
+      # };
+      # expandWindowSouthEastComboKey = {
+      #   keyCode = 21;
+      #   modifierFlags = 1835008;
+      # };
+      # expandWindowSouthWestComboKey = {
+      #   keyCode = 20;
+      #   modifierFlags = 1835008;
+      # };
+      # expandWindowWestComboKey = {
+      #   keyCode = 123;
+      #   modifierFlags = 1835008;
+      # };
+      # maximizeWindowComboKey = {
+      #   keyCode = 3;
+      #   modifierFlags = 1835008;
+      # };
+      # moveWindowToNextDisplay = {
+      #   keyCode = 123;
+      #   modifierFlags = 1310720;
+      # };
+      # moveWindowToPreviousDisplay = {
+      #   keyCode = 124;
+      #   modifierFlags = 1310720;
+      # };
+      # restoreWindowComboKey = { };
       # };
     };
   };
