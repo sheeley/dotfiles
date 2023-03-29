@@ -47,6 +47,7 @@ in {
       ]
       ++ (lib.optionals private.personal [
         ./programs/borgmatic.nix
+        ./personal.nix
       ]);
 
     home = {
@@ -105,6 +106,7 @@ in {
         clone = "git clone";
         cddot = "cd ~/dotfiles";
         cdscratch = "cd ~/scratch";
+        cdwork = "cd ~/work";
         la = "ls -la";
       };
     };
