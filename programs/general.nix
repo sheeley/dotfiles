@@ -1,11 +1,13 @@
-{ pkgs, ... }: {
+{pkgs, ...}: {
   programs.bash.enable = true;
   programs.zsh.enable = true;
   programs.home-manager.enable = true;
 
   programs.broot = {
     enable = true;
+
     enableFishIntegration = true;
+    # enableNushellIntegration = true;
     enableZshIntegration = true;
   };
 
@@ -15,12 +17,17 @@
 
   programs.fzf = {
     enable = true;
+
     enableFishIntegration = true;
+    # enableNushellIntegration = true;
     enableZshIntegration = true;
   };
 
   programs.direnv = {
     enable = true;
     nix-direnv.enable = true;
+
+    enableNushellIntegration = true;
+    enableZshIntegration = true;
   };
 }

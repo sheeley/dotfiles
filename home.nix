@@ -40,6 +40,7 @@ in {
         ./programs/gitui.nix
         ./programs/helix.nix
         ./programs/neovim.nix
+        ./programs/nushell.nix
         ./programs/ssh.nix
         ./programs/starship.nix
         ./programs/vscode.nix

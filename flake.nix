@@ -1,12 +1,21 @@
 {
   description = "System setup";
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-22.11-darwin";
+    # unstable
+    nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
 
     home-manager = {
-      url = "github:nix-community/home-manager/release-22.11";
+      url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    # stable
+    # nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-22.11-darwin";
+    #
+    # home-manager = {
+    #   url = "github:nix-community/home-manager/release-22.11";
+    #   inputs.nixpkgs.follows = "nixpkgs";
+    # };
 
     darwin = {
       url = "github:lnl7/nix-darwin";
