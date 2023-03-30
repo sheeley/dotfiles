@@ -1,9 +1,9 @@
-{
-  pkgs,
-  lib,
-  private,
-  ...
-}: let
+{ pkgs
+, lib
+, private
+, ...
+}:
+let
 in {
   homebrew = {
     enable = true;

@@ -1,4 +1,4 @@
-{pkgs, ...}: {
+{ pkgs, ... }: {
   programs.bash.enable = true;
   programs.zsh.enable = true;
   programs.home-manager.enable = true;
@@ -27,6 +27,7 @@
     enable = true;
     nix-direnv.enable = true;
 
+    # enableFishIntegration is unecessary, works by default
     enableNushellIntegration = true;
     enableZshIntegration = true;
   };

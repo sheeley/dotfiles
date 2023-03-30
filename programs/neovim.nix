@@ -1,12 +1,12 @@
-{
-  pkgs,
-  inputs,
-  config,
-  helpers,
-  # vimUtils,
+{ pkgs
+, inputs
+, config
+, helpers
+, # vimUtils,
   # fetchFromGitHub,
   ...
-}: let
+}:
+let
   vim-ripgrep = pkgs.vimUtils.buildVimPluginFrom2Nix {
     name = "vim-ripgrep-2021-11-30";
     src = pkgs.fetchFromGitHub {
@@ -15,7 +15,7 @@
       rev = "2bb2425387b449a0cd65a54ceb85e123d7a320b8";
       sha256 = "sha256-OvQPTEiXOHI0uz0+6AVTxyJ/TUMg6kd3BYTAbnCI7W8=";
     };
-    dependencies = [];
+    dependencies = [ ];
   };
   vim-swift = pkgs.vimUtils.buildVimPluginFrom2Nix {
     name = "vim-swift";
@@ -25,9 +25,10 @@
       rev = "ba6f6cef58d08ac741aaf1626d3799d476cd43b6";
       sha256 = "sha256-A91OR+54Uie9i0nlfuIuh2JTMNyJ9rtABoJAvOefS2w=";
     };
-    dependencies = [];
+    dependencies = [ ];
   };
-in {
+in
+{
   programs.nixvim = {
     enable = true;
     viAlias = true;
@@ -46,7 +47,7 @@ in {
       cmdheight = 2;
       clipboard = "unnamed";
       # colorcolumn = "100";
-      cot = ["menu" "menuone" "noselect"];
+      cot = [ "menu" "menuone" "noselect" ];
       foldmethod = "syntax";
       hidden = true;
       number = true;
@@ -71,16 +72,16 @@ in {
 
     autoCmd = [
       {
-        event = ["BufWritePre"];
+        event = [ "BufWritePre" ];
         command = "lua vim.lsp.buf.format()";
       }
       {
-        event = ["BufEnter" "FocusGained" "InsertLeave"];
+        event = [ "BufEnter" "FocusGained" "InsertLeave" ];
         command = "set relativenumber";
         group = "numberToggle";
       }
       {
-        event = ["BufLeave" "FocusLost" "InsertEnter"];
+        event = [ "BufLeave" "FocusLost" "InsertEnter" ];
         command = "set norelativenumber";
         group = "numberToggle";
       }
@@ -215,17 +216,17 @@ in {
       };
 
       sources = [
-        {name = "luasnip";}
-        {name = "nvim_lsp";}
-        {name = "path";}
-        {name = "buffer";}
-        {name = "calc";}
+        { name = "luasnip"; }
+        { name = "nvim_lsp"; }
+        { name = "path"; }
+        { name = "buffer"; }
+        { name = "calc"; }
       ];
     };
 
     plugins.telescope = {
       enable = true;
-      enabledExtensions = ["ui-select"];
+      enabledExtensions = [ "ui-select" ];
       extensionConfig = {
         ui-select = {
           __raw = ''

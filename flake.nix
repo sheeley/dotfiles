@@ -30,15 +30,17 @@
     # flake-utils.url = "github:numtide/flake-utils";
   };
 
-  outputs = {
-    self,
-    nixpkgs,
-    home-manager,
-    darwin,
-    nixvim,
-  } @ inputs: let
-    legacyPackages = nixpkgs.lib.genAttrs ["aarch64-darwin"] (
-      system:
+  outputs =
+    { self
+    , nixpkgs
+    , home-manager
+    , darwin
+    , nixvim
+    ,
+    } @ inputs:
+    let
+      legacyPackages = nixpkgs.lib.genAttrs [ "aarch64-darwin" ] (
+        system:
         import inputs.nixpkgs {
           inherit system;
           # NOTE: Using `nixpkgs.config` in your NixOS config won't work
@@ -47,42 +49,43 @@
 
           config.allowUnfree = true;
         }
-    );
-    sharedModules = [
-      home-manager.darwinModules.home-manager
-      ./environment.nix
-      ./homebrew.nix
-      ./home.nix
-      ./system.nix
-    ];
-    private = legacyPackages.aarch64-darwin.callPackage ~/.nix-private/private.nix {};
-  in {
-    darwinConfigurations."jmba" = darwin.lib.darwinSystem {
-      system = "aarch64-darwin";
-      pkgs = legacyPackages.aarch64-darwin;
-      modules =
-        sharedModules
-        ++ [
-          ./personal.nix
-        ];
+      );
+      sharedModules = [
+        home-manager.darwinModules.home-manager
+        ./environment.nix
+        ./homebrew.nix
+        ./home.nix
+        ./system.nix
+      ];
+      private = legacyPackages.aarch64-darwin.callPackage ~/.nix-private/private.nix { };
+    in
+    {
+      darwinConfigurations."jmba" = darwin.lib.darwinSystem {
+        system = "aarch64-darwin";
+        pkgs = legacyPackages.aarch64-darwin;
+        modules =
+          sharedModules
+          ++ [
+            ./personal.nix
+          ];
 
-      specialArgs = {
-        inherit inputs;
-        user = "sheeley";
-        private = private;
+        specialArgs = {
+          inherit inputs;
+          user = "sheeley";
+          private = private;
+        };
+      };
+
+      darwinConfigurations."Sheeley-MBP" = darwin.lib.darwinSystem {
+        system = "aarch64-darwin";
+        pkgs = legacyPackages.aarch64-darwin;
+        modules = sharedModules;
+
+        specialArgs = {
+          inherit inputs;
+          user = "johnnysheeley";
+          private = private;
+        };
       };
     };
-
-    darwinConfigurations."Sheeley-MBP" = darwin.lib.darwinSystem {
-      system = "aarch64-darwin";
-      pkgs = legacyPackages.aarch64-darwin;
-      modules = sharedModules;
-
-      specialArgs = {
-        inherit inputs;
-        user = "johnnysheeley";
-        private = private;
-      };
-    };
-  };
 }
