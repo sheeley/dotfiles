@@ -9,10 +9,10 @@ fi
 
 if [[ "$FIRST_OF_MONTH" = "y" ]]; then
 	echo "Nix last updated"
-	cat ~/dotfiles/last-updated.txt
+	cat ~/dotfiles/last-updated.txt || echo "never"
 
 	echo "Nix last applied"
-	cat ~/dotfiles/last-applied.txt
+	cat ~/dotfiles/last-applied.txt || echo "never"
 fi
 
 check_git_status() {
