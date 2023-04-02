@@ -400,7 +400,6 @@ in {
       editorconfig-nvim
       ron-vim
       telescope-ui-select-nvim
-      # vim-clap
       vim-fish
       vim-nix
       vim-prettier

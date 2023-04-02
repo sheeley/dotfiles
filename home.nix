@@ -93,6 +93,29 @@ in {
         ".swiftformat".text = builtins.readFile ./files/.swiftformat;
         ".swiftlint.yml".text = builtins.readFile ./files/.swiftlint.yml;
         ".vim/ftdetect/toml.vim".text = "autocmd BufNewFile,BufRead *.toml set filetype=toml";
+<<<<<<< HEAD
+      };
+
+      shellAliases = {
+        cat = "bat";
+        cdgo = "cd $GOPATH/src";
+        cdicloud = "cd ~/Library/Mobile\ Documents/com~apple~CloudDocs";
+        cdinfra = "cd $PRIVATE_TOOLS_DIR";
+        cdnotes = "cd $NOTES_DIR";
+        cdproj = "cd $HOME/projects/sheeley";
+        cdtools = "cd $TOOLS_DIR";
+        clone = "git clone";
+        cddot = "cd ~/dotfiles";
+        cdscratch = "cd ~/scratch";
+        cdwork = "cd ~/work";
+        la = "ls -la";
+=======
+        ".config/rclone/rclone.conf".source = pkgs.substituteAll {
+          name = "rclone.conf";
+          src = ./files/rclone.conf;
+          user = "${private.borgUser}";
+        };
+>>>>>>> af05268 (Format with alejandra)
       };
 
       shellAliases = {
