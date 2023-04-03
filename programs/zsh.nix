@@ -1,4 +1,4 @@
-{ pkgs, ... }: {
+{pkgs, ...}: {
   programs.zsh = {
     enable = true;
     enableAutosuggestions = true;
@@ -12,6 +12,5 @@
     #   git clone $argv
     #   cd (basename $argv .git)
     # end
-
   };
 }

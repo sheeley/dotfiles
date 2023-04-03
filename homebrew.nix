@@ -1,9 +1,9 @@
-{ pkgs
-, lib
-, private
-, ...
-}:
-let
+{
+  pkgs,
+  lib,
+  private,
+  ...
+}: let
 in {
   homebrew = {
     enable = true;
@@ -49,6 +49,7 @@ in {
       "The Unarchiver" = 425424353;
       "Watchdog" = 734258109;
       "Xcode" = 497799835;
+      "Logger for Shortcuts" = 1611554653;
     };
 
     taps = [

@@ -1,8 +1,8 @@
-{ pkgs
-, private
-, ...
-}:
-let
+{
+  pkgs,
+  private,
+  ...
+}: let
 in {
   programs.git = {
     enable = true;

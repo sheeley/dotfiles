@@ -1,5 +1,4 @@
-{ lib, ... }:
-{
+{lib, ...}: {
   programs.starship = {
     enable = true;
     enableFishIntegration = true;
@@ -52,14 +51,13 @@
         truncate_to_repo = true;
       };
 
-
       custom = {
         git_status_simplified = {
           when = "test - n \"$(git status --porcelain)\"";
           symbol = "●";
           style = "yellow bold";
           format = "[ $symbol ] ($style)";
-          shell = [ "bash" ];
+          shell = ["bash"];
         };
       };
     };

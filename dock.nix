@@ -1,20 +1,19 @@
-{ ... }:
-{
+{...}: {
   imports = [
     ./dock
   ];
 
   local.dock.enable = true;
   local.dock.entries = [
-    { path = "/Applications/iTerm.app/"; }
-    { path = "/System/Volumes/Preboot/Cryptexes/App/System/Applications/Safari.app"; }
-    { path = "/System/Applications/Mail.app/"; }
-    { path = "/System/Applications/Calendar.app/"; }
-    { path = "/System/Applications/Messages.app/"; }
-    { path = "/System/Applications/Reminders.app/"; }
-    { path = "/Applications/Obsidian.app/"; }
-    { path = "/System/Applications/Music.app/"; }
-    { path = "/Applications/Slack.app/"; }
+    {path = "/Applications/iTerm.app/";}
+    {path = "/System/Volumes/Preboot/Cryptexes/App/System/Applications/Safari.app";}
+    {path = "/System/Applications/Mail.app/";}
+    {path = "/System/Applications/Calendar.app/";}
+    {path = "/System/Applications/Messages.app/";}
+    {path = "/System/Applications/Reminders.app/";}
+    {path = "/Applications/Obsidian.app/";}
+    {path = "/System/Applications/Music.app/";}
+    {path = "/Applications/Slack.app/";}
 
     {
       path = "/Applications/";

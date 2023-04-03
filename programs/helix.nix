@@ -1,11 +1,10 @@
-{ ... }:
-{
+{...}: {
   programs.helix = {
     enable = true;
 
     settings = {
       editor = {
-        shell = [ "fish" ];
+        shell = ["fish"];
         cursorline = true;
       };
 

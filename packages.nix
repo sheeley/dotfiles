@@ -1,5 +1,4 @@
-{ pkgs }:
-
+{pkgs}:
 with pkgs; [
   _1password
   #_1password-gui
@@ -23,7 +22,7 @@ with pkgs; [
   jq
   lz4
   nerdfonts
-  nixpkgs-fmt
+  nvd
   obsidian
   pv
   python311
@@ -39,4 +38,3 @@ with pkgs; [
   wget
   yarn
 ]
-

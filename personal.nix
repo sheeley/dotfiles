@@ -1,6 +1,7 @@
-{ pkgs
-, user
-, ...
+{
+  pkgs,
+  user,
+  ...
 }: {
   system.defaults = {
     CustomSystemPreferences = {

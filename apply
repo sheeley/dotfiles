@@ -9,6 +9,14 @@ fi
 
 nix build .#darwinConfigurations.${HN}.system --impure --extra-experimental-features "nix-command flakes"
 
+if command -v nvd; then
+	nvd diff /run/current-system result
+
+	if ! get_input "Continue?"; then
+		exit 0
+	fi
+fi
+
 echo "darwin-rebuild"
 ./result/sw/bin/darwin-rebuild switch --flake . --impure
 

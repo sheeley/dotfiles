@@ -1,9 +1,9 @@
-{ pkgs
-, user
-, private
-, ...
-}:
-let
+{
+  pkgs,
+  user,
+  private,
+  ...
+}: let
 in {
   services.nix-daemon.enable = true;
 
