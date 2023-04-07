@@ -16,7 +16,7 @@ set -euo pipefail # x
 
 	sievec -c ~/dotfiles/files/dovecot.conf "$TMP_SIEVE"
 
-	if ! get_input "Continue?"; then
+	if opt_out "Continue?"; then
 		exit 0
 	fi
 	echo "sieve copied"

@@ -1,0 +1,11 @@
+#! /usr/bin/env bash
+set -euo pipefail # x
+
+y='\e[1;33m' # Yellow and Bold
+r='\e[0m'    # Reset
+printf "$y%s$r (Y/n)" "$1"
+read -r INPUT
+if [ "$INPUT" == "y" ] || [ "$INPUT" == "yes" ] || [ "$INPUT" == "" ]; then
+	exit 1
+fi
+exit 0

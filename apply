@@ -12,7 +12,7 @@ nix build .#darwinConfigurations.${HN}.system --impure --extra-experimental-feat
 if command -v nvd; then
 	nvd diff /run/current-system result
 
-	if ! get_input "Continue?"; then
+	if opt_out "Continue?"; then
 		exit 0
 	fi
 fi
