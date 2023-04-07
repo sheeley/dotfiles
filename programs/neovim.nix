@@ -304,7 +304,7 @@ in {
       enableGitStatus = false;
       filesystem.filteredItems = {
         hideDotfiles = false;
-        hideGitIgnored = true;
+        # hideGitIgnored = true;
         visible = true;
       };
     };

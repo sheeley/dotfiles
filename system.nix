@@ -25,7 +25,7 @@
 
     screencapture.location = "~/Screenshots";
 
-    CustomSystemPreferences = {
+    CustomUserPreferences = {
       NSGlobalDomain = {
         AppleMiniaturizeOnDoubleClick = false;
         AppleShowAllExtensions = true;
@@ -33,6 +33,7 @@
         NSAutomaticPeriodSubstitutionEnabled = false;
         NSAutomaticSpellingCorrectionEnabled = false;
         WebAutomaticSpellingCorrectionEnabled = false;
+        "com.apple.sound.beep.feedback" = 0;
         "com.apple.sound.beep.flash" = 0;
         "com.apple.sound.beep.volume" = 0.0;
         "com.apple.sound.uiaudio.enabled" = 0;
@@ -185,6 +186,28 @@
         AllowClipboardAccess = true;
         PromptOnQuit = false;
         VisualIndicatorForEsc = false;
+        # GlobalKeyMap = "
+        #   <dict>
+        #             <key>0x50-0x120000-0x23</key>
+        #             <dict>
+        #             	<key>Action</key>
+        #             	<integer>38</integer>
+        #             	<key>Label</key>
+        #             	<string></string>
+        #             	<key>Text</key>
+        #             	<string>:Telescope commands\n</string>
+        #             </dict>
+        #             <key>0x70-0x100000-0x23</key>
+        #             <dict>
+        #             	<key>Action</key>
+        #             	<integer>38</integer>
+        #             	<key>Label</key>
+        #             	<string></string>
+        #             	<key>Text</key>
+        #             	<string>:Telescope find_files\n</string>
+        #              </dict>
+        #   </dict>
+        # ";
       };
 
       # "com.crowdcafe.windowmagnet" = {
