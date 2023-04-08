@@ -204,7 +204,9 @@ func summarize(_ u: URL, _ allNotes: [Meeting], _ toCreate: [Meeting]) {
 
 func openNote(_ note: Meeting) {
     let notePath = note.filename()
-    let url = "obsidian://open?vault=Notes&file=\(notePath)"
+//    let url = "obsidian://open?vault=Notes&file=\(notePath)"
+    // Advanced URI plugin lets us open in a new split.
+    let url = "obsidian://advanced-uri?vault=Notes&filepath=\(notePath)&openmode=split"
     let task = Process()
     let pipe = Pipe()
     task.standardOutput = pipe
