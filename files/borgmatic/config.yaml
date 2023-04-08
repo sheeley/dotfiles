@@ -8,7 +8,7 @@ location:
 
   repositories:
     - /Volumes/money/borgbackup
-    - "@repo@"
+    # - "@repo@"
 
   exclude_patterns:
     - "*.pyc"
@@ -33,6 +33,7 @@ location:
     - "**/.TemporaryItems/"
     - "**/.Trash/"
     - "**/.Trashes/"
+    - "**/.build/*"
 
   exclude_if_present: .nobackup
   one_file_system: true
@@ -49,11 +50,9 @@ retention:
   keep_weekly: 4
   keep_monthly: 12
   keep_yearly: 10
-  prefix: "johnny"
 
 consistency:
   check_last: 3
-  prefix: "johnny"
   check_repositories:
     - /Volumes/money/borgbackup
   checks:

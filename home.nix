@@ -59,6 +59,7 @@ in {
         GOSUMDB = "off";
         LESS = "-R";
         BORG_REPO = "/Volumes/money/borgbackup";
+        BORG_PASSPHRASE = "${private.borgSecret}";
         GOPATH = toString ~/go;
         DOTFILES_DIR = toString ~/dotfiles;
         PRIVATE_CMD_DIR = toString ~/projects/sheeley/infrastructure/cmd;

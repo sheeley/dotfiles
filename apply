@@ -7,10 +7,11 @@ if [[ "$HN" != "jmba" && "$HN" != "Sheeley-MBP" ]]; then
 	exit 1
 fi
 
-nix build .#darwinConfigurations.${HN}.system --impure --extra-experimental-features "nix-command flakes"
+nix build ".#darwinConfigurations.${HN}.system" --impure --extra-experimental-features "nix-command flakes"
 
 if command -v nvd; then
 	nvd diff /run/current-system result
+	# TODO: delta /run/current-system result
 
 	if opt_out "Continue?"; then
 		exit 0

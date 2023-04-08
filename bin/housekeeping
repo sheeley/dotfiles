@@ -3,7 +3,7 @@ set -euo pipefail # x
 
 FIRST_OF_MONTH=""
 day=$(date -u +%d)
-if [[ "$day" -lt 10 ]]; then
+if [[ $((10#$day)) -lt 10 ]]; then
 	FIRST_OF_MONTH="y"
 fi
 
@@ -13,6 +13,7 @@ if [[ "$FIRST_OF_MONTH" = "y" ]]; then
 
 	echo "Nix last applied"
 	cat ~/dotfiles/last-applied.txt || echo "never"
+	printf "\n\n"
 fi
 
 check_git_status() {
@@ -39,4 +40,5 @@ if [[ "$WORKMACHINE" = "true" ]]; then
 	exit
 fi
 
+printf "\n\n"
 full_backup
