@@ -8,7 +8,7 @@ location:
 
   repositories:
     - /Volumes/money/borgbackup
-    # - "@repo@"
+    - "ssh://@user@@@user@.repo.borgbase.com/./repo"
 
   exclude_patterns:
     - "*.pyc"

@@ -13,6 +13,6 @@ in {
     name = "config.yaml";
     src = ../files/borgmatic/config.yaml;
     secret = "${private.borgSecret}";
-    repo = "${private.borgRepo}";
+    user = "${private.borgUser}";
   };
 }
