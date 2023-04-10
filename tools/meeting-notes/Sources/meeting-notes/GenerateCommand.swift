@@ -63,6 +63,8 @@ struct GlobalOptions: ParsableArguments {
     var force = false
 }
 
+
+
 @main
 struct Generate: ParsableCommand {
     public static let configuration = CommandConfiguration(abstract: "Generate meeting notes from calendar entries")
@@ -136,7 +138,7 @@ struct Generate: ParsableCommand {
             verboseLog("events found: \(events.count)")
             let template = try String(contentsOfFile: "\(parentDir)/shared/templates/meeting.md")
             let meetings = events.map { Meeting(from: $0) }
-            verboseLog("\(meetings)")
+            verboseLog("\(meetings.humanReadable())")
             try createNotes(meetings, in: baseDir, with: template, and: options)
             if open, let meeting = meetings.first {
                 openNote(meeting)

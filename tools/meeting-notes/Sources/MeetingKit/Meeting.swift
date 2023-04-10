@@ -71,6 +71,18 @@ public extension Meeting {
     }
 }
 
+public extension Array where Element == Meeting {
+    func humanReadable() -> String {
+        return self.map {
+            """
+\($0.title)
+\($0.id)
+\(df.string(from: $0.startDate)) - \(df.string(from: $0.endDate))
+"""
+        }.joined(separator: "\n")
+    }
+}
+
 var df: DateFormatter = {
     let df = DateFormatter()
     df.dateFormat = "yyyy-MM-dd HH-mm"
