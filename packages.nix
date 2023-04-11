@@ -22,6 +22,7 @@ with pkgs; [
   jq
   lz4
   nerdfonts
+  nix-diff
   nvd
   obsidian
   pv

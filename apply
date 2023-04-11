@@ -11,7 +11,10 @@ nix build ".#darwinConfigurations.${HN}.system" --impure --extra-experimental-fe
 
 if command -v nvd; then
 	nvd diff /run/current-system result
-	# TODO: delta /run/current-system result
+	
+	if command -v nix-diff; then
+		nix-diff /run/current-system result
+	fi;
 
 	if opt_out "Continue?"; then
 		exit 0
