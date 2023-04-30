@@ -343,9 +343,16 @@ in {
         # };
         # };
         bashls.enable = true;
-        dartls.enable = true;
+        # dartls.enable = true;
       };
     };
+
+    # vim.lsp.set_log_level("debug")
+    extraConfigLua = ''
+      require'lspconfig'.sourcekit.setup {
+        cmd = {"/usr/bin/sourcekit-lsp"}
+      }
+    '';
 
     plugins.lspkind = {
       enable = true;
