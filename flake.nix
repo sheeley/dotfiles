@@ -73,6 +73,22 @@
       };
     };
 
+    darwinConfigurations."homebase" = darwin.lib.darwinSystem {
+      system = "aarch64-darwin";
+      pkgs = legacyPackages.aarch64-darwin;
+      modules =
+        sharedModules
+        ++ [
+          ./personal.nix
+        ];
+
+      specialArgs = {
+        inherit inputs;
+        user = "sheeley";
+        private = private;
+      };
+    };
+
     darwinConfigurations."Sheeley-MBP" = darwin.lib.darwinSystem {
       system = "aarch64-darwin";
       pkgs = legacyPackages.aarch64-darwin;

@@ -3,9 +3,19 @@
 export PATH=$PATH:~/bin
 
 confirm() {
-	echo -n "Continue?"
+	echo -n "${1:-Continue?} "
 	read -r CONFIRM
 	if [ "$CONFIRM" != "y" ] && [ "$CONFIRM" != "yes" ]; then
+		return 1
+	fi
+}
+
+set_hostname() {
+	echo -n "New hostname: "
+	read -r NEW_HOST
+	if confirm; then
+		sudo scutil --set ComputerName "$NEW_HOST"
+	else
 		return 1
 	fi
 }
@@ -66,10 +76,20 @@ if [ ! -f ~/.nix-private/private.nix ]; then
 	confirm
 fi
 
+HOST=$(sudo scutil --get ComputerName)
+echo "Current hostname: $HOST"
+if confirm "Change?"; then
+	while true; do
+		set_hostname && break
+	done
+fi
+
 if [ ! -f ~/dotfiles ]; then
 	git clone git@github.com:sheeley/dotfiles.git ~/dotfiles
-	cd ~/dotfiles
-	./apply
+	(
+		cd ~/dotfiles || exit
+		./apply
+	)
 fi
 
 if [[ "$SHELL" != "/run/current-system/sw/bin/fish" ]]; then
