@@ -15,6 +15,7 @@ set_hostname() {
 	read -r NEW_HOST
 	if confirm; then
 		sudo scutil --set ComputerName "$NEW_HOST"
+		sudo scutil --set HostName "$NEW_HOST"
 	else
 		return 1
 	fi
@@ -57,7 +58,7 @@ fi
 
 if ! xcode-select -p; then
 	xcode-select --install
-	confirm || exit 1
+	confirm "Hit enter when install finished" || exit 1
 fi
 
 if ! which nix; then
@@ -68,10 +69,7 @@ if ! which nix; then
 	# /System/Library/Filesystems/apfs.fs/Contents/Resources/apfs.util -t
 fi
 
-echo "Log in to App Store"
-confirm
-
-HOST=$(sudo scutil --get ComputerName)
+HOST=$(sudo scutil --get HostName)
 echo "Current hostname: $HOST"
 if confirm "Change?"; then
 	while true; do
@@ -91,6 +89,7 @@ if [ ! -f ~/.nix-private/private.nix ]; then
 	confirm
 fi
 
+confirm "Log in to App Store then hit enter"
 (
 	cd ~/dotfiles || exit
 	./apply
