@@ -6,5 +6,5 @@
 
   personal = false;
   borgSecret = "";
-  borgRepo = "";
+  borgUser = "";
 }
