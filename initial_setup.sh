@@ -3,7 +3,7 @@
 export PATH=$PATH:~/bin
 
 confirm() {
-	echo -n "${1:-Continue?} "
+	echo -n "${1:-Continue?} [y/N] "
 	read -r CONFIRM
 	if [ "$CONFIRM" != "y" ] && [ "$CONFIRM" != "yes" ]; then
 		return 1
@@ -79,7 +79,7 @@ if confirm "Change?"; then
 	done
 fi
 
-if [ ! -f ~/dotfiles ]; then
+if [ ! -d ~/dotfiles ]; then
 	git clone git@github.com:sheeley/dotfiles.git ~/dotfiles
 fi
 
