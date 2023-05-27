@@ -34,22 +34,25 @@ if [ ! -f ~/.ssh/id_ed25519 ]; then
 	if ! ssh-add -l -E sha256 | grep ED25519; then
 		ssh-add -K ~/.ssh/id_ed25519
 	fi
+else
+	EMAIL=$(cut -d' ' -f3 <~/.ssh/id_ed25519.pub)
+fi
+
+if [ ! -f ~/.gh_done ]; then
 	# store key in github
 	echo "Open Github to create token and save SSH key?"
 	if confirm; then
 		pbcopy <~/.ssh/id_ed25519.pub
 		open 'https://github.com/settings/tokens/new?scopes=gist,public_repo,workflow&description=Homebrew'
 		open https://github.com/settings/keys
+		touch ~/.gh_done
 	fi
+fi
 
-	if [ "$HOMEBREW_GITHUB_API_TOKEN" == "" ]; then
-		echo "Enter Github token"
-		read -r HOMEBREW_GITHUB_API_TOKEN
-		export HOMEBREW_GITHUB_API_TOKEN
-	fi
-
-else
-	EMAIL=$(cut -d' ' -f3 <~/.ssh/id_ed25519.pub)
+if [ "$HOMEBREW_GITHUB_API_TOKEN" == "" ]; then
+	echo "Enter Github token"
+	read -r HOMEBREW_GITHUB_API_TOKEN
+	export HOMEBREW_GITHUB_API_TOKEN
 fi
 
 if ! xcode-select -p; then
@@ -68,14 +71,6 @@ fi
 echo "Log in to App Store"
 confirm
 
-if [ ! -f ~/.nix-private/private.nix ]; then
-	mkdir -p ~/.nix-private
-	cp private.nix ~/.nix-private/private.nix
-
-	echo "set values in ~/.nix-private/private.nix"
-	confirm
-fi
-
 HOST=$(sudo scutil --get ComputerName)
 echo "Current hostname: $HOST"
 if confirm "Change?"; then
@@ -86,11 +81,20 @@ fi
 
 if [ ! -f ~/dotfiles ]; then
 	git clone git@github.com:sheeley/dotfiles.git ~/dotfiles
-	(
-		cd ~/dotfiles || exit
-		./apply
-	)
 fi
+
+if [ ! -f ~/.nix-private/private.nix ]; then
+	mkdir -p ~/.nix-private
+	cp ~/dotfiles/private.nix ~/.nix-private/private.nix
+
+	echo "set values in ~/.nix-private/private.nix"
+	confirm
+fi
+
+(
+	cd ~/dotfiles || exit
+	./apply
+)
 
 if [[ "$SHELL" != "/run/current-system/sw/bin/fish" ]]; then
 	echo "Shell isn't fish - may want to chsh!"
