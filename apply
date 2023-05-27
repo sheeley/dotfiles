@@ -2,7 +2,13 @@
 set -eu
 
 HN=$(hostname | cut -d '.' -f 1)
-if [[ "$HN" != "jmba" && "$HN" != "Sheeley-MBP" ]]; then
+# TODO: replace with this?
+# HN=$(sudo scutil --get HostName)
+
+# TODO: is there a cleaner way of doing this?
+VALID_HOSTNAMES=$(cat flake.nix | grep darwinConfigurations | grep -o '".*"' | sed 's/"//g')
+
+if [[ ! "${VALID_HOSTNAMES[*]}" =~ "$HN" ]]; then
 	echo "change hostname: $HN"
 	exit 1
 fi
