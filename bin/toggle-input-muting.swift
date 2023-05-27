@@ -25,6 +25,7 @@ var error: NSDictionary?
 guard let scriptObject = NSAppleScript(source: myAppleScript) else {
     exit(1)
 }
+
 _ = scriptObject.executeAndReturnError(&error)
 if let error {
     print("error: \(error)")

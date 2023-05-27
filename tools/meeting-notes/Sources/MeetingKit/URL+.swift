@@ -1,6 +1,6 @@
 //
 //  File.swift
-//  
+//
 //
 //  Created by Johnny Sheeley on 11/18/22.
 //
@@ -15,7 +15,7 @@ var ignoredDomains = [
     ".*zoom.us.*/\\d{6,99}",
     ".*gotomeeting.com/join/\\d+|.*meet.goto.com/\\d+",
     ".*facetime.apple.com/join.*",
-    "s.apple.com"
+    "s.apple.com",
 ]
 
 extension URL {

@@ -1,25 +1,25 @@
 //
 //  File.swift
-//  
+//
 //
 //  Created by Johnny Sheeley on 11/18/22.
 //
 
-import Foundation
 import ArgumentParser
+import Darwin
+import Foundation
 import MeetingKit
 import OSLog
 import RegexBuilder
-import Darwin
 
 let logger = Logger()
 
-//let startOfToday = Calendar.current.startOfDay(for: Date())
-//let endOfToday = Calendar.current.startOfDay(for: Calendar.current.date(byAdding: DateComponents(day: 1), to: Date())!)
+// let startOfToday = Calendar.current.startOfDay(for: Date())
+// let endOfToday = Calendar.current.startOfDay(for: Calendar.current.date(byAdding: DateComponents(day: 1), to: Date())!)
 
 enum DeleteWindow: String, CaseIterable {
     case past, future, all, none
-    
+
     func includes(date: Date) -> Bool {
 //        print("\(self) \(Date()) \(date)")
         switch self {
@@ -40,38 +40,36 @@ extension DeleteWindow: ExpressibleByArgument {}
 struct GlobalOptions: ParsableArguments {
     @Option(name: .long, help: "'today', 'tomorrow', 'both', or a specific note ID")
     var create: String?
-    
-    @Option(name:.long, help: "Subdirectory to use")
+
+    @Option(name: .long, help: "Subdirectory to use")
     var subDirectory = "work"
-    
+
     @Option(name: .long, help: ArgumentHelp(DeleteWindow.allCases.map { $0.rawValue }.joined(separator: ", ")))
     var clean = DeleteWindow.none
-    
+
     @Option(name: .long, help: "ID of note to open")
     var openNoteID: String?
-    
+
     @Flag
     var verbose = false
-    
+
     @Flag
     var interactive = false
-    
+
     @Flag
     var dryRun = false
-    
+
     @Flag
     var force = false
 }
 
-
-
 @main
 struct Generate: ParsableCommand {
     public static let configuration = CommandConfiguration(abstract: "Generate meeting notes from calendar entries")
-    
+
     @OptionGroup
     var options: GlobalOptions
-    
+
     func run() throws {
         do {
             try actualRun()
@@ -82,12 +80,12 @@ struct Generate: ParsableCommand {
             throw error
         }
     }
-    
+
     func verboseLog(_ msg: String) {
         guard options.verbose else { return }
         print(msg)
     }
-    
+
     func actualRun() throws {
         guard let parentDir = ProcessInfo.processInfo.environment["NOTES_DIR"] else {
             logger.error("$NOTES_DIR not set")
@@ -96,20 +94,20 @@ struct Generate: ParsableCommand {
         }
         logger.info("notes dir: \(parentDir)")
         verboseLog("notes dir: \(parentDir)")
-        
+
         var baseDir = URL(fileURLWithPath: parentDir)
         if !options.subDirectory.isEmpty {
             baseDir.appendPathComponent(options.subDirectory)
         }
         verboseLog("baseDir: \(baseDir)")
-        
+
         verboseLog("\(options)")
         if options.clean != .none {
             logger.info("cleaning \(options.clean.rawValue)")
             verboseLog("cleaning \(options.clean.rawValue)")
             try cleanEmptyNotes(using: options)
         }
-        
+
         if let create = options.create {
             var open = false
             var window = EventWindow.today
@@ -123,13 +121,12 @@ struct Generate: ParsableCommand {
             default:
                 window = EventWindow.specificEvent(id: create)
                 open = true
-                break
             }
             verboseLog("create: \(create)")
-            
+
             let events = getEvents(in: window)
             if events.isEmpty {
-                if case .specificEvent(let id) = window {
+                if case let .specificEvent(id) = window {
                     print("Couldn't find event \(id)")
                     Darwin.exit(1)
                 }
@@ -143,7 +140,7 @@ struct Generate: ParsableCommand {
             if open, let meeting = meetings.first {
                 openNote(meeting)
             }
-            
+
             if let openNoteID = options.openNoteID {
                 verboseLog("attempting to open \(openNoteID)")
                 if let event = getEvents(in: EventWindow.specificEvent(id: openNoteID)).first {
@@ -152,22 +149,22 @@ struct Generate: ParsableCommand {
             }
         }
     }
-    
+
     func createNotes(_ notes: [Meeting], in notesURL: URL, with template: String, and options: GlobalOptions) throws {
         try requestAccess()
         var written = [Meeting]()
         let toCreate = options.force ? notes : notes.filter {
             !FileManager.default.fileExists(atPath: $0.fullPath(dir: notesURL).path)
         }
-        
+
         if toCreate.isEmpty {
             return
         }
-        
+
         if options.interactive || options.verbose {
             summarize(notesURL, notes, toCreate)
         }
-        
+
         if options.interactive {
             print("Continue? [y/N]")
             let input = readLine()
@@ -175,19 +172,19 @@ struct Generate: ParsableCommand {
                 return
             }
         }
-        
+
         try toCreate.forEach { n in
             let p = n.fullPath(dir: notesURL)
             guard !FileManager.default.fileExists(atPath: p.path) || options.force else {
                 print("\(p) exists, skipping")
                 return
             }
-            
+
             guard let d = n.note(with: template).data(using: .utf8) else {
                 print("\(p) couldn't convert to data")
                 return
             }
-            
+
             if !options.dryRun {
                 verboseLog("creating \(p.absoluteString)")
                 try d.write(to: p)
@@ -221,17 +218,17 @@ func openNote(_ note: Meeting) {
 func shell(_ command: String, with environment: [String: String]? = nil) throws -> String {
     let task = Process()
     let pipe = Pipe()
-    
+
     task.standardOutput = pipe
     task.standardError = pipe
     task.environment = environment
     task.arguments = ["-c", command]
     task.launchPath = "/bin/zsh"
     try task.run()
-    
+
     let data = pipe.fileHandleForReading.readDataToEndOfFile()
     let output = String(data: data, encoding: .utf8)!
-    
+
     return output
 }
 
@@ -247,7 +244,7 @@ let dateRegex = Regex {
     Capture {
         Repeat(.digit, count: 2)
     } transform: { Int($0) }
-    
+
     Optionally {
         " "
         Capture {
@@ -267,12 +264,13 @@ func cleanEmptyNotes(using options: GlobalOptions) throws {
         try files.forEach {
             let path = String($0)
             guard path.contains(options.subDirectory) else { return }
-            
-            guard let match = path.firstMatch(of: dateRegex) else { return }            
+
+            guard let match = path.firstMatch(of: dateRegex) else { return }
             let (_, year, month, day, hour, minutes) = match.output
-            
+
             if let fileDate = Calendar.current.date(from: DateComponents(year: year, month: month, day: day, hour: hour ?? 0, minute: minutes ?? 0)),
-               options.clean.includes(date: fileDate) {
+               options.clean.includes(date: fileDate)
+            {
                 print("Deleting \(path)")
                 if !options.dryRun {
                     try FileManager.default.removeItem(atPath: path)

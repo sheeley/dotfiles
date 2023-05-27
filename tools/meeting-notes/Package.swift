@@ -7,7 +7,7 @@ let package = Package(
     name: "meeting-notes",
     platforms: [.macOS(.v13)],
     dependencies: [
-        .package(url: "https://github.com/apple/swift-argument-parser", from: "0.0.1")
+        .package(url: "https://github.com/apple/swift-argument-parser", from: "0.0.1"),
     ],
     targets: [
         .target(name: "MeetingKit"),
@@ -20,9 +20,11 @@ let package = Package(
         ),
         .testTarget(
             name: "meeting-notesTests",
-            dependencies: ["meeting-notes"]),
+            dependencies: ["meeting-notes"]
+        ),
         .testTarget(
             name: "MeetingKitTests",
-            dependencies: ["MeetingKit"]),
+            dependencies: ["MeetingKit"]
+        ),
     ]
 )

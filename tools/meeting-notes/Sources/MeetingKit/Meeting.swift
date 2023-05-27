@@ -1,12 +1,12 @@
 //
 //  File.swift
-//  
+//
 //
 //  Created by Johnny Sheeley on 11/18/22.
 //
 
-import Foundation
 import EventKit
+import Foundation
 
 public struct Meeting {
     public let startDate: Date
@@ -17,12 +17,12 @@ public struct Meeting {
     public let notes: String
     public let url: URL?
     //    let urls: [URL]
-    
+
     public func note(with template: String) -> String {
         var template = template
         let dateTime = df.string(from: startDate)
         let attendeeLinks = attendees.map { MarkdownLink(text: $0.name) }
-        
+
         var frontmatter = Frontmatter()
         frontmatter["attendees"] = attendeeLinks
         frontmatter["id"] = id
@@ -38,7 +38,7 @@ public struct Meeting {
             fms = "---\n\(fms)\n---\n"
         }
         template.insert(contentsOf: fms, at: idx)
-        
+
         return template
             .replacingOccurrences(of: "{{date:YYYY-MM-DD HH:mm:ss}}", with: dateTime)
             .replacingOccurrences(of: "{{notes}}", with: noteFilter(notes))
@@ -46,14 +46,14 @@ public struct Meeting {
             .replacingOccurrences(of: "{{id}}", with: id)
             .replacingOccurrences(of: "{{attendees}}", with: attendeeLinks.map { $0.string() }.joined(separator: "\n"))
     }
-    
+
     public func filename() -> String {
         let dateTime = df.string(from: startDate)
         var filename = titleModifier(title)
         filename.unicodeScalars.removeAll(where: { fileNameCharacters.contains($0) })
         return "\(dateTime) - \(filename).md"
     }
-    
+
     public func fullPath(dir: URL) -> URL {
         return dir.appendingPathComponent(filename())
     }
@@ -73,12 +73,12 @@ public extension Meeting {
 
 public extension Array where Element == Meeting {
     func humanReadable() -> String {
-        return self.map {
+        return map {
             """
-\($0.title)
-\($0.id)
-\(df.string(from: $0.startDate)) - \(df.string(from: $0.endDate))
-"""
+            \($0.title)
+            \($0.id)
+            \(df.string(from: $0.startDate)) - \(df.string(from: $0.endDate))
+            """
         }.joined(separator: "\n")
     }
 }
@@ -138,7 +138,7 @@ public func filterOutWebex(_ n: String) -> String {
                 ignoreLine = false
             }
             return
-        } else if l == "----( Virtual Conference One-Time Room )----" ||  l == "----( Virtual Conference Personal Room )----"{
+        } else if l == "----( Virtual Conference One-Time Room )----" || l == "----( Virtual Conference Personal Room )----" {
             ignoreLine = true
             return
         }
@@ -149,11 +149,11 @@ public func filterOutWebex(_ n: String) -> String {
 
 struct MarkdownLink: YAMLOut {
     let text: String
-    
+
     func string() -> String {
         return "[[\(text)]]"
     }
-    
+
     func fmstring() -> String {
         return "\"[[\(text)]]\""
     }
@@ -173,38 +173,39 @@ extension String: YAMLOut {
         return self
     }
 }
+
 extension Array: YAMLOut where Element: YAMLOut {
     var isMultiline: Bool { true }
     func fmstring() -> String {
-        return "\n" + self.map { "  - \($0.fmstring())"}.joined(separator: "\n")
+        return "\n" + map { "  - \($0.fmstring())" }.joined(separator: "\n")
     }
 }
 
 struct Frontmatter {
     var kv = [String: YAMLOut]()
-    
+
     subscript(key: String) -> YAMLOut? {
         get {
             kv[key]
         }
-        
+
         set(newValue) {
             kv[key] = newValue
         }
     }
-    
+
     func string() -> String {
         var lines = [String]()
         for key in kv.keys.sorted() {
             guard let value = kv[key] else { continue }
-            
+
             var line = key
             line.append(":")
             if !value.isMultiline {
                 line.append(" ")
             }
             line.append(value.fmstring())
-            
+
             lines.append(line)
         }
         return lines.joined(separator: "\n")

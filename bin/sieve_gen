@@ -3,6 +3,7 @@ set -euo pipefail # x
 
 (
 	cd "$PRIVATE_TOOLS_DIR"
+	swiftformat .
 	./bin/sieve.swift | tee aigee-mail.sieve | pbcopy
 	if [ $# -gt 0 ]; then
 		# skip for local testing

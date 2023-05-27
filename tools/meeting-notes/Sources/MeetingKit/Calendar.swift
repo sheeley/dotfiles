@@ -1,14 +1,15 @@
 //
 //  File.swift
-//  
+//
 //
 //  Created by Johnny Sheeley on 11/18/22.
 //
 
-import Foundation
 import EventKit
+import Foundation
 
 // MARK: - Calendar
+
 let store = EKEventStore()
 
 public func requestAccess() throws {
@@ -22,7 +23,7 @@ public func requestAccess() throws {
 
 public enum EventWindow {
     case today, tomorrow, either, specificEvent(id: String)
-    
+
     func includes(event: EKEvent) -> Bool {
         switch self {
         case .today:
@@ -31,7 +32,7 @@ public enum EventWindow {
             return Calendar.current.isDateInTomorrow(event.startDate)
         case .either:
             return Calendar.current.isDateInToday(event.startDate) || Calendar.current.isDateInTomorrow(event.startDate)
-        case .specificEvent(let id):
+        case let .specificEvent(id):
             return event.calendarItemIdentifier == id
         }
     }
@@ -39,7 +40,7 @@ public enum EventWindow {
 
 public func getEvents(in window: EventWindow) -> [EKEvent] {
     switch window {
-    case .specificEvent(let id):
+    case let .specificEvent(id):
         if let event = store.event(withIdentifier: id) {
             return [event]
         }
@@ -47,6 +48,7 @@ public func getEvents(in window: EventWindow) -> [EKEvent] {
     default:
         let today = Calendar.current.startOfDay(for: Date())
         let tomorrow = Date().addingTimeInterval(60 * 60 * 24)
+
         let predicate = store.predicateForEvents(withStart: today, end: tomorrow, calendars: nil)
         let events = store.events(matching: predicate)
         return events.filter { event in
