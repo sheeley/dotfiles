@@ -31,7 +31,9 @@ in {
       "1password"
       "bartender"
       "iterm2"
+      "obsidian"
       "shortcat"
+      "slack"
     ];
 
     masApps = {
