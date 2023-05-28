@@ -20,7 +20,6 @@ in {
         "git-delta"
         "scout"
         "swiftformat"
-        "swiftlint"
       ]
       ++ (lib.optionals private.personal [
         # TODO: swap borgmatic to home-manager

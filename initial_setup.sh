@@ -39,6 +39,13 @@ else
 	EMAIL=$(cut -d' ' -f3 <~/.ssh/id_ed25519.pub)
 fi
 
+# nix doesn't install brew. Yay.
+if ! which brew; then
+	/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+	eval "\$(/opt/homebrew/bin/brew shellenv)"
+	brew install --cask 1password
+fi
+
 if [ ! -f ~/.gh_done ]; then
 	# store key in github
 	echo "Open Github to create token and save SSH key?"
@@ -64,14 +71,16 @@ fi
 if ! which nix; then
 	curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install
 	. /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
-	# TODO: create /run
-	# printf 'run\tprivate/var/run\n' | sudo tee -a /etc/synthetic.conf
-	# /System/Library/Filesystems/apfs.fs/Contents/Resources/apfs.util -t
+	
+	# create /run
+	if [ ! -f /run ]; then
+		printf 'run\tprivate/var/run\n' | sudo tee -a /etc/synthetic.conf
+		/System/Library/Filesystems/apfs.fs/Contents/Resources/apfs.util -t
+	fi
 fi
 
 HOST=$(sudo scutil --get HostName)
-echo "Current hostname: $HOST"
-if confirm "Change?"; then
+if confirm "Change from current hostname: $HOST?"; then
 	while true; do
 		set_hostname && break
 	done
@@ -84,7 +93,6 @@ fi
 if [ ! -f ~/.nix-private/private.nix ]; then
 	mkdir -p ~/.nix-private
 	cp ~/dotfiles/private.nix ~/.nix-private/private.nix
-
 	echo "set values in ~/.nix-private/private.nix"
 	confirm
 fi
