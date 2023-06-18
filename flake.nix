@@ -80,6 +80,8 @@
         sharedModules
         ++ [
           ./personal.nix
+          # TODO:swap from environment.nix
+          # ./content-cache.nix
         ];
 
       specialArgs = {

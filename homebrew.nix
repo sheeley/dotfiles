@@ -30,6 +30,7 @@ in {
     casks = [
       "1password"
       "bartender"
+      "eloston-chromium"
       "iterm2"
       "obsidian"
       "shortcat"
@@ -49,7 +50,7 @@ in {
       "Space Gremlin" = 414515628;
       "The Unarchiver" = 425424353;
       "Watchdog" = 734258109;
-      "Xcode" = 497799835;
+      # "Xcode" = 497799835;
       "Logger for Shortcuts" = 1611554653;
     };
 
