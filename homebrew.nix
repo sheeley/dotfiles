@@ -35,6 +35,7 @@ in {
       "obsidian"
       "shortcat"
       "slack"
+      "1password/tap/1password-cli"
     ];
 
     masApps = {
