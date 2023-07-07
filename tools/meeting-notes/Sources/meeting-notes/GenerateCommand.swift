@@ -37,13 +37,31 @@ enum DeleteWindow: String, CaseIterable {
 
 extension DeleteWindow: ExpressibleByArgument {}
 
-struct GlobalOptions: ParsableArguments {
+struct GlobalOptions: ParsableArguments, CustomStringConvertible  {
+    var description: String {
+"""
+---
+baseDirectory:\t\(baseDirectory)
+vaultName:\t\(vaultName)
+subDirectory:\t\(subDirectory)
+clean:\t\(clean)
+openNoteID:\t\(openNoteID ?? "")
+---
+"""
+    }
+    
+    @Option(name: .long, help: "Directory to create notes in")
+    var baseDirectory: String = FileManager.default.homeDirectoryForCurrentUser.appending(components: "Library/Mobile Documents/iCloud~md~obsidian/Documents/Apple Notes").path(percentEncoded: false)
+    
+    @Option(name: .long, help: "Vault to open notes in")
+    var vaultName = "Apple Notes"
+    
     @Option(name: .long, help: "'today', 'tomorrow', 'both', or a specific note ID")
     var create: String?
 
     @Option(name: .long, help: "Subdirectory to use")
     var subDirectory = "work"
-
+    
     @Option(name: .long, help: ArgumentHelp(DeleteWindow.allCases.map { $0.rawValue }.joined(separator: ", ")))
     var clean = DeleteWindow.none
 
@@ -85,17 +103,17 @@ struct Generate: ParsableCommand {
         guard options.verbose else { return }
         print(msg)
     }
-
+    
+    struct dirError: Error {
+        
+    }
+    
     func actualRun() throws {
-        guard let parentDir = ProcessInfo.processInfo.environment["NOTES_DIR"] else {
-            logger.error("$NOTES_DIR not set")
-            print("$NOTES_DIR not set")
-            return
-        }
-        logger.info("notes dir: \(parentDir)")
+        verboseLog("\(options)")
+        let parentDir =  URL(filePath: options.baseDirectory, directoryHint: .isDirectory)
         verboseLog("notes dir: \(parentDir)")
 
-        var baseDir = URL(fileURLWithPath: parentDir)
+        var baseDir = parentDir
         if !options.subDirectory.isEmpty {
             baseDir.appendPathComponent(options.subDirectory)
         }
@@ -123,7 +141,14 @@ struct Generate: ParsableCommand {
                 open = true
             }
             verboseLog("create: \(create)")
-
+            
+            let templateFile = parentDir.appending(components: "shared/templates/meeting.md")
+            let access = templateFile.startAccessingSecurityScopedResource()
+            verboseLog("template file (\(access)): \(templateFile)")
+            
+            let template = try String(contentsOf: templateFile)
+            templateFile.stopAccessingSecurityScopedResource()
+            
             let events = getEvents(in: window)
             if events.isEmpty {
                 if case let .specificEvent(id) = window {
@@ -133,18 +158,19 @@ struct Generate: ParsableCommand {
                 Darwin.exit(0)
             }
             verboseLog("events found: \(events.count)")
-            let template = try String(contentsOfFile: "\(parentDir)/shared/templates/meeting.md")
+            
             let meetings = events.map { Meeting(from: $0) }
             verboseLog("\(meetings.humanReadable())")
             try createNotes(meetings, in: baseDir, with: template, and: options)
+            
             if open, let meeting = meetings.first {
-                openNote(meeting)
+                openNote(meeting, vault: options.vaultName)
             }
 
             if let openNoteID = options.openNoteID {
                 verboseLog("attempting to open \(openNoteID)")
                 if let event = getEvents(in: EventWindow.specificEvent(id: openNoteID)).first {
-                    openNote(Meeting(from: event))
+                    openNote(Meeting(from: event), vault: options.vaultName)
                 }
             }
         }
@@ -201,11 +227,11 @@ func summarize(_ u: URL, _ allNotes: [Meeting], _ toCreate: [Meeting]) {
     }
 }
 
-func openNote(_ note: Meeting) {
+func openNote(_ note: Meeting, vault vaultName: String) {
     let notePath = note.filename()
 //    let url = "obsidian://open?vault=Notes&file=\(notePath)"
     // Advanced URI plugin lets us open in a new split.
-    let url = "obsidian://advanced-uri?vault=Notes&filepath=\(notePath)&openmode=split"
+    let url = "obsidian://advanced-uri?vault=\(vaultName)&filepath=\(notePath)&openmode=split"
     let task = Process()
     let pipe = Pipe()
     task.standardOutput = pipe
