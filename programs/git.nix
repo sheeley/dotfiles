@@ -16,6 +16,10 @@ in {
     extraConfig = {
       init.defaultBranch = "main";
 
+      rerere = {
+        enabled = "true";
+      };
+
       branch = {
         autosetuprebase = "always";
       };
