@@ -10,8 +10,8 @@ echo "for details, tail -f $LOG_FILE"
 caffeinate -i borgmatic --log-file-verbosity 2 --log-file "$LOG_FILE" --stats
 # caffeinate -i rclone sync -v /Volumes/money/borgbackup/ borgbase:repo --progress
 
-did=$(diskutil list -plist | scout paths -f plist "#AllDisksAndPartitions#" -v "value contains 'money'" | head -n 1 | awk -F'[^0-9]+' '{ print $2 }')
-diskutil unmountDisk "/dev/disk$did"
+# did=$(diskutil list -plist | scout paths -f plist "#AllDisksAndPartitions#" -v "value contains 'money'" | head -n 1 | awk -F'[^0-9]+' '{ print $2 }')
+# diskutil unmountDisk "/dev/disk$did"
 
 echo "Total time:"
 gdate -u -d @${SECONDS} +"%T"
