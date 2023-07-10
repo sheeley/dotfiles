@@ -71,6 +71,10 @@ in {
       #     insteadOf = "https://github.com/";
       #   };
       # };
+
+      merge = {
+        tool = "vimdiff";
+      };
     };
 
     userName = "Johnny Sheeley";
