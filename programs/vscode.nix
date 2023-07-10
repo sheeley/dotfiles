@@ -1,7 +1,7 @@
 {pkgs, ...}: {
   programs.vscode = {
     enable = true;
-    package = pkgs.vscodium;
+    # package = pkgs.vscodium;
 
     extensions = with pkgs.vscode-extensions; [
       esbenp.prettier-vscode
