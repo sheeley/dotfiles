@@ -253,7 +253,7 @@ in {
         gitattributes
         gitignore
         git_rebase
-        help
+        # help
         html
         json
         markdown
