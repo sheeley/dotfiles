@@ -22,10 +22,7 @@ in {
         "swiftformat"
       ]
       ++ (lib.optionals private.personal [
-        # TODO: swap borgmatic to home-manager
-        "borgbackup"
-        "borgmatic"
-      ]);
+        ]);
 
     casks = [
       "1password"

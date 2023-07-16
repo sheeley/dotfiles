@@ -9,7 +9,7 @@ fi
 
 if [[ "$FIRST_OF_MONTH" = "y" ]]; then
 	echo "Nix last updated"
-	cat ~/dotfiles/last-updated.txt || echo "never"
+	gstat -c '%y' ~/dotfiles/flake.lock || echo "never"
 
 	echo "Nix last applied"
 	cat ~/dotfiles/last-applied.txt || echo "never"

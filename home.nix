@@ -47,7 +47,7 @@ in {
         ./programs/zsh.nix
       ]
       ++ (lib.optionals private.personal [
-        ./programs/borgmatic.nix
+        # personal only
       ]);
 
     home = {
