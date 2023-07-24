@@ -60,7 +60,7 @@ openNoteID:\t\(openNoteID ?? "")
     var create: String?
 
     @Option(name: .long, help: "Subdirectory to use")
-    var subDirectory = "work"
+    var subDirectory = ""
     
     @Option(name: .long, help: ArgumentHelp(DeleteWindow.allCases.map { $0.rawValue }.joined(separator: ", ")))
     var clean = DeleteWindow.none
