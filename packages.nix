@@ -28,6 +28,7 @@ with pkgs; [
   pv
   python311
   rclone
+  rename
   ripgrep
   rsync
   shellcheck

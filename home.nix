@@ -54,21 +54,23 @@ in {
       stateVersion = "22.05";
 
       sessionVariables = {
-        WORKMACHINE = "false";
+        BORG_PASSPHRASE = "${private.borgSecret}";
+        BORG_REPO = "/Volumes/money/borgbackup";
+        DOTFILES_DIR = toString ~/dotfiles;
+        EDITOR = "nvim";
+        GITHUB_TOKEN = "${private.githubSecret}";
+        GOPATH = toString ~/go;
         GOPROXY = "direct";
         GOSUMDB = "off";
+        ICLOUD_DIR = toString (~/Library + "/Mobile Documents/com~apple~CloudDocs");
         LESS = "-R";
-        BORG_REPO = "/Volumes/money/borgbackup";
-        BORG_PASSPHRASE = "${private.borgSecret}";
-        GOPATH = toString ~/go;
-        DOTFILES_DIR = toString ~/dotfiles;
+        NOTES_DIR = toString ~/projects/sheeley/notes;
         PRIVATE_CMD_DIR = toString ~/projects/sheeley/infrastructure/cmd;
         PRIVATE_DATA_DIR = toString ~/projects/sheeley/infrastructure/data;
         PRIVATE_TOOLS_DIR = toString ~/projects/sheeley/infrastructure;
         TOOLS_DIR = toString ~/projects/sheeley/tool;
-        NOTES_DIR = toString ~/projects/sheeley/notes;
-        GITHUB_TOKEN = "${private.githubSecret}";
-        EDITOR = "nvim";
+        WORK_NOTES_DIR = toString (~/Library + "/Mobile Documents/iCloud~md~obsidian/Documents/Apple Notes");
+        WORKMACHINE = "false";
       };
 
       # this sometimes doesn't work with fish
@@ -105,9 +107,10 @@ in {
       shellAliases = {
         cat = "bat";
         cdgo = "cd $GOPATH/src";
-        cdicloud = "cd ~/Library/Mobile\ Documents/com~apple~CloudDocs";
+        cdicloud = "cd $ICLOUD_DIR";
         cdinfra = "cd $PRIVATE_TOOLS_DIR";
         cdnotes = "cd $NOTES_DIR";
+        cdworknotes = "cd $WORK_NOTES_DIR";
         cdproj = "cd $HOME/projects/sheeley";
         cdtools = "cd $TOOLS_DIR";
         clone = "git clone";

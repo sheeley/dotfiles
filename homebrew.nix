@@ -53,9 +53,8 @@ in {
     };
 
     taps = [
+      "1password/tap"
       "homebrew/bundle"
-      "homebrew/cask"
-      "homebrew/core"
       "abridoux/formulae"
     ];
   };

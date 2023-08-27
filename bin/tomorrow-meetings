@@ -1,0 +1,4 @@
+#! /usr/bin/env bash
+set -euo pipefail # x
+
+meeting-notes --create tomorrow --sub-directory meetings

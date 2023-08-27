@@ -92,7 +92,7 @@
       };
     };
 
-    darwinConfigurations."Sheeley-MBP" = darwin.lib.darwinSystem {
+    darwinConfigurations."sheeley-mbp" = darwin.lib.darwinSystem {
       system = "aarch64-darwin";
       pkgs = legacyPackages.aarch64-darwin;
       modules = sharedModules;
