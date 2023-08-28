@@ -68,7 +68,7 @@ in {
         PRIVATE_CMD_DIR = toString ~/projects/sheeley/infrastructure/cmd;
         PRIVATE_DATA_DIR = toString ~/projects/sheeley/infrastructure/data;
         PRIVATE_TOOLS_DIR = toString ~/projects/sheeley/infrastructure;
-        TOOLS_DIR = toString ~/projects/sheeley/tool;
+        TOOLS_DIR = toString ~/dotfiles/bin;
         WORK_NOTES_DIR = toString (~/Library + "/Mobile Documents/iCloud~md~obsidian/Documents/Apple Notes");
         WORKMACHINE = "false";
       };
@@ -106,17 +106,17 @@ in {
 
       shellAliases = {
         cat = "bat";
+        cddot = "cd ~/dotfiles";
         cdgo = "cd $GOPATH/src";
         cdicloud = "cd $ICLOUD_DIR";
         cdinfra = "cd $PRIVATE_TOOLS_DIR";
         cdnotes = "cd $NOTES_DIR";
-        cdworknotes = "cd $WORK_NOTES_DIR";
         cdproj = "cd $HOME/projects/sheeley";
-        cdtools = "cd $TOOLS_DIR";
-        clone = "git clone";
-        cddot = "cd ~/dotfiles";
         cdscratch = "cd ~/scratch";
+        cdtools = "cd $TOOLS_DIR";
         cdwork = "cd ~/work";
+        cdworknotes = "cd $WORK_NOTES_DIR";
+        clone = "git clone";
         la = "ls -la";
       };
     };
