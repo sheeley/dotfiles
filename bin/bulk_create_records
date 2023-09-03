@@ -1,0 +1,72 @@
+#! /etc/profiles/per-user/johnnysheeley/bin/nu
+
+def "parse frontmatter" []: string -> any {
+    let text = $in | open | lines --skip-empty
+
+    if not ($text.0 == "---") {
+        error make --unspanned {msg: $"no frontmatter ($text)"}
+    }
+
+    $text | split list "---" | first | to text | from yaml
+}
+
+def "has_record_key" [$yaml: any] {
+    # let $yaml = $in
+    if ($yaml | is-empty) { return false }
+    # --ignore-errors allows nil values
+    not ($yaml | get --ignore-errors record | is-empty)
+}
+
+def main [
+    --records: path, # A file containing lines of notes to create
+    --subdirectory: string, # A path to insert
+    ] {
+        let entries = (open $records | lines --skip-empty)
+    # echo (has_record_key $"($env.NOTES_DIR)/shared/templates/restaurant.md")
+    let templates = (ls $"($env.NOTES_DIR)/shared/templates/*.md" | each {|el| 
+        try {
+            let yaml = ($el.name | parse frontmatter)
+            if (has_record_key $yaml) { 
+                return {name: $el.name, template: $yaml}
+            }
+        } catch {
+            return
+        }
+    })
+
+    let template_file = ($templates | input list -f "Select template")
+    mut template = $template_file.template
+    print ($template | table --expand)
+    
+    mut keyToChange = "!"
+    while keyToChange != "" {
+        # TODO: use | into cellpath when available
+        $keyToChange = (input "Enter yaml key to change or leave empty to move on\n")
+        if $keyToChange == "" { break }
+        let newValue = (input "value\n")
+        $template = ($template | upsert $keyToChange $newValue)
+        print ($template | table --expand)
+    }
+
+    let finalizedTemplate = $template
+    let keyForRepeat = (input "key to use for repeated input (or leave blank)\n")
+    
+    $entries | each { |el| 
+        let cleaned = (clean_name $el)
+        mut contents = $finalizedTemplate
+        if $keyForRepeat != "" {
+            $contents = ($contents | update $keyForRepeat $el)
+        }
+        mut filename = $"($env.NOTES_DIR)"
+        if not ($subdirectory | is-empty) {
+            $filename = $"($filename)/($subdirectory)"
+        }
+        $filename = $"($filename)/($cleaned).md"
+        
+        $"---\n($contents | to yaml)\n---\n" | save $filename
+    }
+}
+
+def clean_name [name: string] {
+    $name # | str replace "(" "-" | str replace ")" "-"
+}
