@@ -53,6 +53,7 @@ in {
     home = {
       stateVersion = "22.05";
 
+      # TODO: pkgs.callPackage ./environment_variables.nix {private = private;};
       sessionVariables = {
         BORG_PASSPHRASE = "${private.borgSecret}";
         BORG_REPO = "/Volumes/money/borgbackup";
@@ -75,19 +76,7 @@ in {
 
       # this sometimes doesn't work with fish
       # https://github.com/LnL7/nix-darwin/issues/122
-      sessionPath = [
-        "$HOME/bin"
-        "$HOME/dotfiles/bin"
-
-        "$HOME/projects/sheeley/infrastructure/bin"
-        "$HOME/projects/sheeley/infrastructure/scripts"
-        "$HOME/go/bin"
-        "$HOME/.cargo/bin"
-        "$HOME/non-nix-bin"
-
-        "/opt/homebrew/bin"
-        "/Applications/Xcode.app/Contents/Developer/usr/bin"
-      ];
+      sessionPath = pkgs.callPackage ./environment_path.nix {};
 
       packages = pkgs.callPackage ./packages.nix {};
 

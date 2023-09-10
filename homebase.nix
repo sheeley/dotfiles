@@ -25,31 +25,44 @@ in {
     };
   };
 
-  # TODO: set up automatic borgmatic
-  #   launchd.agents.borgmatic = {
-  #     command = "/opt/homebrew/bin/borgmatic";
-  #     Label = "borgmatic"
-  #   };
+  # automatically run borgmatic and other housekeeping work
+  launchd.agents.housekeeping = {
+    script = "
+    su ${user}
+    housekeeping
+    mail -s \"Housekeeping Output\" sheeley@aigee.org < /tmp/housekeeping.log
+    ";
 
-  # launchd.user.agents.fetch-nixpkgs-updates = {
-  #   command = "/usr/bin/sandbox-exec -f ${config.security.sandbox.profiles.fetch-nixpkgs-updates.profile} ${pkgs.git}/bin/git -C ${toString ~/Code/nixos/nixpkgs} fetch origin master";
-  #   environment.HOME = "";
-  #   environment.NIX_SSL_CERT_FILE = "${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt";
-  #   serviceConfig.KeepAlive = false;
-  #   serviceConfig.ProcessType = "Background";
-  #   serviceConfig.StartInterval = 360;
-  # };
-  #   <key>RunAtLoad</key>
-  # 	<true/>
-  # 	<key>StandardErrorPath</key>
-  # 	<string>/Users/wtraylor/logs/borgrun/borgmatic.err</string>
-  # 	<key>StandardOutPath</key>
-  # 	<string>/Users/wtraylor/logs/borgrun/borgmatic.out</string>
-  # 	<key>StartCalendarInterval</key>
-  # 	<dict>
-  # 		<key>Hour</key>
-  # 		<integer>3</integer>
-  # 		<key>Minute</key>
-  # 		<integer>0</integer>
-  # 	</dict>
+    path = [
+      "/bin"
+      "/usr/bin"
+      "/etc/profiles/per-user/${user}/bin"
+      "/Users/${user}/dotfiles/bin"
+      "/opt/homebrew/bin"
+    ];
+
+    environment = {
+      BORG_REPO = "/Volumes/money/borgbackup";
+      HOME = "/Users/${user}";
+      PRIVATE_TOOLS_DIR = toString ~/projects/sheeley/infrastructure;
+      TOOLS_DIR = toString ~/dotfiles/bin;
+      WORKMACHINE = "false";
+    };
+
+    serviceConfig = {
+      Label = "housekeeping";
+      ProcessType = "Background";
+      # ProgramArguments = [
+      #   "/Users/${user}/dotfiles/bin/housekeeping"
+      # ];
+      StandardOutPath = "/tmp/housekeeping.log";
+      StandardErrorPath = "/tmp/housekeeping.log";
+      StartCalendarInterval = [
+        {
+          Hour = 1;
+        }
+      ];
+      UserName = "${user}";
+    };
+  };
 }

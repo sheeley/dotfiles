@@ -1,6 +1,10 @@
 #! /usr/bin/env bash
 set -euo pipefail # x
 
+> /tmp/housekeeping.log
+echo "--- housekeeping ---"
+date
+
 FIRST_OF_MONTH=""
 day=$(date -u +%d)
 if [[ $((10#$day)) -lt 10 ]]; then

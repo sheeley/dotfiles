@@ -1,75 +1,73 @@
 ---
-location:
-  source_directories:
-    - ~/projects
-    - ~/Documents
-    - ~/Media
-    - ~/Pictures
+source_directories:
+  - ~/projects
+  - ~/Documents
+  - ~/Media
+  - ~/Pictures
 
-  repositories:
-    - /Volumes/money/borgbackup
-    - "ssh://@user@@@user@.repo.borgbase.com/./repo"
+repositories:
+  - path: /Volumes/money/borgbackup
+    label: local
+  - path: "ssh://@user@@@user@.repo.borgbase.com/./repo"
+    label: remote
 
-  exclude_patterns:
-    - "*.pyc"
-    - ~/*/.cache
-    - ~/.cache/*
-    - /var/cache/*
-    - /var/tmp/*
-    - "*.nzb"
-    - "*.url"
-    - "*.webloc"
-    - Thumbs.db
-    - .fseventsd*
-    - ~/Media/Music/Downloads-Music/
-    - "~/Media/Music/Apple Music"
-    - "**/.*.swp"
-    - "**/.DS_Store"
-    - "**/.VolumeIcon.icns"
-    - "**/.DocumentRevisions-V100/"
-    - "**/.MobileBackups/"
-    - "**/.MobileBackups.trash/"
-    - "**/.Spotlight-V100/"
-    - "**/.TemporaryItems/"
-    - "**/.Trash/"
-    - "**/.Trashes/"
-    - "**/.build/*"
+exclude_patterns:
+  - "*.pyc"
+  - ~/*/.cache
+  - ~/.cache/*
+  - /var/cache/*
+  - /var/tmp/*
+  - "*.nzb"
+  - "*.url"
+  - "*.webloc"
+  - Thumbs.db
+  - .fseventsd*
+  - ~/Media/Music/Downloads-Music/
+  - "~/Media/Music/Apple Music"
+  - "**/.*.swp"
+  - "**/.DS_Store"
+  - "**/.VolumeIcon.icns"
+  - "**/.DocumentRevisions-V100/"
+  - "**/.MobileBackups/"
+  - "**/.MobileBackups.trash/"
+  - "**/.Spotlight-V100/"
+  - "**/.TemporaryItems/"
+  - "**/.Trash/"
+  - "**/.Trashes/"
+  - "**/.build/*"
 
-  exclude_if_present: .nobackup
-  one_file_system: true
+exclude_if_present: 
+  - .nobackup
+one_file_system: true
 
-storage:
-  compression: auto,zstd
-  archive_name_format: "johnny-{now}"
-  encryption_passphrase: "@secret@"
-  extra_borg_options:
-    create: --list --filter AME
+compression: auto,zstd
+archive_name_format: "johnny-{now}"
+encryption_passphrase: "@secret@"
+extra_borg_options:
+  create: --list --filter AME
 
-retention:
-  keep_daily: 7
-  keep_weekly: 4
-  keep_monthly: 12
-  keep_yearly: 10
+keep_daily: 7
+keep_weekly: 4
+keep_monthly: 12
+keep_yearly: 10
 
-consistency:
-  check_last: 3
-  check_repositories:
-    - /Volumes/money/borgbackup
-  checks:
-    - name: data
-      frequency: 1 month
-    - name: repository
-      frequency: 2 weeks
+check_last: 3
+check_repositories:
+  - /Volumes/money/borgbackup
+checks:
+  - name: data
+    frequency: 1 month
+  - name: repository
+    frequency: 2 weeks
 
-hooks:
-  before_backup:
-    - echo "`date` - Starting backup"
+before_backup:
+  - echo "`date` - Starting backup"
 
-  after_backup:
-    - echo "`date` - Finished backup"
+after_backup:
+  - echo "`date` - Finished backup"
 
-  before_check:
-    - echo "`date` - starting checks"
+before_check:
+  - echo "`date` - starting checks"
 
-  after_check:
-    - echo "`date` - finished checks"
+after_check:
+  - echo "`date` - finished checks"
