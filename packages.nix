@@ -23,6 +23,7 @@ with pkgs; [
   lz4
   nerdfonts
   nix-diff
+  nodejs_20
   nvd
   obsidian
   pv

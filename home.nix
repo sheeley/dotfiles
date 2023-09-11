@@ -86,6 +86,8 @@ in {
         ".swiftlint.yml".text = builtins.readFile ./files/.swiftlint.yml;
         ".vim/ftdetect/toml.vim".text = "autocmd BufNewFile,BufRead *.toml set filetype=toml";
 
+        ".npmrc".text = builtins.readFile ./files/.npmrc;
+
         ".config/rclone/rclone.conf".source = pkgs.substituteAll {
           name = "rclone.conf";
           src = ./files/rclone.conf;
