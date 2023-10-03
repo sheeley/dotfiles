@@ -7,6 +7,9 @@
   "$HOME/go/bin"
   "$HOME/.cargo/bin"
   "$HOME/non-nix-bin"
+  
+  "$HOME/.npm-packages/bin"
+  "$HOME/.n/bin"
 
   "/opt/homebrew/bin"
   "/Applications/Xcode.app/Contents/Developer/usr/bin"
