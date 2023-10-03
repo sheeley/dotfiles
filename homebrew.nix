@@ -18,10 +18,11 @@ in {
       [
         "dovecot"
         "git-delta"
+        "n" # node version manager
         "scout"
         "swiftformat"
       ]
-      ++ (lib.optionals private.personal [
+      ++ ((lib.optionals (lib.hasAttr "personal" private && private.personal)) [
         ]);
 
     casks = [

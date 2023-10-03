@@ -1,4 +1,5 @@
 {
+  lib,
   pkgs,
   private,
   ...
@@ -84,7 +85,8 @@ in {
     userName = "Johnny Sheeley";
     userEmail = "${private.email}";
 
-    includes = [
+    includes = []
+    ++ (lib.optionals (lib.hasAttr "workEmail" private) [
       {
         condition = "gitdir:~/work";
         contents = {
@@ -93,7 +95,7 @@ in {
           };
         };
       }
-    ];
+    ]);
 
     ignores = [
       ### Vim ###

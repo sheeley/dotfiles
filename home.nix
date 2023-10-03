@@ -31,8 +31,7 @@ in {
     programs.bash.enable = true;
     programs.home-manager.enable = true;
 
-    imports =
-      [
+    imports = [
         inputs.nixvim.homeManagerModules.nixvim
         ./programs/fish.nix
         ./programs/general.nix
@@ -46,7 +45,7 @@ in {
         ./programs/vscode.nix
         ./programs/zsh.nix
       ]
-      ++ (lib.optionals private.personal [
+      ++ ((lib.optionals (lib.hasAttr "personal" private && private.personal)) [
         # personal only
       ]);
 
@@ -55,7 +54,7 @@ in {
 
       # TODO: pkgs.callPackage ./environment_variables.nix {private = private;};
       sessionVariables = {
-        BORG_PASSPHRASE = "${private.borgSecret}";
+        # BORG_PASSPHRASE = "${private.borgSecret}";
         BORG_REPO = "/Volumes/money/borgbackup";
         DOTFILES_DIR = toString ~/dotfiles;
         EDITOR = "nvim";
@@ -65,6 +64,7 @@ in {
         GOSUMDB = "off";
         ICLOUD_DIR = toString (~/Library + "/Mobile Documents/com~apple~CloudDocs");
         LESS = "-R";
+        N_PREFIX = "$HOME/.n";
         NOTES_DIR = toString ~/projects/sheeley/notes;
         PRIVATE_CMD_DIR = toString ~/projects/sheeley/infrastructure/cmd;
         PRIVATE_DATA_DIR = toString ~/projects/sheeley/infrastructure/data;
@@ -86,13 +86,14 @@ in {
         ".swiftlint.yml".text = builtins.readFile ./files/.swiftlint.yml;
         ".vim/ftdetect/toml.vim".text = "autocmd BufNewFile,BufRead *.toml set filetype=toml";
 
-        ".npmrc".text = builtins.readFile ./files/.npmrc;
+        # link instead of make a real file because this needs to be modified to login/etc
+        ".npmrc".source = config.lib.file.mkOutOfStoreSymlink ./files/.npmrc;
 
-        ".config/rclone/rclone.conf".source = pkgs.substituteAll {
-          name = "rclone.conf";
-          src = ./files/rclone.conf;
-          user = "${private.borgUser}";
-        };
+        # ".config/rclone/rclone.conf".source = pkgs.substituteAll {
+        #   name = "rclone.conf";
+        #   src = ./files/rclone.conf;
+        #   user = "${private.borgUser}";
+        # };
       };
 
       shellAliases = {
