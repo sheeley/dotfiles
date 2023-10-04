@@ -1,15 +1,16 @@
 #! /usr/bin/env bash
 set -eu
 
-HN=$(hostname | cut -d '.' -f 1)
-# TODO: replace with this?
-# HN=$(sudo scutil --get HostName)
+# TODO: verify this swap works
+# HN=$(hostname | cut -d '.' -f 1)
+HN=$(scutil --get HostName)
 
 # TODO: is there a cleaner way of doing this?
-VALID_HOSTNAMES=$(cat flake.nix | grep darwinConfigurations | grep -o '".*"' | sed 's/"//g')
+VALID_HOSTNAMES=$(grep darwinConfigurations flake.nix | grep -o '".*"' | sed 's/"//g')
 
-if [[ ! "${VALID_HOSTNAMES[*]}" =~ "$HN" ]]; then
+if [[ ! "${VALID_HOSTNAMES[*]}" =~ $HN ]]; then
 	echo "change hostname: $HN"
+	echo "sudo scutil --set HostName ..."
 	exit 1
 fi
 

@@ -10,7 +10,7 @@ in {
 
     onActivation = {
       autoUpdate = true;
-      cleanup = "uninstall"; # zap removes configuration and cache also
+      cleanup = "none"; # use "uninstall" if you want to manage everything; zap removes configuration and cache also.
       upgrade = true;
     };
 
@@ -21,6 +21,7 @@ in {
         "n" # node version manager
         "scout"
         "swiftformat"
+        # "1password"
       ]
       ++ ((lib.optionals (lib.hasAttr "personal" private && private.personal)) [
         ]);

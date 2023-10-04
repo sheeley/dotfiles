@@ -31,6 +31,7 @@ in {
 
   #system.keyboard.enableKeyMapping = true;
   security.pam.enableSudoTouchIdAuth = true;
+  # TODO: security.pam.touchIdAuth = true;
 
   system.activationScripts = {
     preActivation.text = ''
