@@ -1,16 +1,14 @@
 #! /usr/bin/env bash
 set -eu
 
-# TODO: verify this swap works
-# HN=$(hostname | cut -d '.' -f 1)
-HN=$(scutil --get HostName)
+HN=$(scutil --get LocalHostName)
 
 # TODO: is there a cleaner way of doing this?
 VALID_HOSTNAMES=$(grep darwinConfigurations flake.nix | grep -o '".*"' | sed 's/"//g')
 
 if [[ ! "${VALID_HOSTNAMES[*]}" =~ $HN ]]; then
 	echo "change hostname: $HN"
-	echo "sudo scutil --set HostName ..."
+	echo "sudo scutil --set LocalHostName ..."
 	exit 1
 fi
 
