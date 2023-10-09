@@ -1,6 +1,8 @@
 {pkgs, ...}: {
   programs.vscode = {
     enable = true;
+    enableExtensionUpdateCheck = false;
+    enableUpdateCheck = false;
     # package = pkgs.vscodium;
 
     extensions = with pkgs.vscode-extensions; [
