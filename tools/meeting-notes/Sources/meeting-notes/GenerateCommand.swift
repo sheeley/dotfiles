@@ -51,7 +51,10 @@ openNoteID:\t\(openNoteID ?? "")
     }
     
     @Option(name: .long, help: "Directory to create notes in")
-    var baseDirectory: String = FileManager.default.homeDirectoryForCurrentUser.appending(components: "Library/Mobile Documents/iCloud~md~obsidian/Documents/Apple Notes").path(percentEncoded: false)
+    var baseDirectory: String = FileManager.default
+        .homeDirectoryForCurrentUser
+        .appending(components: "Library/Mobile Documents/iCloud~md~obsidian/Documents/Apple Notes")
+        .path(percentEncoded: false)
     
     @Option(name: .long, help: "Vault to open notes in")
     var vaultName = "Apple Notes"
@@ -104,20 +107,19 @@ struct Generate: ParsableCommand {
         print(msg)
     }
     
-    struct dirError: Error {
-        
-    }
+    struct dirError: Error {}
     
     func actualRun() throws {
-        verboseLog("\(options)")
+        try requestAccess()
+//        verboseLog("\(options)")
         let parentDir =  URL(filePath: options.baseDirectory, directoryHint: .isDirectory)
-        verboseLog("notes dir: \(parentDir)")
+//        verboseLog("notes dir: \(parentDir)")
 
         var baseDir = parentDir
         if !options.subDirectory.isEmpty {
             baseDir.appendPathComponent(options.subDirectory)
         }
-        verboseLog("baseDir: \(baseDir)")
+//        verboseLog("baseDir: \(baseDir)")
 
         verboseLog("\(options)")
         if options.clean != .none {
@@ -150,6 +152,7 @@ struct Generate: ParsableCommand {
             templateFile.stopAccessingSecurityScopedResource()
             
             let events = getEvents(in: window)
+            verboseLog("events found: \(events.count)")
             if events.isEmpty {
                 if case let .specificEvent(id) = window {
                     print("Couldn't find event \(id)")
@@ -157,7 +160,6 @@ struct Generate: ParsableCommand {
                 }
                 Darwin.exit(0)
             }
-            verboseLog("events found: \(events.count)")
             
             let meetings = events.map { Meeting(from: $0) }
             verboseLog("\(meetings.humanReadable())")
@@ -177,7 +179,6 @@ struct Generate: ParsableCommand {
     }
 
     func createNotes(_ notes: [Meeting], in notesURL: URL, with template: String, and options: GlobalOptions) throws {
-        try requestAccess()
         var written = [Meeting]()
         let toCreate = options.force ? notes : notes.filter {
             !FileManager.default.fileExists(atPath: $0.fullPath(dir: notesURL).path)

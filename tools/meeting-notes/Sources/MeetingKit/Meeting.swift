@@ -79,7 +79,7 @@ public extension Array where Element == Meeting {
             \($0.id)
             \(df.string(from: $0.startDate)) - \(df.string(from: $0.endDate))
             """
-        }.joined(separator: "\n")
+        }.joined(separator: "\n\n")
     }
 }
 
@@ -105,7 +105,7 @@ public func titleModifier(_ title: String?) -> String {
             title += " 1o1"
         }
     }
-    return title
+    return "\"\(title.replacingOccurrences(of: "\"", with: "\\\""))\""
 }
 
 public func attendeeFilter(_ name: String) -> Bool {

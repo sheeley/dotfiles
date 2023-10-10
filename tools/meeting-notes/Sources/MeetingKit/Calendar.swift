@@ -14,8 +14,11 @@ let store = EKEventStore()
 
 public func requestAccess() throws {
     let sema = DispatchSemaphore(value: 0)
-    store.requestAccess(to: .event) { allowed, err in
-        guard allowed, err == nil else { exit(1) }
+    store.requestFullAccessToEvents { allowed, err in
+        guard allowed, err == nil else {
+            print("Calendar access not allowed:\n\(String(describing: err))")
+            exit(1)
+        }
         sema.signal()
     }
     _ = sema.wait(timeout: .distantFuture)
@@ -46,8 +49,8 @@ public func getEvents(in window: EventWindow) -> [EKEvent] {
         }
         return []
     default:
-        let today = Calendar.current.startOfDay(for: Date())
-        let tomorrow = Date().addingTimeInterval(60 * 60 * 24)
+        let today = Date().beginning(of: .day)!
+        let tomorrow = Date().end(of: .day)!
 
         let predicate = store.predicateForEvents(withStart: today, end: tomorrow, calendars: nil)
         let events = store.events(matching: predicate)
