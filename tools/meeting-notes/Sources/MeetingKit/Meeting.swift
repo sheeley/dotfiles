@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  Meeting.swift
 //
 //
 //  Created by Johnny Sheeley on 11/18/22.

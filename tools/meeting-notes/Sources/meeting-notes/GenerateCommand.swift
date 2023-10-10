@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  GenerateCommand.swift
 //
 //
 //  Created by Johnny Sheeley on 11/18/22.
@@ -37,34 +37,34 @@ enum DeleteWindow: String, CaseIterable {
 
 extension DeleteWindow: ExpressibleByArgument {}
 
-struct GlobalOptions: ParsableArguments, CustomStringConvertible  {
+struct GlobalOptions: ParsableArguments, CustomStringConvertible {
     var description: String {
-"""
----
-baseDirectory:\t\(baseDirectory)
-vaultName:\t\(vaultName)
-subDirectory:\t\(subDirectory)
-clean:\t\(clean)
-openNoteID:\t\(openNoteID ?? "")
----
-"""
+        """
+        ---
+        baseDirectory:\t\(baseDirectory)
+        vaultName:\t\(vaultName)
+        subDirectory:\t\(subDirectory)
+        clean:\t\(clean)
+        openNoteID:\t\(openNoteID ?? "")
+        ---
+        """
     }
-    
+
     @Option(name: .long, help: "Directory to create notes in")
     var baseDirectory: String = FileManager.default
         .homeDirectoryForCurrentUser
         .appending(components: "Library/Mobile Documents/iCloud~md~obsidian/Documents/Apple Notes")
         .path(percentEncoded: false)
-    
+
     @Option(name: .long, help: "Vault to open notes in")
     var vaultName = "Apple Notes"
-    
+
     @Option(name: .long, help: "'today', 'tomorrow', 'both', or a specific note ID")
     var create: String?
 
     @Option(name: .long, help: "Subdirectory to use")
     var subDirectory = ""
-    
+
     @Option(name: .long, help: ArgumentHelp(DeleteWindow.allCases.map { $0.rawValue }.joined(separator: ", ")))
     var clean = DeleteWindow.none
 
@@ -106,13 +106,13 @@ struct Generate: ParsableCommand {
         guard options.verbose else { return }
         print(msg)
     }
-    
+
     struct dirError: Error {}
-    
+
     func actualRun() throws {
         try requestAccess()
 //        verboseLog("\(options)")
-        let parentDir =  URL(filePath: options.baseDirectory, directoryHint: .isDirectory)
+        let parentDir = URL(filePath: options.baseDirectory, directoryHint: .isDirectory)
 //        verboseLog("notes dir: \(parentDir)")
 
         var baseDir = parentDir
@@ -143,14 +143,14 @@ struct Generate: ParsableCommand {
                 open = true
             }
             verboseLog("create: \(create)")
-            
+
             let templateFile = parentDir.appending(components: "shared/templates/meeting.md")
             let access = templateFile.startAccessingSecurityScopedResource()
             verboseLog("template file (\(access)): \(templateFile)")
-            
+
             let template = try String(contentsOf: templateFile)
             templateFile.stopAccessingSecurityScopedResource()
-            
+
             let events = getEvents(in: window)
             verboseLog("events found: \(events.count)")
             if events.isEmpty {
@@ -160,11 +160,11 @@ struct Generate: ParsableCommand {
                 }
                 Darwin.exit(0)
             }
-            
+
             let meetings = events.map { Meeting(from: $0) }
             verboseLog("\(meetings.humanReadable())")
             try createNotes(meetings, in: baseDir, with: template, and: options)
-            
+
             if open, let meeting = meetings.first {
                 openNote(meeting, vault: options.vaultName)
             }

@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  Note.swift
 //
 //
 //  Created by Johnny Sheeley on 11/20/22.
