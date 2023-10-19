@@ -1,7 +1,7 @@
 #! /usr/bin/env bash
 set -eu
 
-HN=$(scutil --get LocalHostName)
+HN=$(scutil --get HostName)
 
 # TODO: is there a cleaner way of doing this?
 VALID_HOSTNAMES=$(grep darwinConfigurations flake.nix | grep -o '".*"' | sed 's/"//g')
@@ -16,11 +16,11 @@ nix build ".#darwinConfigurations.${HN}.system" --impure --extra-experimental-fe
 
 if command -v nvd; then
 	nvd diff /run/current-system result
-	
+
 	if command -v nix-diff; then
-	# TODO: elide common lines https://github.com/Gabriella439/nix-diff/issues/42
+		# TODO: elide common lines https://github.com/Gabriella439/nix-diff/issues/42
 		nix-diff /run/current-system result
-	fi;
+	fi
 
 	if opt_out "Continue?"; then
 		exit 0

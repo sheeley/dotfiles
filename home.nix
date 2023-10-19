@@ -31,7 +31,8 @@ in {
     programs.bash.enable = true;
     programs.home-manager.enable = true;
 
-    imports = [
+    imports =
+      [
         inputs.nixvim.homeManagerModules.nixvim
         ./programs/fish.nix
         ./programs/general.nix

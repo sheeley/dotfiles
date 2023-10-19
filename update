@@ -1,6 +1,14 @@
 #! /usr/bin/env bash
 set -eu
 
+# TODO: make more betterer
+nix --version
+curl https://raw.githubusercontent.com/NixOS/nixpkgs/master/nixos/modules/installer/tools/nix-fallback-paths.nix
+if confirm "Upgrade nix?"; then
+    sudo -i nix upgrade-nix
+fi
+
+
 nix flake update \
 --extra-experimental-features "nix-command flakes" \
 --impure
