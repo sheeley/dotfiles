@@ -1,7 +1,7 @@
 #! /usr/bin/env bash
 set -euo pipefail # x
 
-> /tmp/housekeeping.log
+# >/tmp/housekeeping.log
 echo "--- housekeeping ---"
 date
 
@@ -44,7 +44,12 @@ check_git_status "$HOME/dotfiles/"
 check_git_status "$TOOLS_DIR"
 check_git_status "$PRIVATE_TOOLS_DIR"
 
-if [[ "$WORKMACHINE" = "true" ]]; then
+# if [[ "$WORKMACHINE" = "true" ]]; then
+# 	exit
+# fi
+
+HOST=$(sudo scutil --get HostName)
+if [[ "$HOST" != "homebase" ]]; then
 	exit
 fi
 
