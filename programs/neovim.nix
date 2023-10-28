@@ -91,48 +91,77 @@ in {
       };
     };
 
-    maps = {
-      insert = {
-        ";;" = "<Esc>";
-      };
-      visual = {
-        "<Space>" = {
-          action = "zf";
+    keymaps = [
+      {
+        mode = "i";
+        key = ";;";
+        action = "<Esc>";
+      }
+      {
+        mode = "v";
+        key = "<Space>";
+        action = "zf";
+        options = {
           remap = false;
         };
-        # (un)indent with Tab
-        "<Tab>" = "<C-t>";
-        "<S-Tab>" = "<C-d>";
-      };
-      normal = {
-        # folding
-        "<Space>" = {
+      }
+      # (un)indent with Tab
+      {
+        mode = "v";
+        key = "<Tab>";
+        action = "<C-t>";
+      }
+      {
+        mode = "v";
+        key = "<S-Tab>";
+        action = "<C-d>";
+      }
+      # folding
+      {
+        mode = "n";
+        key = "<Space>";
+        action = "@=(foldlevel('.')?'za':\"\<Space>\")<CR>";
+        options = {
           silent = true;
-          action = "@=(foldlevel('.')?'za':\"\<Space>\")<CR>";
           remap = false;
         };
-
-        # windows/splits
-        "<C-j>" = {
-          action = "<C-w>j";
+      }
+      # windows/splits
+      {
+        mode = "n";
+        key = "<C-j>";
+        action = "<C-w>j";
+        options = {
           remap = false;
         };
-        "<C-k>" = {
-          action = "<C-w>k";
+      }
+      {
+        mode = "n";
+        key = "<C-k>";
+        action = "<C-w>k";
+        options = {
           remap = false;
         };
-        "<C-h>" = {
-          action = "<C-w>h";
+      }
+      {
+        mode = "n";
+        key = "<C-h>";
+        action = "<C-w>h";
+        options = {
           remap = false;
         };
-        # automatically create a split if none doesn't exist, otherwise navigate
-        "<C-l>" = {
-          action = "winnr('l') == winnr() ? ':vsp<CR>' : '<C-w>l'";
+      }
+      # automatically create a split if none doesn't exist, otherwise navigate
+      {
+        mode = "n";
+        key = "<C-l>";
+        action = "winnr('l') == winnr() ? ':vsp<CR>' : '<C-w>l'";
+        options = {
           expr = true;
           remap = false;
         };
-      };
-    };
+      }
+    ];
 
     plugins.null-ls = {
       enable = true;
