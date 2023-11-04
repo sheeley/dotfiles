@@ -71,7 +71,7 @@ fi
 if ! which nix; then
 	curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install
 	. /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
-	
+
 	# create /run
 	if [ ! -f /run ]; then
 		printf 'run\tprivate/var/run\n' | sudo tee -a /etc/synthetic.conf
@@ -79,7 +79,7 @@ if ! which nix; then
 	fi
 fi
 
-HOST=$(sudo scutil --get HostName)
+HOST=$(scutil --get HostName)
 if confirm "Change from current hostname: $HOST?"; then
 	while true; do
 		set_hostname && break
