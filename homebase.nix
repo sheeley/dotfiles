@@ -36,6 +36,7 @@ in {
     path = [
       "/bin"
       "/usr/bin"
+      "/usr/sbin"
       "/etc/profiles/per-user/${user}/bin"
       "/Users/${user}/dotfiles/bin"
       "/opt/homebrew/bin"
