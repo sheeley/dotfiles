@@ -6,4 +6,4 @@ if [ "$status" = "Running" ]; then # if so, then do nothing
 fi
 
 # otherwise authenticate with tailscale
-# TODO: tailscale up -authkey ${private.tailscaleKey}
+tailscale up -authkey @tailscaleKey@

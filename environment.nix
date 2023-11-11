@@ -34,6 +34,10 @@ in {
   security.pam.enableSudoTouchIdAuth = true;
   # TODO: security.pam.touchIdAuth = true;
 
+  services.tailscale = {
+    enable = true;
+  };
+
   system.activationScripts = {
     preActivation.text = ''
       DIRS=(
@@ -57,7 +61,7 @@ in {
       ]
       ++ ((lib.optionals (lib.hasAttr "personal" private && private.personal)) [
         # personal only
-        # "tailscale.sh"
+        "tailscale.sh"
       ])
       ++ ((lib.optionals (lib.hasAttr "homebase" private && private.homebase)) [
         # homebase only

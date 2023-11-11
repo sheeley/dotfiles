@@ -7,4 +7,5 @@
   personal = false;
   borgSecret = "";
   borgUser = "";
+  tailscaleKey = "";
 }
