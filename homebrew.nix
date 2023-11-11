@@ -10,35 +10,39 @@ in {
 
     onActivation = {
       autoUpdate = true;
-      cleanup = "none"; # use "uninstall" if you want to manage everything; zap removes configuration and cache also.
+      cleanup = "uninstall"; # use "uninstall" if you want to manage everything; zap removes configuration and cache also.
       upgrade = true;
     };
 
     brews =
       [
-        "dovecot"
         "git-delta"
         "n" # node version manager
         "scout"
         "swiftformat"
-        # "1password"
       ]
       ++ ((lib.optionals (lib.hasAttr "personal" private && private.personal)) [
-        ]);
+        "dovecot"
+      ]);
 
-    casks = [
-      "1password"
-      "1password/tap/1password-cli"
-      "bartender"
-      "eloston-chromium"
-      "iterm2"
-      "little-snitch"
-      "obsidian"
-      "shortcat"
-      "slack"
-    ];
+    casks =
+      [
+        "1password"
+        "1password/tap/1password-cli"
+        "bartender"
+        "eloston-chromium"
+        "iterm2"
+        "little-snitch"
+        "obsidian"
+        "shortcat"
+        "slack"
+      ]
+      ++ ((lib.optionals (lib.hasAttr "personal" private && private.personal)) [
+        "whisky"
+      ]);
 
     masApps = {
+      "1Password Safari" = 1569813296;
       "Amphetamine" = 937984704;
       "Clocker" = 1056643111;
       "Expressions" = 913158085;
