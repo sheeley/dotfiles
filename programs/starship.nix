@@ -7,7 +7,7 @@
 
     settings = {
       format = lib.concatStrings [
-        "$time | "
+        "$time| "
         "$hostname"
         "$directory"
         "$git_branch"
