@@ -28,13 +28,14 @@ in {
 
     casks = [
       "1password"
+      "1password/tap/1password-cli"
       "bartender"
       "eloston-chromium"
       "iterm2"
+      "little-snitch"
       "obsidian"
       "shortcat"
       "slack"
-      "1password/tap/1password-cli"
     ];
 
     masApps = {
