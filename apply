@@ -12,7 +12,7 @@ if [[ ! "${VALID_HOSTNAMES[*]}" =~ $HN ]]; then
 	exit 1
 fi
 
-nix build ".#darwinConfigurations.${HN}.system" --impure --extra-experimental-features "nix-command flakes"
+nix build ".#darwinConfigurations.${HN}.system" --impure --extra-experimental-features "nix-command flakes" --show-trace
 
 if command -v nvd; then
 	nvd diff /run/current-system result

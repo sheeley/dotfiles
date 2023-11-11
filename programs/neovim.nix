@@ -7,7 +7,7 @@
   # fetchFromGitHub,
   ...
 }: let
-  vim-ripgrep = pkgs.vimUtils.buildVimPluginFrom2Nix {
+  vim-ripgrep = pkgs.vimUtils.buildVimPlugin {
     name = "vim-ripgrep-2021-11-30";
     src = pkgs.fetchFromGitHub {
       owner = "jremmen";
@@ -17,7 +17,7 @@
     };
     dependencies = [];
   };
-  vim-swift = pkgs.vimUtils.buildVimPluginFrom2Nix {
+  vim-swift = pkgs.vimUtils.buildVimPlugin {
     name = "vim-swift";
     src = pkgs.fetchFromGitHub {
       owner = "keith";
@@ -163,7 +163,7 @@ in {
       }
     ];
 
-    plugins.null-ls = {
+    plugins.none-ls = {
       enable = true;
       sources = {
         diagnostics = {
@@ -343,10 +343,12 @@ in {
     plugins.indent-blankline = {
       enable = true;
 
-      useTreesitter = true;
+      # useTreesitter = true;
 
-      showCurrentContext = true;
-      showCurrentContextStart = true;
+      scope = {
+        enabled = true;
+        showStart = true;
+      };
     };
 
     plugins.lsp = {
