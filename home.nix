@@ -79,7 +79,10 @@ in {
       # https://github.com/LnL7/nix-darwin/issues/122
       sessionPath = pkgs.callPackage ./environment_path.nix {};
 
-      packages = pkgs.callPackage ./packages.nix {};
+      packages = pkgs.callPackage ./packages.nix {
+        lib = lib;
+        private = private;
+      };
 
       file = {
         ".mongorc.js".text = builtins.readFile ./files/.mongorc.js;

@@ -6,10 +6,10 @@
   ...
 }: let
 in {
-  homebrew.brews = [
-    "borgbackup"
-    "borgmatic"
-  ];
+  # homebrew.brews = [
+  #   "borgbackup"
+  #   "borgmatic"
+  # ];
 
   home-manager.users.${user} = {
     config,

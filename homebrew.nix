@@ -42,6 +42,7 @@ in {
       "Clocker" = 1056643111;
       "Expressions" = 913158085;
       "iA Writer" = 775737590;
+      "Kagi" = 1622835804;
       "Magnet" = 441258766;
       "Patterns" = 429449079;
       "Peek" = 1554235898;
