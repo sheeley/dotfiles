@@ -1,4 +1,4 @@
-#! /usr/bin/env bash
+
 
 # (
 #   cd ./tools/meeting-notes
@@ -201,8 +201,6 @@ defaults write com.crowdcafe.windowmagnet "expandWindowWestComboKey" '
 <integer>1835008</integer>
 </dict>
 '
-defaults write com.crowdcafe.windowmagnet "lastRatedVersion" -string '2.11.0'
-defaults write com.crowdcafe.windowmagnet "launchAtLogin" -boolean true
 defaults write com.crowdcafe.windowmagnet "maximizeWindowComboKey" '
 <dict>
 <key>keyCode</key>
