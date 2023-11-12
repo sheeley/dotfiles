@@ -16,6 +16,7 @@ in {
 
     brews =
       [
+        "ds"
         "git-delta"
         "n" # node version manager
         "scout"
@@ -62,8 +63,9 @@ in {
 
     taps = [
       "1password/tap"
-      "homebrew/bundle"
       "abridoux/formulae"
+      "aerobounce/tap"
+      "homebrew/bundle"
     ];
   };
 }

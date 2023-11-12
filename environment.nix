@@ -57,7 +57,8 @@ in {
       map
       (fileName: builtins.readFile (./scripts + "/${fileName}"))
       [
-        "defaults.sh"
+        "magnet.sh"
+        "iterm2.sh"
       ]
       ++ ((lib.optionals (lib.hasAttr "personal" private && private.personal)) [
         # personal only
