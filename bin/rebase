@@ -1,4 +1,4 @@
 #! /usr/bin/env bash
 set -euo pipefail # x
 
-git fetch && git rebase origin/master
+git fetch && git rebase origin/main
