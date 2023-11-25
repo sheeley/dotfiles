@@ -1,0 +1,1 @@
+defaults write com.googlecode.iterm2 "PrefsCustomFolder" -string '/Users/sheeley/dotfiles/preferences'

@@ -5,7 +5,19 @@
   private,
   ...
 }: let
+  readFile = fileName:
+    "\n# BEGIN: ${fileName}\n"
+    # + (builtins.replaceStrings ["@tailscaleKey@"] ["${private.tailscaleKey}"]
+    + (builtins.readFile fileName)
+    + "\n# END: ${fileName}\n\n";
 in {
+  imports =
+    [
+    ]
+    ++ ((lib.optionals (lib.hasAttr "personal" private && private.personal)) [
+      # personal only
+      ./scripts/tailscale.nix
+    ]);
   services.nix-daemon.enable = true;
 
   programs.zsh.enable = true;
@@ -53,21 +65,13 @@ in {
       done
     '';
 
-    postActivation.text = builtins.replaceStrings ["@tailscaleKey@"] ["${private.tailscaleKey}"] (lib.concatStrings (
-      map
-      (fileName: builtins.readFile (./scripts + "/${fileName}"))
+    postActivation.text = lib.concatStrings (
+      map (fileName: readFile (./scripts + "/${fileName}"))
       [
-        "magnet.sh"
-        "iterm2.sh"
+        "clocker.bash"
+        "iterm2.bash"
+        "magnet.bash"
       ]
-      ++ ((lib.optionals (lib.hasAttr "personal" private && private.personal)) [
-        # personal only
-        "tailscale.sh"
-      ])
-      ++ ((lib.optionals (lib.hasAttr "homebase" private && private.homebase)) [
-        # homebase only
-        "content-cache.sh"
-      ])
-    ));
+    );
   };
 }

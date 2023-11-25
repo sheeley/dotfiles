@@ -66,4 +66,6 @@ in {
       UserName = "${user}";
     };
   };
+
+  system.activationScripts.postUserActivation.text = builtins.readFile ./scripts/content-cache.bash;
 }
