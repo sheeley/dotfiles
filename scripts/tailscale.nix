@@ -5,8 +5,6 @@
   ...
 }: {
   system.activationScripts.postUserActivation.text = ''
-        echo >&2 "I am: $(whoami)"
-
     # check if we are already authenticated to tailscale
     status="$(tailscale status -json | ${pkgs.jq}/bin/jq -r .BackendState)"
 
