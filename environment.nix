@@ -69,7 +69,6 @@ in {
       map (fileName: readFile (./scripts + "/${fileName}"))
       [
         "clocker.bash"
-        "iterm2.bash"
         "magnet.bash"
       ]
     );
