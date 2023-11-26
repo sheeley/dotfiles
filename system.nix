@@ -21,6 +21,8 @@
     finder = {
       AppleShowAllExtensions = true;
       AppleShowAllFiles = false;
+      ShowSidebar = true;
+      ShowStatusBar = true;
     };
 
     screencapture.location = "~/Screenshots";
@@ -42,6 +44,15 @@
       "com.apple.Safari" = {
         AutoFillPasswords = false;
         IncludeDevelopMenu = true;
+        ShowFullURLInSmartSearchField = true;
+        ShowOverlayStatusBar = true;
+        TouchIDToAutoFill = true;
+        WebKitDeveloperExtrasEnabledPreferenceKey = true;
+        "WebKitPreferences.developerExtrasEnabled" = true;
+      };
+
+      "com.apple.Siri" = {
+        StatusMenuVisible = false;
       };
 
       "com.googlecode.iterm2" = {
