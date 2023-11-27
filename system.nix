@@ -21,7 +21,6 @@
     finder = {
       AppleShowAllExtensions = true;
       AppleShowAllFiles = false;
-      ShowSidebar = true;
       ShowStatusBar = true;
     };
 
@@ -46,6 +45,11 @@
         "NSStatusItem Visible Sound" = true;
         "NSStatusItem Visible FocusModes" = true;
         "NSStatusItem Visible WiFi" = true;
+      };
+
+      "com.apple.Finder" = {
+        ShowPathBar = true;
+        ShowSidebar = true;
       };
 
       "com.apple.Safari" = {
