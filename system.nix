@@ -41,6 +41,13 @@
         "com.apple.sound.uiaudio.enabled" = 0;
       };
 
+      "com.apple.controlcenter" = {
+        "NSStatusItem Visible Bluetooth" = true;
+        "NSStatusItem Visible Sound" = true;
+        "NSStatusItem Visible FocusModes" = true;
+        "NSStatusItem Visible WiFi" = true;
+      };
+
       "com.apple.Safari" = {
         AutoFillPasswords = false;
         IncludeDevelopMenu = true;

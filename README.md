@@ -22,7 +22,6 @@ TODO: add more guidance here.
 - [ ] nightshift
 - [ ] various FUTUREs spread throughout repo
 - [ ] support dictionaries/lists for `defaults`, replacing the magnet/clocker scripts
-- [ ] show volume in menubar
 - [ ] enable apple watch for sudo
 - [ ] opt in to downloading icloud docs
 - [ ] enable filevault
