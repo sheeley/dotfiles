@@ -67,7 +67,7 @@
       };
 
       "com.googlecode.iterm2" = {
-        PrefsCustomFolder = "/Users/sheeley/dotfiles/preferences";
+        PrefsCustomFolder = toString ~/dotfiles/preferences;
       };
     };
   };
