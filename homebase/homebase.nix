@@ -19,7 +19,7 @@ in {
   }: {
     home.file.".config/borgmatic/config.yaml".source = pkgs.substituteAll {
       name = "config.yaml";
-      src = ./files/borgmatic/config.yaml;
+      src = ../files/borgmatic/config.yaml;
       secret = "${private.borgSecret}";
       user = "${private.borgUser}";
     };
@@ -67,5 +67,5 @@ in {
     };
   };
 
-  system.activationScripts.postUserActivation.text = builtins.readFile ./scripts/content-cache.bash;
+  system.activationScripts.postUserActivation.text = builtins.readFile ./content-cache.bash;
 }

@@ -80,9 +80,7 @@
         sharedModules
         ++ [
           ./personal.nix
-          ./homebase.nix
-          # TODO:swap from environment.nix
-          # ./content-cache.nix
+          ./homebase/homebase.nix
         ];
 
       specialArgs = {
