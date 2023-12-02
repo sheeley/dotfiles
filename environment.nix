@@ -16,7 +16,7 @@ in {
     ]
     ++ ((lib.optionals (lib.hasAttr "personal" private && private.personal)) [
       # personal only
-      ./scripts/tailscale.nix
+      ./programs/tailscale.nix
     ]);
   services.nix-daemon.enable = true;
 
@@ -65,12 +65,12 @@ in {
       done
     '';
 
-    postActivation.text = lib.concatStrings (
-      map (fileName: readFile (./scripts + "/${fileName}"))
-      [
-        "clocker.bash"
-        "magnet.bash"
-      ]
-    );
+    # postActivation.text = lib.concatStrings (
+    #   map (fileName: readFile (./scripts + "/${fileName}"))
+    #   [
+    #     "clocker.bash"
+    #     "magnet.bash"
+    #   ]
+    # );
   };
 }
