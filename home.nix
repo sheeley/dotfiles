@@ -139,8 +139,118 @@ in {
       };
 
       "com.apple.Finder" = {
-        ShowPathBar = true;
-        ShowSidebar = true;
+        AppleShowAllExtensions = 1;
+        AppleShowAllFiles = 0;
+        ShowExternalHardDrivesOnDesktop = 1;
+        ShowHardDrivesOnDesktop = 0;
+        ShowPathBar = 1;
+        ShowRemovableMediaOnDesktop = 1;
+        ShowSidebar = 1;
+        ShowStatusBar = 1;
+        SidebarDevicesSectionDisclosedState = 1;
+        SidebarPlacesSectionDisclosedState = 1;
+        SidebarShowingSignedIntoiCloud = 1;
+        SidebarShowingiCloudDesktop = 1;
+
+        SidebariCloudDriveSectionDisclosedState = 1;
+
+        StandardViewSettings = {
+          ExtendedListViewSettingsV2 = {
+            calculateAllSizes = 0;
+            columns = [
+              {
+                ascending = 1;
+                identifier = "name";
+                visible = 1;
+                width = 351;
+              }
+              {
+                ascending = 0;
+                identifier = "ubiquity";
+                visible = 0;
+                width = 35;
+              }
+              {
+                ascending = 0;
+                identifier = "dateModified";
+                visible = 1;
+                width = 181;
+              }
+              {
+                ascending = 0;
+                identifier = "dateCreated";
+                visible = 0;
+                width = 181;
+              }
+              {
+                ascending = 0;
+                identifier = "size";
+                visible = 1;
+                width = 97;
+              }
+              {
+                ascending = 1;
+                identifier = "kind";
+                visible = 1;
+                width = 115;
+              }
+              {
+                ascending = 1;
+                identifier = "label";
+                visible = 0;
+                width = 100;
+              }
+              {
+                ascending = 1;
+                identifier = "version";
+                visible = 0;
+                width = 75;
+              }
+              {
+                ascending = 1;
+                identifier = "comments";
+                visible = 0;
+                width = 300;
+              }
+              {
+                ascending = 0;
+                identifier = "dateLastOpened";
+                visible = 0;
+                width = 200;
+              }
+              {
+                ascending = 0;
+                identifier = "dateAdded";
+                visible = 0;
+                width = 181;
+              }
+              {
+                ascending = 0;
+                identifier = "shareOwner";
+                visible = 0;
+                width = 210;
+              }
+              {
+                ascending = 0;
+                identifier = "shareLastEditor";
+                visible = 0;
+                width = 210;
+              }
+              {
+                ascending = 0;
+                identifier = "invitationStatus";
+                visible = 0;
+                width = 210;
+              }
+            ];
+            iconSize = 16;
+            showIconPreview = 1;
+            sortColumn = "kind";
+            textSize = 13;
+            useRelativeDates = 1;
+            viewOptionsVersion = 1;
+          };
+        };
       };
 
       "com.apple.Safari" = {
