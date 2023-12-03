@@ -1,0 +1,4 @@
+#! /usr/bin/env bash
+set -euo pipefail # x
+
+cp -R "$NOTES_DIR/shared/" "$WORK_NOTES_DIR/shared/"
