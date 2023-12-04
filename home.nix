@@ -131,6 +131,12 @@ in {
         "com.apple.sound.uiaudio.enabled" = 0;
       };
 
+      "com.apple.menuextra.clock" = {
+        ShowDate = 1;
+        ShowDayOfMonth = true;
+        ShowDayOfWeek = true;
+      };
+
       "com.apple.controlcenter" = {
         "NSStatusItem Visible Bluetooth" = true;
         "NSStatusItem Visible Sound" = true;
@@ -268,6 +274,7 @@ in {
       };
 
       "com.googlecode.iterm2" = {
+        LoadPrefsFromCustomFolder = 1;
         PrefsCustomFolder = toString ~/dotfiles/preferences;
       };
 
@@ -356,8 +363,6 @@ in {
           keyCode = 123;
           modifierFlags = 1835008;
         };
-        lastRatedVersion = "2.13.0";
-        launchAtLogin = 1;
         maximizeWindowComboKey = {
           keyCode = 3;
           modifierFlags = 1835008;

@@ -7,7 +7,7 @@
   "$HOME/go/bin"
   "$HOME/.cargo/bin"
   "$HOME/non-nix-bin"
-  
+
   "$HOME/.npm-packages/bin"
   "$HOME/.n/bin"
 
