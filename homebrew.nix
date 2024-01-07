@@ -44,7 +44,7 @@ in {
 
     masApps = {
       "1Password Safari" = 1569813296;
-      "Actions" = 586435171;
+      "Actions" = 1586435171;
       "Amphetamine" = 937984704;
       "Clocker" = 1056643111;
       "Expressions" = 913158085;
