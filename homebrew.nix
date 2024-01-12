@@ -55,6 +55,7 @@ in {
       "Peek" = 1554235898;
       "Pure Paste" = 1611378436;
       "Reeder" = 1529448980;
+      "Remove Web Limits" = 1626843895;
       "Space Gremlin" = 414515628;
       "The Unarchiver" = 425424353;
       "Watchdog" = 734258109;
