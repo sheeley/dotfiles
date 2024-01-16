@@ -17,6 +17,10 @@ in {
     pkgs,
     ...
   }: {
+    packages = with pkgs; [
+      colima
+    ];
+
     home.file.".config/borgmatic/config.yaml".source = pkgs.substituteAll {
       name = "config.yaml";
       src = ../files/borgmatic/config.yaml;
