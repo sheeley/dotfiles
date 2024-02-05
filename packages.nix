@@ -25,6 +25,7 @@ with pkgs;
     gron
     jid
     jq
+    ldns
     lz4
     nerdfonts
     nix-diff
