@@ -394,7 +394,9 @@ in {
 
     plugins.nvim-lightbulb = {
       enable = true;
-      autocmd.enabled = true;
+      settings = {
+        autocmd.enabled = true;
+      };
     };
 
     plugins.inc-rename = {

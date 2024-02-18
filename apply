@@ -1,6 +1,8 @@
 #! /usr/bin/env bash
 set -eu
 
+ag 'TODO:' || true
+
 HN=$(scutil --get HostName)
 
 # TODO: is there a cleaner way of doing this?
