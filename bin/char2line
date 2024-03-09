@@ -1,0 +1,10 @@
+#! /usr/bin/env bash
+set -euo pipefail # x
+FILE=$1
+POSITION=$2
+
+(
+	dd if="$FILE" bs=1 count="$POSITION" 2>/dev/null
+	printf "\n"
+)
+# | wc -l

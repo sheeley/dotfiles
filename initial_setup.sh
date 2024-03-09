@@ -39,11 +39,30 @@ else
 	EMAIL=$(cut -d' ' -f3 <~/.ssh/id_ed25519.pub)
 fi
 
-# nix doesn't install brew. Yay.
-if ! which brew; then
-	/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-	eval "\$(/opt/homebrew/bin/brew shellenv)"
-	brew install --cask 1password
+OS=$(uname -a)
+if [[ "$OS" == *"Darwin"* ]]; then
+	# nix doesn't install brew. Yay.
+	if ! which brew; then
+		/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+		eval "\$(/opt/homebrew/bin/brew shellenv)"
+		brew install --cask 1password
+	fi
+
+	if ! xcode-select -p; then
+		xcode-select --install
+		confirm "Hit enter when install finished" || exit 1
+	fi
+
+	if ! which nix; then
+		curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install
+		. /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
+
+		# create /run
+		if [ ! -f /run ]; then
+			printf 'run\tprivate/var/run\n' | sudo tee -a /etc/synthetic.conf
+			/System/Library/Filesystems/apfs.fs/Contents/Resources/apfs.util -t
+		fi
+	fi
 fi
 
 if [ ! -f ~/.gh_done ]; then
@@ -63,23 +82,11 @@ if [ "$HOMEBREW_GITHUB_API_TOKEN" == "" ]; then
 	export HOMEBREW_GITHUB_API_TOKEN
 fi
 
-if ! xcode-select -p; then
-	xcode-select --install
-	confirm "Hit enter when install finished" || exit 1
+HOST=$(hostname)
+if which scutil; then
+	HOST=$(scutil --get HostName)
 fi
 
-if ! which nix; then
-	curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install
-	. /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
-
-	# create /run
-	if [ ! -f /run ]; then
-		printf 'run\tprivate/var/run\n' | sudo tee -a /etc/synthetic.conf
-		/System/Library/Filesystems/apfs.fs/Contents/Resources/apfs.util -t
-	fi
-fi
-
-HOST=$(scutil --get HostName)
 if confirm "Change from current hostname: $HOST?"; then
 	while true; do
 		set_hostname && break
@@ -97,17 +104,19 @@ if [ ! -f ~/.nix-private/private.nix ]; then
 	confirm
 fi
 
-confirm "Log in to App Store then hit enter"
-(
-	cd ~/dotfiles || exit
-	./apply
-)
+if [[ "$OS" == *"Darwin"* ]]; then
+	confirm "Log in to App Store then hit enter"
+	(
+		cd ~/dotfiles || exit
+		./apply
+	)
 
-if [[ "$SHELL" != "/run/current-system/sw/bin/fish" ]]; then
-	echo "Shell isn't fish - may want to chsh!"
-	# if cat /etc/shells | grep /run/current-system/sw/bin/fish; then
-	# 	chsh -s /run/current-system/sw/bin/fish
-	# else
-	# 	echo "couldn't set shell to fish"
-	# fi
+	if [[ "$SHELL" != "/run/current-system/sw/bin/fish" ]]; then
+		echo "Shell isn't fish - may want to chsh!"
+		# if cat /etc/shells | grep /run/current-system/sw/bin/fish; then
+		# 	chsh -s /run/current-system/sw/bin/fish
+		# else
+		# 	echo "couldn't set shell to fish"
+		# fi
+	fi
 fi

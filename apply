@@ -3,13 +3,16 @@ set -eu
 
 ag 'TODO:' || true
 
+HN=$(hostname)
+if which scutil; then
 HN=$(scutil --get HostName)
+fi
 
 # TODO: is there a cleaner way of doing this?
 VALID_HOSTNAMES=$(grep darwinConfigurations flake.nix | grep -o '".*"' | sed 's/"//g')
 
 if [[ ! "${VALID_HOSTNAMES[*]}" =~ $HN ]]; then
-	echo "change hostname: $HN"
+	echo "invalid hostname: '$HN'"
 	echo "sudo scutil --set LocalHostName ..."
 	exit 1
 fi
