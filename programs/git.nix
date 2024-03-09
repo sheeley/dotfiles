@@ -64,13 +64,14 @@ in {
       };
 
       diff = {
+        algorithm = "histogram";
         plist = {
           textconv = "plutil -convert xml1 -o -";
         };
       };
 
       pull.rebase = true;
-      push.default = "simple";
+      push.default = "current";
       # url = {
       #   "ssh://git@github.com" = {
       #     insteadOf = "https://github.com/";
@@ -79,6 +80,12 @@ in {
 
       merge = {
         tool = "vimdiff";
+        conflictstyle = "zdiff3";
+      };
+
+      rebase = {
+        autosquash = true;
+        autostash = true;
       };
     };
 
