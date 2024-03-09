@@ -7,10 +7,10 @@ if [[ "$OS" == *"Darwin"* ]]; then
 	ARCH="aarch64-darwin"
 fi
 
-CURRENT=$(nix --version | extract_version)
+CURRENT=$(nix --version | extract_semantic_version)
 LATEST=$(curl --silent https://raw.githubusercontent.com/NixOS/nixpkgs/master/nixos/modules/installer/tools/nix-fallback-paths.nix |
 	nix eval -f - "$ARCH" |
-	extract_version)
+	extract_semantic_version)
 
 if [[ "$CURRENT" != "$LATEST" ]]; then
 	if confirm "Upgrade nix?"; then
