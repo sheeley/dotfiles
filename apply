@@ -4,12 +4,19 @@ set -eu
 ag 'TODO:' || true
 
 HN=$(hostname)
-if which scutil; then
-HN=$(scutil --get HostName)
+if command -v scutil &>/dev/null; then
+	HN=$(scutil --get HostName)
+fi
+
+OSC="nixConfigurations"
+
+OS=$(uname -a)
+if [[ "$OS" == *"Darwin"* ]]; then
+	OSC="darwinConfigurations"
 fi
 
 # TODO: is there a cleaner way of doing this?
-VALID_HOSTNAMES=$(grep darwinConfigurations flake.nix | grep -o '".*"' | sed 's/"//g')
+VALID_HOSTNAMES=$(grep "$OSC" flake.nix | grep -o '".*"' | sed 's/"//g')
 
 if [[ ! "${VALID_HOSTNAMES[*]}" =~ $HN ]]; then
 	echo "invalid hostname: '$HN'"
@@ -17,13 +24,14 @@ if [[ ! "${VALID_HOSTNAMES[*]}" =~ $HN ]]; then
 	exit 1
 fi
 
-nix build ".#darwinConfigurations.${HN}.system" --impure --extra-experimental-features "nix-command flakes" --show-trace
+nix build ".#${OSC}.${HN}.system" --impure --extra-experimental-features "nix-command flakes" --show-trace
 
 if command -v nvd; then
 	nvd diff /run/current-system result
 
 	if command -v nix-diff; then
 		# TODO: elide common lines https://github.com/Gabriella439/nix-diff/issues/42
+		# now available with --context flag
 		nix-diff /run/current-system result
 	fi
 
@@ -32,7 +40,11 @@ if command -v nvd; then
 	fi
 fi
 
-echo "darwin-rebuild"
-./result/sw/bin/darwin-rebuild switch --flake . --impure
+if [[ "$OS" == *"Darwin"* ]]; then
+	echo "darwin-rebuild"
+	./result/sw/bin/darwin-rebuild switch --flake . --impure
+else
+	sudo nixos-rebuild switch
+fi
 
 date >last-applied.txt

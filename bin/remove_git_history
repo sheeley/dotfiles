@@ -11,4 +11,3 @@ if confirm "Remove entire git history?"; then
 		git push -f origin main
 	fi
 fi
-

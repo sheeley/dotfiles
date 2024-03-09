@@ -83,7 +83,7 @@ if [ "$HOMEBREW_GITHUB_API_TOKEN" == "" ]; then
 fi
 
 HOST=$(hostname)
-if which scutil; then
+if command -v scutil &>/dev/null; then
 	HOST=$(scutil --get HostName)
 fi
 
