@@ -10,6 +10,7 @@ in {
   #   "borgbackup"
   #   "borgmatic"
   # ];
+  # homebrew.brews = ["kind"];
 
   home-manager.users.${user} = {
     config,
@@ -17,15 +18,18 @@ in {
     pkgs,
     ...
   }: {
-    packages = with pkgs; [
-      colima
-    ];
+    home = {
+      packages = with pkgs; [
+        colima
+        kind
+      ];
 
-    home.file.".config/borgmatic/config.yaml".source = pkgs.substituteAll {
-      name = "config.yaml";
-      src = ../files/borgmatic/config.yaml;
-      secret = "${private.borgSecret}";
-      user = "${private.borgUser}";
+      file.".config/borgmatic/config.yaml".source = pkgs.substituteAll {
+        name = "config.yaml";
+        src = ../files/borgmatic/config.yaml;
+        secret = "${private.borgSecret}";
+        user = "${private.borgUser}";
+      };
     };
   };
 

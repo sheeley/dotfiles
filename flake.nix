@@ -66,7 +66,6 @@
         sharedModules
         ++ [
           ./personal.nix
-          ./programs/podman.nix
         ];
 
       specialArgs = {
@@ -84,6 +83,7 @@
         ++ [
           ./personal.nix
           ./homebase/homebase.nix
+          ./programs/podman.nix
         ];
 
       specialArgs = {
