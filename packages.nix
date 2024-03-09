@@ -25,6 +25,8 @@ with pkgs;
     gron
     jid
     jq
+    kubectl
+    kubernetes-helm
     ldns
     lz4
     nerdfonts
@@ -42,6 +44,7 @@ with pkgs;
     shfmt
     silver-searcher
     ssh-copy-id
+    sshfs
     tldr
     vim-vint
     wget
