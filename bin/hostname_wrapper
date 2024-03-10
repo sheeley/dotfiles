@@ -1,0 +1,8 @@
+#! /usr/bin/env bash
+set -euo pipefail # x
+
+HN=$(hostname)
+if command -v scutil &>/dev/null; then
+	HN=$(scutil --get HostName)
+fi
+echo "$HN"
