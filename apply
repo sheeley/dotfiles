@@ -3,10 +3,7 @@ set -eu
 
 ag 'TODO:' || true
 
-HN=$(hostname)
-if command -v scutil &>/dev/null; then
-	HN=$(scutil --get HostName)
-fi
+HN=$(hostname_wrapper)
 
 OSC="nixConfigurations"
 

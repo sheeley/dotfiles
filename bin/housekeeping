@@ -48,7 +48,7 @@ check_git_status "$PRIVATE_TOOLS_DIR"
 # 	exit
 # fi
 
-HOST=$(scutil --get HostName)
+HOST=$(hostname_wrapper)
 if [[ "$HOST" != "homebase" ]]; then
 	exit
 fi

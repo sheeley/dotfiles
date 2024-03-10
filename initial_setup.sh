@@ -63,6 +63,17 @@ if [[ "$OS" == *"Darwin"* ]]; then
 			/System/Library/Filesystems/apfs.fs/Contents/Resources/apfs.util -t
 		fi
 	fi
+
+	HOST=$(hostname)
+	if command -v scutil &>/dev/null; then
+		HOST=$(scutil --get HostName)
+	fi
+
+	if confirm "Change from current hostname: $HOST?"; then
+		while true; do
+			set_hostname && break
+		done
+	fi
 fi
 
 if [ ! -f ~/.gh_done ]; then
@@ -80,17 +91,6 @@ if [ "$HOMEBREW_GITHUB_API_TOKEN" == "" ]; then
 	echo "Enter Github token"
 	read -r HOMEBREW_GITHUB_API_TOKEN
 	export HOMEBREW_GITHUB_API_TOKEN
-fi
-
-HOST=$(hostname)
-if command -v scutil &>/dev/null; then
-	HOST=$(scutil --get HostName)
-fi
-
-if confirm "Change from current hostname: $HOST?"; then
-	while true; do
-		set_hostname && break
-	done
 fi
 
 if [ ! -d ~/dotfiles ]; then

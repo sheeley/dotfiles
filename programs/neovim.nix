@@ -167,20 +167,20 @@ in {
       enable = true;
       sources = {
         diagnostics = {
-          shellcheck.enable = true;
+          # shellcheck.enable = true;
           cppcheck.enable = true;
           gitlint.enable = true;
         };
-        code_actions = {
-          shellcheck.enable = true;
-        };
+        #        code_actions = {
+        #          shellcheck.enable = true;
+        #        };
         formatting = {
           alejandra.enable = true;
           black.enable = true;
           stylua.enable = true;
           cbfmt.enable = true;
           shfmt.enable = true;
-          taplo.enable = true;
+          # taplo.enable = true;
           prettier.enable = true;
         };
       };
@@ -202,53 +202,54 @@ in {
       local luasnip = require("luasnip")
     '';
 
-    plugins.nvim-cmp = {
+    plugins.cmp = {
       enable = true;
 
-      snippet.expand = "luasnip";
+      # snippet.expand = "luasnip";
 
-      mapping = {
-        "<CR>" = "cmp.mapping.confirm({select = true })";
-        "<C-d>" = "cmp.mapping.scroll_docs(-4)";
-        "<C-f>" = "cmp.mapping.scroll_docs(4)";
-        "<C-Space>" = "cmp.mapping.complete()";
-        "<Tab>" = ''
-          cmp.mapping(function(fallback)
-          if cmp.visible() then
-          cmp.select_next_item()
-          -- You could replace the expand_or_jumpable() calls with expand_or_locally_jumpable()
-          -- they way you will only jump inside the snippet region
-          elseif luasnip.expand_or_jumpable() then
-          luasnip.expand_or_jump()
-          elseif has_words_before() then
-          cmp.complete()
-          else
-          fallback()
-          end
-          end, { "i", "s" })
-        '';
-        "<S-Tab>" = ''
-          cmp.mapping(function(fallback)
-          if cmp.visible() then
-          cmp.select_prev_item()
-          elseif luasnip.jumpable(-1) then
-          luasnip.jump(-1)
-          else
-          fallback()
-          end
-          end, { "i", "s" })
-        '';
-        "<Down>" = "cmp.mapping(cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Select }), {'i'})";
-        "<Up>" = "cmp.mapping(cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Select }), {'i'})";
-      };
+      #      mapping = {
+      #        "<CR>" = "cmp.mapping.confirm({select = true })";
+      #        "<C-d>" = "cmp.mapping.scroll_docs(-4)";
+      #        "<C-f>" = "cmp.mapping.scroll_docs(4)";
+      #        "<C-Space>" = "cmp.mapping.complete()";
+      #        "<Tab>" = ''
+      #          cmp.mapping(function(fallback)
+      #          if cmp.visible() then
+      #          cmp.select_next_item()
+      #          -- You could replace the expand_or_jumpable() calls with expand_or_locally_jumpable()
+      #          -- they way you will only jump inside the snippet region
+      #          elseif luasnip.expand_or_jumpable() then
+      #          luasnip.expand_or_jump()
+      #          elseif has_words_before() then
+      #          cmp.complete()
+      #          else
+      #          fallback()
+      #          end
+      #          end, { "i", "s" })
+      #        '';
+      #        "<S-Tab>" = ''
+      #          cmp.mapping(function(fallback)
+      #          if cmp.visible() then
+      #          cmp.select_prev_item()
+      #          elseif luasnip.jumpable(-1) then
+      #          luasnip.jump(-1)
+      #          else
+      #          fallback()
+      #          end
+      #          end, { "i", "s" })
+      #        '';
+      #        "<Down>" = "cmp.mapping(cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Select }), {'i'})";
+      #        "<Up>" = "cmp.mapping(cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Select }), {'i'})";
+      #      };
 
-      sources = [
-        {name = "luasnip";}
-        {name = "nvim_lsp";}
-        {name = "path";}
-        {name = "buffer";}
-        {name = "calc";}
-      ];
+      # sources = [
+      #      "function(args) require('luasnip').lsp_expand(args.body) end";
+      #        {name = "luasnip";}
+      #        {name = "nvim_lsp";}
+      #        {name = "path";}
+      #        {name = "buffer";}
+      #        {name = "calc";}
+      # ];
     };
 
     plugins.telescope = {
@@ -288,7 +289,7 @@ in {
         markdown
         markdown_inline
         nix
-        python
+        # python
         regex
         toml
         vim
@@ -456,10 +457,10 @@ in {
       nodePackages.bash-language-server
       rnix-lsp
       nil
-      pyright
-      python310Packages.python-lsp-server
-      python310Packages.flake8
-      python310Packages.autopep8
+      # pyright
+      # python310Packages.python-lsp-server
+      # python310Packages.flake8
+      # python310Packages.autopep8
     ];
   };
 }

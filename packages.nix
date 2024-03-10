@@ -35,7 +35,7 @@ with pkgs;
     nvd
     obsidian
     pv
-    python311
+    # python311
     rclone
     rename
     ripgrep
