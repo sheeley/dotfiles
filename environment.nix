@@ -44,7 +44,6 @@ in {
 
   #system.keyboard.enableKeyMapping = true;
   security.pam.enableSudoTouchIdAuth = true;
-  # TODO: security.pam.touchIdAuth = true;
 
   services.tailscale = {
     enable = true;

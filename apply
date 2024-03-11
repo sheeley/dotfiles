@@ -5,6 +5,8 @@ ag 'TODO:' || true
 
 HN=$(hostname_wrapper)
 
+upgrade_nix
+
 OSC="nixConfigurations"
 
 OS=$(uname -a)

@@ -1,0 +1,19 @@
+#! /usr/bin/env bash
+set -euo pipefail # x
+
+OS=$(uname -a)
+ARCH="x86_64-linux"
+if [[ "$OS" == *"Darwin"* ]]; then
+	ARCH="aarch64-darwin"
+fi
+
+CURRENT=$(nix --version | extract_semantic_version)
+LATEST=$(curl --silent https://raw.githubusercontent.com/NixOS/nixpkgs/master/nixos/modules/installer/tools/nix-fallback-paths.nix |
+	nix eval -f - "$ARCH" |
+	extract_semantic_version)
+
+if [[ "$CURRENT" != "$LATEST" ]]; then
+	if confirm "Upgrade nix? (Current: $CURRENT, Latest: $LATEST)"; then
+		sudo -i nix upgrade-nix
+	fi
+fi

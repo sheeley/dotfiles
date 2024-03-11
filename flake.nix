@@ -3,8 +3,6 @@
   inputs = {
     # unstable
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
-    # TODO: remove this specific nixpkgs commit - done to fix nixvim
-    # nixpkgs.url = "github:nixos/nixpkgs/a4d4fe8c5002202493e87ec8dbc91335ff55552c";
 
     home-manager = {
       url = "github:nix-community/home-manager";

@@ -1,23 +1,10 @@
 #! /usr/bin/env bash
 set -eu
 
-OS=$(uname -a)
-ARCH="x86_64-linux"
-if [[ "$OS" == *"Darwin"* ]]; then
-	ARCH="aarch64-darwin"
+upgrade_nix
+
+if confirm "Update flake sources?"; then
+	nix flake update \
+		--extra-experimental-features "nix-command flakes" \
+		--impure
 fi
-
-CURRENT=$(nix --version | extract_semantic_version)
-LATEST=$(curl --silent https://raw.githubusercontent.com/NixOS/nixpkgs/master/nixos/modules/installer/tools/nix-fallback-paths.nix |
-	nix eval -f - "$ARCH" |
-	extract_semantic_version)
-
-if [[ "$CURRENT" != "$LATEST" ]]; then
-	if confirm "Upgrade nix?"; then
-		sudo -i nix upgrade-nix
-	fi
-fi
-
-nix flake update \
-	--extra-experimental-features "nix-command flakes" \
-	--impure
