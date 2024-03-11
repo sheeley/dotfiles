@@ -40,11 +40,11 @@ def main [
     
     mut keyToChange = "!"
     while keyToChange != "" {
-        # TODO: use | into cellpath when available
-        $keyToChange = (input "Enter yaml key to change or leave empty to move on\n")
+        $keyToChange = (input "Enter yaml key to change (cell.path.foo format is supported) or leave empty to move on\n") 
         if $keyToChange == "" { break }
+        let cellPath = $keyToChange | split row '.' | into cell-path
         let newValue = (input "value\n")
-        $template = ($template | upsert $keyToChange $newValue)
+        $template = ($template | upsert $cellPath $newValue)
         print ($template | table --expand)
     }
 
