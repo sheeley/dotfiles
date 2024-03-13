@@ -1,4 +1,8 @@
 #! /usr/bin/env bash
-set -euo pipefail # x
+set -xuo pipefail # x
 
 rg -g '*.md' -g '!shared/' --files-with-matches --multiline -e '```\W+(#.*\n)?\*\W+```' "$NOTES_DIR"
+
+if [[ -n "$WORK_NOTES_DIR" ]]; then
+	rg -g '*.md' -g '!shared/' --files-with-matches --multiline -e '```\W+(#.*\n)?\*\W+```' "$WORK_NOTES_DIR"
+fi
