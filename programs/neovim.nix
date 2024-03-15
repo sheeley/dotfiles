@@ -368,15 +368,27 @@ in {
       };
 
       servers = {
-        # nil_ls = {
-        #   enable = true;
-        #   settings = {
-        #     formatting.command = [ "alejandra" "--quiet" ];
-        # };
-        # };
+        nil_ls = {
+          enable = true;
+          settings = {
+            formatting.command = ["alejandra" "--quiet"];
+          };
+        };
         bashls.enable = true;
+        helm-ls.enable = true;
+        nushell.enable = true;
+        # sourcekit.enable = true;
+        terraformls.enable = true;
+        yamlls.enable = true;
+        jsonls.enable = true;
+        # gopls.enable = true;
+        # eslint.enable = true;
         # dartls.enable = true;
       };
+    };
+
+    plugins.lsp-format = {
+      enable = true;
     };
 
     # vim.lsp.set_log_level("debug")

@@ -37,4 +37,7 @@
     stash_open: Some(( code: Char('l'), modifiers: "")),
 
     abort_merge: Some(( code: Char('M'), modifiers: "SHIFT")),
+
+    // commit: Some(( code: Char('Enter'))),
+    // new_line: Some(( code: Char('Enter'), modifiers: "SHIFT")),
 )
