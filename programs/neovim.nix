@@ -1,8 +1,8 @@
 {
   pkgs,
-  inputs,
+  # inputs,
   config,
-  helpers,
+  # helpers,
   # vimUtils,
   # fetchFromGitHub,
   ...
@@ -392,11 +392,11 @@ in {
     };
 
     # vim.lsp.set_log_level("debug")
-    extraConfigLua = ''
-      require'lspconfig'.sourcekit.setup {
-        cmd = {"/usr/bin/sourcekit-lsp"}
-      }
-    '';
+    # extraConfigLua = ''
+    #   require'lspconfig'.sourcekit.setup {
+    #     cmd = {"/usr/bin/sourcekit-lsp"}
+    #   }
+    # '';
 
     plugins.lspkind = {
       enable = true;
