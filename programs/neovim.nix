@@ -190,6 +190,11 @@ in {
       };
     };
 
+    # TODO: check out efmls
+    # plugins.efmls-configs = {
+    #   setup.swift.linter = "swiftlint";
+    # };
+
     plugins.luasnip = {
       enable = true;
     };
