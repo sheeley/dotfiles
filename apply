@@ -11,7 +11,7 @@ HN=$(hostname_wrapper)
 
 upgrade_nix
 
-OSC="nixConfigurations"
+OSC="nixosConfigurations"
 
 OS=$(uname -a)
 if [[ "$OS" == *"Darwin"* ]]; then
