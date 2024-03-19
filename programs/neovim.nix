@@ -182,6 +182,7 @@ in {
           shfmt.enable = true;
           # taplo.enable = true;
           prettier.enable = true;
+          swiftformat.enable = true;
         };
       };
     };
