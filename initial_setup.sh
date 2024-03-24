@@ -1,4 +1,7 @@
 #! /usr/bin/env bash
+set -euxo pipefail
+
+# nixos prerequisites: git, ag
 
 export PATH=$PATH:~/bin
 
@@ -43,7 +46,7 @@ OS=$(uname -a)
 if [[ "$OS" == *"Darwin"* ]]; then
 	# nix doesn't install brew. Yay.
 	if ! which brew; then
-		/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+		bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 		eval "\$(/opt/homebrew/bin/brew shellenv)"
 		brew install --cask 1password
 	fi
@@ -53,7 +56,7 @@ if [[ "$OS" == *"Darwin"* ]]; then
 		confirm "Hit enter when install finished" || exit 1
 	fi
 
-	if ! which nix; then
+	if ! command -v nix &>/dev/null; then
 		curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install
 		. /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
 
@@ -120,3 +123,6 @@ if [[ "$OS" == *"Darwin"* ]]; then
 		# fi
 	fi
 fi
+
+echo "cd ~/dotfiles"
+echo "./apply"

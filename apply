@@ -1,7 +1,9 @@
 #! /usr/bin/env bash
 set -eu
 
-ag 'TODO:' || true
+if command -v scutil &>/dev/null; then
+	ag 'TODO:' || true
+fi
 
 HN=$(hostname_wrapper)
 
