@@ -9,7 +9,7 @@ fi
 
 CURRENT=$(nix --version | extract_semantic_version)
 LATEST=$(curl --silent https://raw.githubusercontent.com/NixOS/nixpkgs/master/nixos/modules/installer/tools/nix-fallback-paths.nix |
-	nix eval -f - "$ARCH" |
+	nix --extra-experimental-features "nix-command flakes" eval -f - "$ARCH" |
 	extract_semantic_version)
 
 if [[ "$CURRENT" != "$LATEST" ]]; then
