@@ -57,6 +57,7 @@
     sharedDarwinModules =
       [
         home-manager.darwinModules.home-manager
+        ./darwin.nix
       ]
       ++ sharedModules;
     private = legacyDarwinPackages.aarch64-darwin.callPackage ~/.nix-private/private.nix {};
