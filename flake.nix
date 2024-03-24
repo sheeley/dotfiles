@@ -48,6 +48,17 @@
           config.allowUnfree = true;
         }
     );
+    legacyNixPackages = nixpkgs.lib.genAttrs ["x86_64-linux"] (
+      system:
+        import inputs.nixpkgs {
+          inherit system;
+          # NOTE: Using `nixpkgs.config` in your NixOS config won't work
+          # Instead, you should set nixpkgs configs here
+          # (https://nixos.org/manual/nixpkgs/stable/#idm140737322551056)
+
+          config.allowUnfree = true;
+        }
+    );
     sharedModules = [
       ./environment.nix
       ./homebrew.nix
@@ -110,7 +121,7 @@
 
     nixosConfigurations."nixos" = nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
-      pkgs = legacyDarwinPackages.aarch64-x86;
+      pkgs = legacyNixPackages.x86_64-linux;
       modules =
         [
           home-manager.nixosModules.home-manager
