@@ -4,13 +4,15 @@
   user,
   private,
   ...
-}: let
-  readFile = fileName:
-    "\n# BEGIN: ${fileName}\n"
-    # + (builtins.replaceStrings ["@tailscaleKey@"] ["${private.tailscaleKey}"]
-    + (builtins.readFile fileName)
-    + "\n# END: ${fileName}\n\n";
-in {
+}:
+# let
+#   readFile = fileName:
+#     "\n# BEGIN: ${fileName}\n"
+#     # + (builtins.replaceStrings ["@tailscaleKey@"] ["${private.tailscaleKey}"]
+#     + (builtins.readFile fileName)
+#     + "\n# END: ${fileName}\n\n";
+# in
+{
   imports =
     [
     ]
@@ -18,32 +20,17 @@ in {
       # personal only
       ./programs/tailscale.nix
     ]);
-  services.nix-daemon.enable = true;
-
-  programs.zsh.enable = true;
-  programs.fish.enable = true;
-  environment.shells = with pkgs; [
-    fish
-    zsh
-  ];
-
-  users.users.${user} = {
-    # FUTURE: nix-darwin can't manage login shell yet
-    shell = pkgs.zsh;
+    users.users.${user} = {
+    # TODO: nix-darwin can't manage login shell yet
+    shell = pkgs.fish;
     name = user;
     home = "/Users/${user}";
   };
 
-  fonts.fontDir = {
-    enable = true;
-  };
-
-  fonts.fonts = [
-    pkgs.nerdfonts
+  environment.shells = with pkgs; [
+    fish
+    zsh
   ];
-
-  #system.keyboard.enableKeyMapping = true;
-  security.pam.enableSudoTouchIdAuth = true;
 
   services.tailscale = {
     enable = true;

@@ -1,13 +1,12 @@
 {
-  config,
-  pkgs,
-  lib,
+  # config,
+  # pkgs,
+  # lib,
   user,
   inputs,
   private,
   ...
-}: let
-in {
+}: {
   imports = [
     ./dock.nix
   ];

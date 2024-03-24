@@ -111,11 +111,11 @@
       system = "x86_64-linux";
       pkgs = legacyDarwinPackages.aarch64-x86;
       modules =
-        sharedModules
-        ++ [
+        [
           home-manager.nixosModules.home-manager
           ./nixos/configuration.nix
-        ];
+        ]
+        ++ sharedModules;
 
       specialArgs = {
         inherit inputs;
