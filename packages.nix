@@ -28,11 +28,9 @@ with pkgs;
     kubernetes-helm
     ldns
     lz4
-    nerdfonts
     nix-diff
     nodejs_20
     nvd
-    obsidian
     pv
     # python311
     rclone
@@ -45,13 +43,14 @@ with pkgs;
     ssh-copy-id
     sshfs
     tldr
-    vim-vint
     wget
     yarn
   ]
   ++ ((lib.optionals (lib.hasAttr "homebase" private)) [
     borgmatic
   ])
-  ++ ((lib.optionals (pkgs.system == "aarch64-darwin")) [
-    dockutil
-  ])
+  # ++ ((lib.optionals (pkgs.system == "aarch64-darwin")) [
+    # nerdfonts
+  #      obsidian
+  #   dockutil
+  # ])
