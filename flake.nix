@@ -126,7 +126,6 @@
         [
           home-manager.nixosModules.home-manager
           ./nixos/configuration.nix
-          ./nixos/home-assistant.nix
         ]
         ++ sharedModules;
 

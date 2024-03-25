@@ -8,6 +8,8 @@
   imports = [
     # Include the results of the hardware scan.
     ./hardware-configuration.nix
+    ./nixos/home-assistant.nix
+    ./programs/podman.nix
   ];
 
   # This value determines the NixOS release from which the default

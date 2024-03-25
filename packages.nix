@@ -49,8 +49,9 @@ with pkgs;
   ++ ((lib.optionals (lib.hasAttr "homebase" private)) [
     borgmatic
   ])
-  # ++ ((lib.optionals (pkgs.system == "aarch64-darwin")) [
-    # nerdfonts
-  #      obsidian
-  #   dockutil
-  # ])
+# ++ ((lib.optionals (pkgs.system == "aarch64-darwin")) [
+# nerdfonts
+#      obsidian
+#   dockutil
+# ])
+
