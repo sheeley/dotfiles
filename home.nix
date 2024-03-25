@@ -7,10 +7,6 @@
   private,
   ...
 }: {
-  imports = [
-    ./dock.nix
-  ];
-
   home-manager = {
     backupFileExtension = "bak";
     useGlobalPkgs = true;

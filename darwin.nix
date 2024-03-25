@@ -1,4 +1,8 @@
 {pkgs, ...}: {
+  imports = [
+    ./dock.nix
+  ];
+
   services.nix-daemon.enable = true;
 
   fonts.fontDir = {
