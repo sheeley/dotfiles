@@ -27,6 +27,8 @@
     home = "/Users/${user}";
   };
 
+  programs.zsh.enable = true;
+  programs.fish.enable = true;
   environment.shells = with pkgs; [
     fish
     zsh

@@ -1,5 +1,5 @@
 #! /usr/bin/env bash
-set -eu
+set -eux
 
 PATH="$PATH:./bin"
 
@@ -19,6 +19,8 @@ if [[ "$OS" == *"Darwin"* ]]; then
 fi
 
 # TODO: is there a cleaner way of doing this?
+# this doesn't work with darwinConfigurations yet.
+# nix flake show --extra-experimental-features "flakes nix-command" --impure .
 VALID_HOSTNAMES=$(grep "$OSC" flake.nix | grep -o '".*"' | sed 's/"//g')
 
 if [[ ! "${VALID_HOSTNAMES[*]}" =~ $HN ]]; then
@@ -27,7 +29,11 @@ if [[ ! "${VALID_HOSTNAMES[*]}" =~ $HN ]]; then
 	exit 1
 fi
 
-nix build ".#${OSC}.${HN}.system" --impure --extra-experimental-features "nix-command flakes" --show-trace
+if [[ "$OS" == *"Darwin"* ]]; then
+	nix build ".#${OSC}.${HN}.system" --impure --extra-experimental-features "nix-command flakes" --show-trace
+else 
+	nix build ".#${OSC}.${HN}.config.system.build.toplevel" --impure --extra-experimental-features "nix-command flakes" --show-trace
+fi 
 
 if command -v nvd; then
 	nvd diff /run/current-system result

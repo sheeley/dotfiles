@@ -61,7 +61,6 @@
     );
     sharedModules = [
       ./environment.nix
-      ./homebrew.nix
       ./home.nix
       ./system.nix
     ];
@@ -69,6 +68,7 @@
       [
         home-manager.darwinModules.home-manager
         ./darwin.nix
+        ./homebrew.nix
       ]
       ++ sharedModules;
     private = legacyDarwinPackages.aarch64-darwin.callPackage ~/.nix-private/private.nix {};
@@ -126,6 +126,7 @@
         [
           home-manager.nixosModules.home-manager
           ./nixos/configuration.nix
+          ./nixos/home-assistant.nix
         ]
         ++ sharedModules;
 
