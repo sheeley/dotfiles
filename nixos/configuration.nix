@@ -5,20 +5,12 @@
   pkgs,
   ...
 }:
-# let
-# When using easyCerts=true the IP Address must resolve to the master on creation.
-# So use simply 127.0.0.1 in that case. Otherwise you will have errors like this https://github.com/NixOS/nixpkgs/issues/59364
-# kubeMasterIP = "127.0.0.1";
-# kubeMasterIP = "192.168.1.17";
-# kubeMasterHostname = "api.kube";
-# kubeMasterAPIServerPort = 6443;
-# in
 {
   imports = [
     # Include the results of the hardware scan.
     ./hardware-configuration.nix
   ];
-
+ 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
   # on your system were taken. It‘s perfectly fine and recommended to leave
@@ -61,13 +53,24 @@
     description = "Johnny Sheeley";
     extraGroups = ["networkmanager" "wheel"];
   };
-
-  # Allow unfree packages
-  # nixpkgs.config.allowUnfree = true;
-
+  
   # Enable the OpenSSH daemon.
   services.openssh.enable = true;
+  
+  # environment.systemPackages = with pkgs; [];
+}
 
+# let
+# When using easyCerts=true the IP Address must resolve to the master on creation.
+# So use simply 127.0.0.1 in that case. Otherwise you will have errors like this https://github.com/NixOS/nixpkgs/issues/59364
+# kubeMasterIP = "127.0.0.1";
+# kubeMasterIP = "192.168.1.17";
+# kubeMasterHostname = "api.kube";
+# kubeMasterAPIServerPort = 6443;
+# in
+  # Open ports in the firewall.
+  # networking.firewall.allowedTCPPorts = [6443 8080 8123];
+  # networking.firewall.allowedUDPPorts = [ ... ];
   # k8s stuff
   # networking.extraHosts = "${kubeMasterIP} ${kubeMasterHostname}";
   # services.kubernetes = {
@@ -86,19 +89,3 @@
   #   # needed if you use swap
   #   kubelet.extraOpts = "--fail-swap-on=false";
   # };
-
-  # List packages installed in system profile. To search, run:
-  # $ nix search wget
-  environment.systemPackages = with pkgs; [
-    k3s
-    kompose
-    kubectl
-    # kubernetes
-    kubernetes-helm
-    vim
-  ];
-
-  # Open ports in the firewall.
-  networking.firewall.allowedTCPPorts = [6443 8080 8123];
-  # networking.firewall.allowedUDPPorts = [ ... ];
-}
