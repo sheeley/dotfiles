@@ -1,7 +1,9 @@
 {pkgs, ...}: {
   programs.zsh = {
     enable = true;
-    enableAutosuggestions = true;
+    autosuggestion = {
+      enable = true;
+    };
 
     #     function mkcd
     #   mkdir $argv

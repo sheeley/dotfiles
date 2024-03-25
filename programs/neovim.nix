@@ -327,7 +327,7 @@ in {
       enable = true;
     };
 
-    plugins.comment-nvim = {
+    plugins.comment = {
       enable = true;
     };
 
@@ -426,7 +426,9 @@ in {
 
     plugins.trouble = {
       enable = true;
-      autoOpen = true;
+      settings = {
+        auto_open = true;
+      };
     };
 
     plugins.noice = {
