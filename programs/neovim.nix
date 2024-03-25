@@ -471,7 +471,6 @@ in {
       shfmt
       yaml-language-server
       nodePackages.bash-language-server
-      rnix-lsp
       nil
       # pyright
       # python310Packages.python-lsp-server
