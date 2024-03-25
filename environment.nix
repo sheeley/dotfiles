@@ -20,6 +20,7 @@ in {
     ]
     ++ ((lib.optionals (lib.hasAttr "personal" private && private.personal)) [
       # personal only
+      # TODO: bring back for macOS
       # ./programs/tailscale.nix
     ]);
   users.users.${user} = {

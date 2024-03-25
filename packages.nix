@@ -49,6 +49,7 @@ with pkgs;
   ++ ((lib.optionals (lib.hasAttr "homebase" private)) [
     borgmatic
   ])
+  # TODO: bring back for macOS
 # ++ ((lib.optionals (pkgs.system == "aarch64-darwin")) [
 # nerdfonts
 #      obsidian
