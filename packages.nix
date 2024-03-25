@@ -11,7 +11,6 @@ with pkgs;
     atool
     bat
     coreutils-prefixed
-    dockutil
     # dovecot
     du-dust
     duf
@@ -52,4 +51,7 @@ with pkgs;
   ]
   ++ ((lib.optionals (lib.hasAttr "homebase" private)) [
     borgmatic
+  ])
+  ++ ((lib.optionals (pkgs.system == "aarch64-darwin")) [
+    dockutil
   ])
