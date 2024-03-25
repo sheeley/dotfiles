@@ -53,7 +53,7 @@ if [[ "$OS" == *"Darwin"* ]]; then
 	echo "darwin-rebuild"
 	./result/sw/bin/darwin-rebuild switch --flake . --impure
 else
-	sudo nixos-rebuild switch
+	sudo nixos-rebuild switch --flake . --impure
 fi
 
 date >last-applied.txt
