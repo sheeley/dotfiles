@@ -4,27 +4,29 @@
   user,
   private,
   ...
-}:
-# let
-#   readFile = fileName:
-#     "\n# BEGIN: ${fileName}\n"
-#     # + (builtins.replaceStrings ["@tailscaleKey@"] ["${private.tailscaleKey}"]
-#     + (builtins.readFile fileName)
-#     + "\n# END: ${fileName}\n\n";
-# in
-{
+}: let
+  #   readFile = fileName:
+  #     "\n# BEGIN: ${fileName}\n"
+  #     # + (builtins.replaceStrings ["@tailscaleKey@"] ["${private.tailscaleKey}"]
+  #     + (builtins.readFile fileName)
+  #     + "\n# END: ${fileName}\n\n";
+  prefix =
+    if pkgs.system == "aarch64-darwin"
+    then "Users"
+    else "home";
+in {
   imports =
     [
     ]
     ++ ((lib.optionals (lib.hasAttr "personal" private && private.personal)) [
       # personal only
-      ./programs/tailscale.nix
+      # ./programs/tailscale.nix
     ]);
   users.users.${user} = {
     # TODO: nix-darwin can't manage login shell yet
     shell = pkgs.fish;
     name = user;
-    home = "/Users/${user}";
+    home = "/${prefix}/${user}";
   };
 
   programs.zsh.enable = true;
