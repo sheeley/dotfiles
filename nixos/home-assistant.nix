@@ -1,4 +1,4 @@
-{}:{
+{...}:{
     networking.firewall.allowedTCPPorts = [ 8123 ];
     virtualisation.oci-containers = {
     backend = "podman";
