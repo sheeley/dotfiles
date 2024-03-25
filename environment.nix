@@ -20,7 +20,7 @@
       # personal only
       ./programs/tailscale.nix
     ]);
-    users.users.${user} = {
+  users.users.${user} = {
     # TODO: nix-darwin can't manage login shell yet
     shell = pkgs.fish;
     name = user;
