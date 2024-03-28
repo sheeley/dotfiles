@@ -71,7 +71,8 @@
         ./homebrew.nix
       ]
       ++ sharedModules;
-    private = if legacyDarwinPackages.aarch64-darwin.system == "aarch64-darwin"
+    private =
+      if builtins.currentSystem == "aarch64-darwin"
       then legacyDarwinPackages.aarch64-darwin.callPackage ~/.nix-private/private.nix {}
       else legacyDarwinPackages.aarch64-darwin.callPackage /home/sheeley/.nix-private/private.nix {};
   in {
