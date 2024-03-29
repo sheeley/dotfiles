@@ -1,5 +1,6 @@
 {...}: {
-  networking.firewall.allowedTCPPorts = [8123];
+  networking.firewall.allowedUDPPorts = [5353];
+  networking.firewall.allowedTCPPorts = [8123 21063];
   virtualisation.oci-containers = {
     backend = "podman";
     containers.homeassistant = {
