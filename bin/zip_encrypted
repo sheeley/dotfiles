@@ -1,7 +1,10 @@
 #! /usr/bin/env bash
-# usage: zip_encrypted dirname
 set -euo pipefail # x
-name="$1"
+NAME="$1"
 # name=${PWD##*/}
-[ -d "$name" ] || exit 1
-zip -re "$name.zip" "$name"
+if [ -d "$NAME" ]; then
+	zip -re "$NAME.zip" "$NAME"
+	exit 0
+fi
+echo "usage: zip_encrypted dirname"
+echo "$NAME not a directory"
