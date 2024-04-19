@@ -10,6 +10,7 @@
     ./hardware-configuration.nix
     ./home-assistant.nix
     ../programs/podman.nix
+    ../programs/plex.nix
   ];
 
   # This value determines the NixOS release from which the default
