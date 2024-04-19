@@ -6,7 +6,9 @@
   inputs,
   private,
   ...
-}: {
+}: let
+  isMac = pkgs.system == "aarch64-darwin";
+in {
   home-manager = {
     backupFileExtension = "bak";
     useGlobalPkgs = true;
@@ -41,11 +43,11 @@
         ./programs/vscode.nix
         ./programs/zsh.nix
       ]
-      ++ ((lib.optionals (lib.hasAttr "personal" private && private.personal)) [
-        # personal only
-      ])
-      ++ ((lib.optionals (pkgs.system == "aarch64-darwin")) [
-        # ./home-darwin-defaults.nix
+      # ++ ((lib.optionals (lib.hasAttr "personal" private && private.personal)) [
+      #   # personal only
+      # ])
+      ++ ((lib.optionals isMac) [
+        ./home-darwin-defaults.nix
       ]);
 
     home = {

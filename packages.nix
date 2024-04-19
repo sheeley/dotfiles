@@ -28,6 +28,7 @@ with pkgs;
     kubernetes-helm
     ldns
     lz4
+    mosh
     nix-diff
     nodejs_20
     nvd
@@ -49,7 +50,7 @@ with pkgs;
   ++ ((lib.optionals (lib.hasAttr "homebase" private)) [
     borgmatic
   ])
-  ++ ((lib.optionals pkgs.isDarwin) [
+  ++ ((lib.optionals (pkgs.system == "aarch64-darwin")) [
     nerdfonts
     obsidian
     dockutil
