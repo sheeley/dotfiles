@@ -14,7 +14,9 @@
     backend = "podman";
     containers.homeassistant = {
       image = "ghcr.io/home-assistant/home-assistant:stable"; # Warning: if the tag does not change, the image will not be updated
-      volumes = ["home-assistant:/config"];
+      volumes = [
+        (./ha-configuration + ":/config")
+      ];
 
       environment.TZ = "America/Los_Angeles";
       extraOptions = [
