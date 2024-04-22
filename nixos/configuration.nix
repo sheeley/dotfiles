@@ -30,6 +30,9 @@
 
   # Enable networking
   networking.networkmanager.enable = true;
+  systemd.services.NetworkManager-wait-online.enable = false;
+  # systemd.network.wait-online.enable = false;
+  # boot.initrd.systemd.network.wait-online.enable = false;
 
   # Set your time zone.
   time.timeZone = "America/Los_Angeles";

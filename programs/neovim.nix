@@ -34,7 +34,9 @@ in {
     vimAlias = true;
 
     colorschemes.tokyonight = {
-      style = "night";
+      settings = {
+        style = "night";
+      };
       enable = true;
     };
 
@@ -42,7 +44,7 @@ in {
       neo_tree_remove_legacy_commands = 1;
     };
 
-    options = {
+    opts = {
       cmdheight = 2;
       clipboard = "unnamed";
       cot = ["menu" "menuone" "noselect"];
@@ -55,6 +57,7 @@ in {
       spell = true;
       tabstop = 4;
       termguicolors = true;
+      # TODO: this keeps getting set to root
       undodir = ~/.nvim/undodir;
       undofile = true;
       updatetime = 100;
@@ -259,15 +262,15 @@ in {
     plugins.telescope = {
       enable = true;
       enabledExtensions = ["ui-select"];
-      extensionConfig = {
-        ui-select = {
-          __raw = ''
-            require("telescope.themes").get_dropdown {
-              -- even more opts
-            }
-          '';
-        };
-      };
+      # extensionConfig = {
+      #   ui-select = {
+      #     __raw = ''
+      #       require("telescope.themes").get_dropdown {
+      #         -- even more opts
+      #       }
+      #     '';
+      #   };
+      # };
     };
 
     plugins.treesitter = {
@@ -349,10 +352,11 @@ in {
       enable = true;
 
       # useTreesitter = true;
-
-      scope = {
-        enabled = true;
-        showStart = true;
+      settings = {
+        scope = {
+          enabled = true;
+          show_start = true;
+        };
       };
     };
 
