@@ -8,7 +8,7 @@
   imports = [
     # Include the results of the hardware scan.
     ./hardware-configuration.nix
-    ./home-assistant.nix
+    ../home-assistant/home-assistant.nix
     ../programs/podman.nix
     ../programs/plex.nix
   ];
