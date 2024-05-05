@@ -9,7 +9,7 @@
       "media-folder-url" = "file:///Users/${user}/Media/Music/";
     };
 
-    # FUTURE: try this
+    # TODO: try this
     # "com.apple.photolibraryd" = {
     #   SystemLibraryPath = "/Users/${user}/Media/Photos Library.photoslibrary";
     # };

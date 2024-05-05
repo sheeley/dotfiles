@@ -12,7 +12,7 @@ LATEST=$(curl --silent https://raw.githubusercontent.com/NixOS/nixpkgs/master/ni
 	nix --extra-experimental-features "nix-command flakes" eval -f - "$ARCH" |
 	extract_semantic_version)
 
-if [[ "$CURRENT" != "$LATEST" ]]; then
+if semantic_version_is_greater "$CURRENT" "$LATEST"; then
 	if confirm "Upgrade nix? (Current: $CURRENT, Latest: $LATEST)"; then
 		sudo -i nix upgrade-nix
 	fi

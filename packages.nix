@@ -11,7 +11,6 @@ with pkgs;
     atool
     bat
     coreutils-prefixed
-    dockutil
     # dovecot
     du-dust
     duf
@@ -29,11 +28,10 @@ with pkgs;
     kubernetes-helm
     ldns
     lz4
-    nerdfonts
+    mosh
     nix-diff
     nodejs_20
     nvd
-    obsidian
     pv
     # python311
     rclone
@@ -46,10 +44,14 @@ with pkgs;
     ssh-copy-id
     sshfs
     tldr
-    vim-vint
     wget
     yarn
   ]
   ++ ((lib.optionals (lib.hasAttr "homebase" private)) [
     borgmatic
+  ])
+  ++ ((lib.optionals (pkgs.system == "aarch64-darwin")) [
+    nerdfonts
+    obsidian
+    dockutil
   ])
