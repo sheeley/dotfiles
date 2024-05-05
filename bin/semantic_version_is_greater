@@ -1,0 +1,42 @@
+#! /usr/bin/env bash
+set -euo pipefail # x
+
+# Function to compare semantic versions
+compare_versions() {
+	local ver1=$1
+	local ver2=$2
+
+	local IFS=.
+	read -ra ver1_parts <<<"$ver1"
+	read -ra ver2_parts <<<"$ver2"
+
+	local len=$((${#ver1_parts[@]} > ${#ver2_parts[@]} ? ${#ver1_parts[@]} : ${#ver2_parts[@]}))
+
+	for ((i = 0; i < len; i++)); do
+		local part1=${ver1_parts[i]:-0}
+		local part2=${ver2_parts[i]:-0}
+
+		if ((part1 != part2)); then
+			if ((part1 > part2)); then
+				return 0
+			else
+				return 1
+			fi
+		fi
+	done
+
+	return 0
+}
+
+# Main script
+if [ $# -ne 2 ]; then
+	echo "Usage: $0 <version1> <version2>"
+	exit 1
+fi
+
+version1=$1
+version2=$2
+
+if compare_versions "$version1" "$version2"; then
+	exit 1
+fi

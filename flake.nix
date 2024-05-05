@@ -27,7 +27,9 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # flake-utils.url = "github:numtide/flake-utils";
+    flake-utils = {
+      url = "github:numtide/flake-utils";
+    };
   };
 
   outputs = {
@@ -36,8 +38,20 @@
     home-manager,
     darwin,
     nixvim,
+    flake-utils,
   } @ inputs: let
-    legacyPackages = nixpkgs.lib.genAttrs ["aarch64-darwin"] (
+    legacyDarwinPackages = nixpkgs.lib.genAttrs ["aarch64-darwin"] (
+      system:
+        import inputs.nixpkgs {
+          inherit system;
+          # NOTE: Using `nixpkgs.config` in your NixOS config won't work
+          # Instead, you should set nixpkgs configs here
+          # (https://nixos.org/manual/nixpkgs/stable/#idm140737322551056)
+
+          config.allowUnfree = true;
+        }
+    );
+    legacyNixPackages = nixpkgs.lib.genAttrs ["x86_64-linux"] (
       system:
         import inputs.nixpkgs {
           inherit system;
@@ -49,19 +63,27 @@
         }
     );
     sharedModules = [
-      home-manager.darwinModules.home-manager
       ./environment.nix
-      ./homebrew.nix
       ./home.nix
       ./system.nix
     ];
-    private = legacyPackages.aarch64-darwin.callPackage ~/.nix-private/private.nix {};
+    sharedDarwinModules =
+      [
+        home-manager.darwinModules.home-manager
+        ./darwin.nix
+        ./homebrew.nix
+      ]
+      ++ sharedModules;
+    private =
+      if builtins.currentSystem == "aarch64-darwin"
+      then legacyDarwinPackages.aarch64-darwin.callPackage ~/.nix-private/private.nix {}
+      else legacyDarwinPackages.aarch64-darwin.callPackage /home/sheeley/.nix-private/private.nix {};
   in {
     darwinConfigurations."jmba" = darwin.lib.darwinSystem {
       system = "aarch64-darwin";
-      pkgs = legacyPackages.aarch64-darwin;
+      pkgs = legacyDarwinPackages.aarch64-darwin;
       modules =
-        sharedModules
+        sharedDarwinModules
         ++ [
           ./personal.nix
         ];
@@ -75,9 +97,9 @@
 
     darwinConfigurations."homebase" = darwin.lib.darwinSystem {
       system = "aarch64-darwin";
-      pkgs = legacyPackages.aarch64-darwin;
+      pkgs = legacyDarwinPackages.aarch64-darwin;
       modules =
-        sharedModules
+        sharedDarwinModules
         ++ [
           ./personal.nix
           ./homebase/homebase.nix
@@ -93,14 +115,40 @@
 
     darwinConfigurations."Sheeley-MBP" = darwin.lib.darwinSystem {
       system = "aarch64-darwin";
-      pkgs = legacyPackages.aarch64-darwin;
-      modules = sharedModules;
+      pkgs = legacyDarwinPackages.aarch64-darwin;
+      modules = sharedDarwinModules;
 
       specialArgs = {
         inherit inputs;
         user = "johnnysheeley";
         private = private;
       };
+    };
+
+    nixosConfigurations."nixos" = nixpkgs.lib.nixosSystem {
+      system = "x86_64-linux";
+      pkgs = legacyNixPackages.x86_64-linux;
+      modules =
+        [
+          home-manager.nixosModules.home-manager
+          ./nixos/configuration.nix
+        ]
+        ++ sharedModules;
+
+      specialArgs = {
+        inherit inputs;
+        user = "sheeley";
+        private = private;
+      };
+    };
+
+    apps.repl = flake-utils.lib.mkApp {
+      drv = legacyDarwinPackages.aarch64-darwin.writeShellScriptBin "repl" ''
+        confnix=$(mktemp)
+        echo "builtins.getFlake (toString $(git rev-parse --show-toplevel))" >$confnix
+        trap "rm $confnix" EXIT
+        nix repl $confnix
+      '';
     };
   };
 }

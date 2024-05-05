@@ -5,20 +5,30 @@
   private,
   ...
 }: let
-  readFile = fileName:
-    "\n# BEGIN: ${fileName}\n"
-    # + (builtins.replaceStrings ["@tailscaleKey@"] ["${private.tailscaleKey}"]
-    + (builtins.readFile fileName)
-    + "\n# END: ${fileName}\n\n";
+  #   readFile = fileName:
+  #     "\n# BEGIN: ${fileName}\n"
+  #     # + (builtins.replaceStrings ["@tailscaleKey@"] ["${private.tailscaleKey}"]
+  #     + (builtins.readFile fileName)
+  #     + "\n# END: ${fileName}\n\n";
+  prefix =
+    if pkgs.system == "aarch64-darwin"
+    then "Users"
+    else "home";
 in {
   imports =
     [
     ]
     ++ ((lib.optionals (lib.hasAttr "personal" private && private.personal)) [
       # personal only
-      ./programs/tailscale.nix
+      # TODO: bring back
+      # ./programs/tailscale.nix
     ]);
-  services.nix-daemon.enable = true;
+  users.users.${user} = {
+    # TODO: nix-darwin can't manage login shell yet
+    shell = pkgs.fish;
+    name = user;
+    home = "/${prefix}/${user}";
+  };
 
   programs.zsh.enable = true;
   programs.fish.enable = true;
@@ -26,24 +36,6 @@ in {
     fish
     zsh
   ];
-
-  users.users.${user} = {
-    # FUTURE: nix-darwin can't manage login shell yet
-    shell = pkgs.zsh;
-    name = user;
-    home = "/Users/${user}";
-  };
-
-  fonts.fontDir = {
-    enable = true;
-  };
-
-  fonts.fonts = [
-    pkgs.nerdfonts
-  ];
-
-  #system.keyboard.enableKeyMapping = true;
-  security.pam.enableSudoTouchIdAuth = true;
 
   services.tailscale = {
     enable = true;
