@@ -18,6 +18,12 @@ TODO: add more guidance here.
 
 ## TODO
 
+- [ ] secrets.yaml
+- [ ] hatch HA integration
+- [ ] hyundai HA integration
+- [ ] local network cache of deps
+- [ ] fix nvim being configured for root for some reason
+
 - [ ] notifications settings
 - [ ] nightshift
 - [ ] various FUTUREs spread throughout repo
