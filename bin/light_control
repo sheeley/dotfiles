@@ -1,0 +1,19 @@
+#! /etc/profiles/per-user/johnnysheeley/bin/nu
+
+let host = "192.168.1.196"
+let url = $"http://($host):9123/elgato/lights"
+
+def main [
+  on: string = "off" # On or off
+] {
+  mut isOn = 0
+  if $on == "on" {
+    $isOn = 1
+  }
+
+  let payload = { numberOfLights: 1, lights: [{ on: $isOn}]}
+
+  http put --content-type application/json $url $payload
+}
+
+# http get $url
