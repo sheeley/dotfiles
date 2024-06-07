@@ -4,16 +4,18 @@ let host = "192.168.1.196"
 let url = $"http://($host):9123/elgato/lights"
 
 def main [
-  on: string = "off" # On or off
+  on: string = "toggle" # On or off
 ] {
   mut isOn = 0
-  if $on == "on" {
+  if $on == "toggle" {
+    let alreadyOn = ((http get $url) | get lights.0.on)
+  	if $alreadyOn == 0 {
+  		$isOn = 1
+  	}
+  } else if $on == "on" {
     $isOn = 1
   }
-
+  
   let payload = { numberOfLights: 1, lights: [{ on: $isOn}]}
-
   http put --content-type application/json $url $payload
 }
-
-# http get $url
