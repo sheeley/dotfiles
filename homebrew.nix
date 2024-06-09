@@ -1,10 +1,12 @@
 {
-  pkgs,
+  # pkgs,
   lib,
   private,
   ...
-}: let
-in {
+}:
+# let
+# in
+{
   homebrew = {
     enable = true;
 
@@ -30,7 +32,6 @@ in {
       [
         "1password"
         "1password/tap/1password-cli"
-        "bartender"
         "eloston-chromium"
         "iterm2"
         "little-snitch"
