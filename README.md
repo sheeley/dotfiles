@@ -18,6 +18,8 @@ TODO: add more guidance here.
 
 ## TODO
 
+- [ ] figure out why `hostname_wrapper` isn't working on two machines...
+
 - [ ] secrets.yaml
 - [ ] hatch HA integration
 - [ ] hyundai HA integration
