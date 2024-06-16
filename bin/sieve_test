@@ -3,6 +3,7 @@ set -euo pipefail # x
 
 (
 	cd "$PRIVATE_TOOLS_DIR"
+	./bin/sieve.swift >aigee-mail.sieve
 	TMP_SIEVE=$(mktemp)
 	cp aigee-mail.sieve "$TMP_SIEVE"
 	sed -i'' -e 's/# require/require/' "$TMP_SIEVE"
