@@ -1,24 +1,30 @@
 #! /usr/bin/env nu
 
-let host = "192.168.11.196"
+let host = "192.168.1.196"
 let url = $"http://($host):9123/elgato/lights"
 let maxTime = 1
 
 def main [
 	on: string = "toggle" # On or off
-	ignore-errors: bool = false # No-op when http calls fail
+	ignoreErrors: bool = false # No-op when http calls fail
 ] {
-# TODO: ignore-errors - plenty of times this is called, it won't be connected to lights. 
-	mut isOn = 0
+	try {
+		mut isOn = 0
 		if $on == "toggle" {
 			let alreadyOn = ((http get --max-time $maxTime $url) | get lights.0.on)
-				if $alreadyOn == 0 {
-					$isOn = 1
-				}
+			if $alreadyOn == 0 {
+				$isOn = 1
+			}
 		} else if $on == "on" {
 			$isOn = 1
 		}
 
-	let payload = { numberOfLights: 1, lights: [{ on: $isOn}]}
-	http put --max-time $maxTime --content-type application/json $url $payload
+		let payload = { numberOfLights: 1, lights: [{ on: $isOn}]}
+		http put --max-time $maxTime --content-type application/json $url $payload
+	} catch { | error | 
+		if not $ignoreErrors {
+		  print $error.debug
+		  exit 1
+		}
+	}
 }
