@@ -1,4 +1,4 @@
-#! /etc/profiles/per-user/johnnysheeley/bin/nu
+#! /usr/bin/env nu
 
 def "parse frontmatter" []: string -> any {
     let text = $in | open | lines --skip-empty
