@@ -1,7 +1,7 @@
 #! /usr/bin/env bash
 set -eu
 
-FILE="$HOME/dotfiles/bin/$1"
+FILE="$1"
 
 if [[ -f "$FILE" ]]; then
 	echo "script exists"
@@ -9,9 +9,7 @@ if [[ -f "$FILE" ]]; then
 fi
 
 cat <<EOD >>"$FILE"
-#! /usr/bin/env bash
-set -euo pipefail # x
-
+#! /usr/bin/env nu
 
 EOD
 
