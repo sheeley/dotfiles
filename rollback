@@ -1,0 +1,53 @@
+#! /usr/bin/env bash
+set -eu
+
+PATH="$PATH:./bin"
+
+HN=$(hostname_wrapper)
+
+OSC="nixosConfigurations"
+
+OS=$(uname -a)
+if [[ "$OS" == *"Darwin"* ]]; then
+	OSC="darwinConfigurations"
+fi
+
+# TODO: is there a cleaner way of doing this?
+# this doesn't work with darwinConfigurations yet.
+# nix flake show --extra-experimental-features "flakes nix-command" --impure .
+VALID_HOSTNAMES=$(grep "$OSC" flake.nix | grep -o '".*"' | sed 's/"//g')
+
+if [[ ! "${VALID_HOSTNAMES[*]}" =~ $HN ]]; then
+	echo "invalid hostname: '$HN'"
+	echo "sudo scutil --set LocalHostName ..."
+	exit 1
+fi
+
+# if [[ "$OS" == *"Darwin"* ]]; then
+# 	nix build ".#${OSC}.${HN}.system" --impure --extra-experimental-features "nix-command flakes" --show-trace
+# else
+# 	nix build ".#${OSC}.${HN}.config.system.build.toplevel" --impure --extra-experimental-features "nix-command flakes" --show-trace
+# fi
+#
+# if command -v nvd; then
+# 	nvd diff /run/current-system result
+#
+# 	if command -v nix-diff; then
+# 		# TODO: elide common lines https://github.com/Gabriella439/nix-diff/issues/42
+# 		# now available with --context flag
+# 		nix-diff /run/current-system result
+# 	fi
+#
+# 	if opt_out "Continue?"; then
+# 		exit 0
+# 	fi
+# fi
+
+if [[ "$OS" == *"Darwin"* ]]; then
+	echo "darwin-rebuild"
+	./result/sw/bin/darwin-rebuild --rollback switch --flake . --impure
+else
+	sudo nixos-rebuild --rollback switch --flake . --impure
+fi
+
+date >last-applied.txt
