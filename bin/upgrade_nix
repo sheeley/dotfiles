@@ -14,6 +14,10 @@ LATEST=$(curl --silent https://raw.githubusercontent.com/NixOS/nixpkgs/master/ni
 
 if semantic_version_is_greater "$CURRENT" "$LATEST"; then
 	if confirm "Upgrade nix? (Current: $CURRENT, Latest: $LATEST)"; then
-		sudo -i nix upgrade-nix
+		if [[ "$ARCH" = "aarch64-darwin" ]]; then
+			sudo -i nix upgrade-nix
+		else
+			echo "To upgrade nix on nixos, run \`./update\`"
+		fi
 	fi
 fi
