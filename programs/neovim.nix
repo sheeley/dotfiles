@@ -376,7 +376,7 @@ in {
       };
 
       servers = {
-        nil_ls = {
+        nil-ls = {
           enable = true;
           settings = {
             formatting.command = ["alejandra" "--quiet"];
