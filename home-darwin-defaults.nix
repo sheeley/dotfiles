@@ -1,5 +1,5 @@
 {...}: {
-    # TODO: currentHostDefaults
+  # TODO: currentHostDefaults
   targets.darwin.defaults = {
     NSGlobalDomain = {
       AppleMiniaturizeOnDoubleClick = false;
@@ -166,6 +166,7 @@
       launchanim = false;
       show-recents = false;
       mineffect = "scale";
+      appswitcher-all-displays = true;
     };
 
     "com.apple.finder" = {
