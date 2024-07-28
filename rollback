@@ -23,26 +23,6 @@ if [[ ! "${VALID_HOSTNAMES[*]}" =~ $HN ]]; then
 	exit 1
 fi
 
-# if [[ "$OS" == *"Darwin"* ]]; then
-# 	nix build ".#${OSC}.${HN}.system" --impure --extra-experimental-features "nix-command flakes" --show-trace
-# else
-# 	nix build ".#${OSC}.${HN}.config.system.build.toplevel" --impure --extra-experimental-features "nix-command flakes" --show-trace
-# fi
-#
-# if command -v nvd; then
-# 	nvd diff /run/current-system result
-#
-# 	if command -v nix-diff; then
-# 		# TODO: elide common lines https://github.com/Gabriella439/nix-diff/issues/42
-# 		# now available with --context flag
-# 		nix-diff /run/current-system result
-# 	fi
-#
-# 	if opt_out "Continue?"; then
-# 		exit 0
-# 	fi
-# fi
-
 if [[ "$OS" == *"Darwin"* ]]; then
 	echo "darwin-rebuild"
 	./result/sw/bin/darwin-rebuild --rollback switch --flake . --impure
