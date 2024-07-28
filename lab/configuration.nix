@@ -8,9 +8,11 @@
   imports = [
     # Include the results of the hardware scan.
     ./hardware-configuration.nix
+    # actual configuration
     ../home-assistant/home-assistant.nix
     ../programs/podman.nix
     ../programs/plex.nix
+    ./lab-borg.nix
   ];
 
   # This value determines the NixOS release from which the default
@@ -25,7 +27,7 @@
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
-  networking.hostName = "nixos"; # Define your hostname.
+  networking.hostName = "lab"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
   # Enable networking
@@ -62,36 +64,4 @@
   # Enable the OpenSSH daemon.
   services.openssh.enable = true;
   programs.mosh.enable = true;
-
-  # environment.systemPackages = with pkgs; [];
 }
-# let
-# When using easyCerts=true the IP Address must resolve to the master on creation.
-# So use simply 127.0.0.1 in that case. Otherwise you will have errors like this https://github.com/NixOS/nixpkgs/issues/59364
-# kubeMasterIP = "127.0.0.1";
-# kubeMasterIP = "192.168.1.17";
-# kubeMasterHostname = "api.kube";
-# kubeMasterAPIServerPort = 6443;
-# in
-# Open ports in the firewall.
-# networking.firewall.allowedTCPPorts = [6443 8080 8123];
-# networking.firewall.allowedUDPPorts = [ ... ];
-# k8s stuff
-# networking.extraHosts = "${kubeMasterIP} ${kubeMasterHostname}";
-# services.kubernetes = {
-#   roles = ["master" "node"];
-#   masterAddress = kubeMasterHostname;
-#   apiserverAddress = "https://${kubeMasterHostname}:${toString kubeMasterAPIServerPort}";
-#   easyCerts = true;
-#   apiserver = {
-#     securePort = kubeMasterAPIServerPort;
-#     advertiseAddress = kubeMasterIP;
-#   };
-#
-#   # use coredns
-#   addons.dns.enable = true;
-#
-#   # needed if you use swap
-#   kubelet.extraOpts = "--fail-swap-on=false";
-# };
-
