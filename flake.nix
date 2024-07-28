@@ -125,13 +125,13 @@
       };
     };
 
-    nixosConfigurations."nixos" = nixpkgs.lib.nixosSystem {
+    nixosConfigurations."lab" = nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
       pkgs = legacyNixPackages.x86_64-linux;
       modules =
         [
           home-manager.nixosModules.home-manager
-          ./nixos/configuration.nix
+          ./lab/configuration.nix
         ]
         ++ sharedModules;
 
