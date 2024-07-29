@@ -53,8 +53,8 @@ in {
     environment = {
       BORG_REPO = "/Volumes/money/borgbackup";
       HOME = "/Users/${user}";
-      PRIVATE_TOOLS_DIR = toString ~/projects/sheeley/infrastructure;
-      TOOLS_DIR = toString ~/dotfiles/bin;
+      PRIVATE_TOOLS_DIR = "${config.home.homeDirectory}/projects/sheeley/infrastructure";
+      TOOLS_DIR = "${config.home.homeDirectory}/dotfiles/bin";
       WORKMACHINE = "false";
     };
 

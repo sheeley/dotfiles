@@ -58,7 +58,7 @@ in {
       tabstop = 4;
       termguicolors = true;
       # TODO: this keeps getting set to root
-      undodir = ~/.nvim/undodir;
+      undodir = "${config.home.homeDirectory}/.nvim/undodir";
       undofile = true;
       updatetime = 100;
       shortmess = "c";

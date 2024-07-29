@@ -1,4 +1,4 @@
-{...}: {
+{config, ...}: {
   # TODO: currentHostDefaults
   targets.darwin.defaults = {
     NSGlobalDomain = {
@@ -158,7 +158,7 @@
 
     "com.googlecode.iterm2" = {
       LoadPrefsFromCustomFolder = 1;
-      PrefsCustomFolder = toString ~/dotfiles/preferences;
+      PrefsCustomFolder = "${config.home.homeDirectory}/dotfiles/preferences";
     };
 
     "com.apple.dock" = {
@@ -176,7 +176,7 @@
     };
 
     "com.apple.screencapture" = {
-      location = ~/Screenshots;
+      location = "${config.home.homeDirectory}/Screenshots";
     };
 
     "com.agilebits.onepassword7.1PasswordSafariAppExtension" = {
