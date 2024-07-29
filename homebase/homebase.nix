@@ -1,10 +1,9 @@
 {
-  pkgs,
-  lib,
   private,
   user,
   ...
 }: let
+  homeDirectory = "/Users/sheeley";
 in {
   # homebrew.brews = [
   #   "borgbackup"
@@ -53,8 +52,7 @@ in {
     environment = {
       BORG_REPO = "/Volumes/money/borgbackup";
       HOME = "/Users/${user}";
-      PRIVATE_TOOLS_DIR = "${config.home.homeDirectory}/projects/sheeley/infrastructure";
-      TOOLS_DIR = "${config.home.homeDirectory}/dotfiles/bin";
+      PRIVATE_TOOLS_DIR = "${homeDirectory}/projects/sheeley/infrastructure";
       WORKMACHINE = "false";
     };
 
