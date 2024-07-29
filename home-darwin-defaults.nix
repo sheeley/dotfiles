@@ -1,5 +1,4 @@
 {config, ...}: {
-  # TODO: currentHostDefaults
   targets.darwin.defaults = {
     NSGlobalDomain = {
       AppleMiniaturizeOnDoubleClick = false;

@@ -2,6 +2,7 @@
   pkgs,
   # inputs,
   config,
+  user,
   # helpers,
   # vimUtils,
   # fetchFromGitHub,
@@ -57,7 +58,6 @@ in {
       spell = true;
       tabstop = 4;
       termguicolors = true;
-      # TODO: this keeps getting set to root
       undodir = "${config.home.homeDirectory}/.nvim/undodir";
       undofile = true;
       updatetime = 100;
