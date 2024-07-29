@@ -57,21 +57,21 @@ in {
       sessionVariables = {
         # BORG_PASSPHRASE = "${private.borgSecret}";
         BORG_REPO = "/Volumes/money/borgbackup";
-        DOTFILES_DIR = toString ~/dotfiles;
+        DOTFILES_DIR = "${config.home.homeDirectory}/dotfiles";
         EDITOR = "nvim";
         GITHUB_TOKEN = "${private.githubSecret}";
-        GOPATH = toString ~/go;
+        GOPATH = "${config.home.homeDirectory}/go";
         GOPROXY = "direct";
         GOSUMDB = "off";
-        ICLOUD_DIR = toString (~/Library + "/Mobile Documents/com~apple~CloudDocs");
+        ICLOUD_DIR = "${config.home.homeDirectory}/Library/Mobile Documents/com~apple~CloudDocs";
         LESS = "-R";
         N_PREFIX = "$HOME/.n";
-        NOTES_DIR = toString ~/projects/sheeley/notes;
-        PRIVATE_CMD_DIR = toString ~/projects/sheeley/infrastructure/cmd;
-        PRIVATE_DATA_DIR = toString ~/projects/sheeley/infrastructure/data;
-        PRIVATE_TOOLS_DIR = toString ~/projects/sheeley/infrastructure;
-        TOOLS_DIR = toString ~/dotfiles/bin;
-        WORK_NOTES_DIR = toString (~/Library + "/Mobile Documents/iCloud~md~obsidian/Documents/Apple Notes");
+        NOTES_DIR = "${config.home.homeDirectory}/projects/sheeley/notes";
+        PRIVATE_CMD_DIR = "${config.home.homeDirectory}/projects/sheeley/infrastructure/cmd";
+        PRIVATE_DATA_DIR = "${config.home.homeDirectory}/projects/sheeley/infrastructure/data";
+        PRIVATE_TOOLS_DIR = "${config.home.homeDirectory}/projects/sheeley/infrastructure";
+        TOOLS_DIR = "${config.home.homeDirectory}/dotfiles/bin";
+        WORK_NOTES_DIR = "${config.home.homeDirectory}/Library/Mobile Documents/iCloud~md~obsidian/Documents/Apple Notes";
         WORKMACHINE = "false";
       };
 
