@@ -30,10 +30,11 @@ with pkgs;
     lz4
     mosh
     nix-diff
+    nix-tree
     nodejs_20
     nvd
     pv
-    # python311
+    python3
     rclone
     rename
     ripgrep

@@ -5,11 +5,7 @@
 
   services.nix-daemon.enable = true;
 
-  fonts.fontDir = {
-    enable = true;
-  };
-
-  fonts.fonts = [
+  fonts.packages = [
     pkgs.nerdfonts
   ];
 
