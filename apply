@@ -31,9 +31,9 @@ fi
 
 if [[ "$OS" == *"Darwin"* ]]; then
 	nix build ".#${OSC}.${HN}.system" --impure --extra-experimental-features "nix-command flakes" --show-trace
-else 
+else
 	nix build ".#${OSC}.${HN}.config.system.build.toplevel" --impure --extra-experimental-features "nix-command flakes" --show-trace
-fi 
+fi
 
 if command -v nvd; then
 	nvd diff /run/current-system result
@@ -41,7 +41,7 @@ if command -v nvd; then
 	if command -v nix-diff; then
 		# TODO: elide common lines https://github.com/Gabriella439/nix-diff/issues/42
 		# now available with --context flag
-		nix-diff /run/current-system result
+		nix-diff --line-oriented --context 5 /run/current-system result
 	fi
 
 	if opt_out "Continue?"; then
