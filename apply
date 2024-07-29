@@ -9,6 +9,7 @@ fi
 
 HN=$(hostname_wrapper)
 
+# minimally, yell if nix version out of date
 upgrade_nix
 
 OSC="nixosConfigurations"
@@ -35,12 +36,11 @@ else
 	nix build ".#${OSC}.${HN}.config.system.build.toplevel" --impure --extra-experimental-features "nix-command flakes" --show-trace
 fi
 
+# if possible, diff the derivations and ask for input
 if command -v nvd; then
 	nvd diff /run/current-system result
 
 	if command -v nix-diff; then
-		# TODO: elide common lines https://github.com/Gabriella439/nix-diff/issues/42
-		# now available with --context flag
 		nix-diff --line-oriented --context 5 /run/current-system result
 	fi
 
