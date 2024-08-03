@@ -1,4 +1,5 @@
 {
+  pkgs,
   private,
   user,
   ...
@@ -19,8 +20,7 @@ in {
   }: {
     home = {
       packages = with pkgs; [
-        colima
-        kind
+        borgmatic
       ];
 
       file.".config/borgmatic/config.yaml".source = pkgs.substituteAll {
