@@ -13,6 +13,7 @@
     ../programs/podman.nix
     ../programs/plex.nix
     ./lab-borg.nix
+    ./nix-cache.nix
   ];
 
   # This value determines the NixOS release from which the default

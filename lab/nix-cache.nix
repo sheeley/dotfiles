@@ -72,5 +72,5 @@ in {
     };
   };
 
-  nix.binaryCaches = ["http://${localIp}/"];
+  nix.settings.substituters = ["http://${localIp}/"];
 }
