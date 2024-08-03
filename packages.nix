@@ -19,7 +19,7 @@ with pkgs; [
   fzf
   git
   gitui
-  go
+  # go
   gron
   jid
   jq
@@ -31,10 +31,10 @@ with pkgs; [
   nerdfonts
   nix-diff
   nix-tree
-  nodejs_20
+  # nodejs_20
   nvd
   pv
-  python3
+  # python3
   rclone
   rename
   ripgrep
@@ -46,7 +46,8 @@ with pkgs; [
   sshfs
   tldr
   wget
-  yarn
+  # yarn
+  yq-go
 ]
 # ++ ((lib.optionals (lib.hasAttr "homebase" private)) [
 #   borgmatic
