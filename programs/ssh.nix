@@ -6,6 +6,8 @@
     controlPersist = "10m";
     extraConfig = "
 IdentityFile ~/.ssh/id_ed25519
-AddKeysToAgent yes";
+AddKeysToAgent yes
+ConnectTimeout = 3
+      ";
   };
 }
