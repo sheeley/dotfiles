@@ -2,12 +2,13 @@
   # TODO: swap these for dynamic IPs
   localIp = "192.168.1.17";
   resolverIp = "8.8.8.8";
-  cacheDirectory = "/tmp/nix-cache";
+  cacheDirectory = "/var/cache/nginx/";
 in {
+  networking.firewall.allowedTCPPorts = [80];
   services.nginx = {
     enable = true;
     appendHttpConfig = ''
-      proxy_cache_path ${cacheDirectory} levels=1:2 keys_zone=cachecache:100m max_size=200g inactive=365d use_temp_path=off;
+      proxy_cache_path ${cacheDirectory} levels=1:2 keys_zone=cachecache:100m max_size=75g inactive=365d use_temp_path=off;
 
       # Cache only success status codes; in particular we don't want to cache 404s.
       # See https://serverfault.com/a/690258/128321
@@ -21,7 +22,7 @@ in {
 
     virtualHosts."${localIp}" = {
       locations."/" = {
-        root = "/var/public-nix-cache";
+        root = cacheDirectory;
         extraConfig = ''
           expires max;
           add_header Cache-Control $cache_header always;
@@ -72,5 +73,5 @@ in {
     };
   };
 
-  nix.settings.substituters = ["http://${localIp}/"];
+  # nix.settings.substituters = ["http://${localIp}/"];
 }
