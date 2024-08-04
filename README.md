@@ -21,8 +21,6 @@ TODO: add more guidance here.
 - [ ] secrets.yaml
 - [ ] hatch HA integration
 - [ ] hyundai HA integration
-- [ ] local network cache of deps
-- [ ] fix nvim being configured for root for some reason
 
 - [ ] notifications settings
 - [ ] nightshift
