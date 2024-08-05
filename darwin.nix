@@ -16,7 +16,7 @@
     ];
   };
 
-  nix.settings.substituters = ["http://lab.aigee.org"];
+  nix.settings.substituters = ["http://lab.aigee.org" "http://192.168.1.17"];
   services.nix-daemon.enable = true;
 
   fonts.packages = [
