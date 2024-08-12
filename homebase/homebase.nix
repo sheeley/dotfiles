@@ -6,12 +6,6 @@
 }: let
   homeDirectory = "/Users/sheeley";
 in {
-  # homebrew.brews = [
-  #   "borgbackup"
-  #   "borgmatic"
-  # ];
-  # homebrew.brews = ["kind"];
-
   home-manager.users.${user} = {
     config,
     lib,
@@ -35,9 +29,7 @@ in {
   # automatically run borgmatic and other housekeeping work
   launchd.agents.housekeeping = {
     script = "
-    su ${user}
     housekeeping
-    mail -s \"Housekeeping Output\" sheeley@aigee.org < /tmp/housekeeping.log
     ";
 
     path = [
@@ -52,6 +44,7 @@ in {
     environment = {
       BORG_REPO = "/Volumes/money/borgbackup";
       HOME = "/Users/${user}";
+      TOOLS_DIR = "/Users/${user}/dotfiles/bin";
       PRIVATE_TOOLS_DIR = "${homeDirectory}/projects/sheeley/infrastructure";
       WORKMACHINE = "false";
     };
@@ -59,9 +52,6 @@ in {
     serviceConfig = {
       Label = "housekeeping";
       ProcessType = "Background";
-      # ProgramArguments = [
-      #   "/Users/${user}/dotfiles/bin/housekeeping"
-      # ];
       StandardOutPath = "/tmp/housekeeping.log";
       StandardErrorPath = "/tmp/housekeeping.log";
       StartCalendarInterval = [
