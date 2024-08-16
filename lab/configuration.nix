@@ -34,6 +34,7 @@
   # Enable networking
   networking.networkmanager.enable = true;
   systemd.services.NetworkManager-wait-online.enable = false;
+  # TODO: networking.interfaces.<name>.wakeOnLan.enable = true;
   # systemd.network.wait-online.enable = false;
   # boot.initrd.systemd.network.wait-online.enable = false;
 
