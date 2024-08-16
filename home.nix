@@ -87,12 +87,12 @@ in {
       file = {
         ".mongorc.js".text = builtins.readFile ./files/.mongorc.js;
         ".swiftformat".text = builtins.readFile ./files/.swiftformat;
-        ".swiftlint.yml".text = builtins.readFile ./files/.swiftlint.yml;
-        ".vim/ftdetect/toml.vim".text = "autocmd BufNewFile,BufRead *.toml set filetype=toml";
+        # ".swiftlint.yml".text = builtins.readFile ./files/.swiftlint.yml;
+        # ".vim/ftdetect/toml.vim".text = "autocmd BufNewFile,BufRead *.toml set filetype=toml";
 
         # TODO: this always changes?
         # link instead of make a real file because this needs to be modified to login/etc
-        ".npmrc".source = config.lib.file.mkOutOfStoreSymlink ./files/.npmrc;
+        # ".npmrc".source = config.lib.file.mkOutOfStoreSymlink ./files/.npmrc;
 
         # ".config/rclone/rclone.conf".source = pkgs.substituteAll {
         #   name = "rclone.conf";
@@ -115,6 +115,7 @@ in {
         cdworknotes = "cd $WORK_NOTES_DIR";
         clone = "git clone";
         la = "ls -la";
+        v = "vim .";
       };
     };
   };

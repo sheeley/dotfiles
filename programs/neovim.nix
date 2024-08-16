@@ -2,7 +2,7 @@
   pkgs,
   # inputs,
   config,
-  user,
+  # user,
   # helpers,
   # vimUtils,
   # fetchFromGitHub,
@@ -86,7 +86,20 @@ in {
         command = "set norelativenumber";
         group = "numberToggle";
       }
+      # {
+      #   event = ["BufWritePost"];
+      #   command = "set filetype=nothing | filetype detect";
+      # }
     ];
+
+    filetype = {
+      extension = {
+        "nu" = "nu";
+      };
+      pattern = {
+        "#! /usr/bin/env nu" = "nu";
+      };
+    };
 
     autoGroups = {
       numberToggle = {
@@ -436,6 +449,7 @@ in {
       enable = true;
       settings = {
         auto_open = true;
+        auto_close = true;
       };
     };
 
