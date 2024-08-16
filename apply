@@ -4,7 +4,7 @@ set -eu
 PATH="$PATH:./bin"
 
 if command -v scutil &>/dev/null; then
-	ag 'TODO:' || true
+	ag 'TODO:' || true # ignore this
 fi
 
 HN=$(hostname_wrapper)
@@ -57,3 +57,5 @@ else
 fi
 
 date >last-applied.txt
+
+source ~/.config/fish/config.fish

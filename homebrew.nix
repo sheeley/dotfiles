@@ -18,10 +18,10 @@
 
     brews =
       [
-        "ds"
+        # "ds"
         "git-delta"
-        "n" # node version manager
-        "scout"
+        # "n" # node version manager
+        # "scout"
         "swiftformat"
       ]
       ++ ((lib.optionals (lib.hasAttr "personal" private && private.personal)) [
@@ -33,7 +33,7 @@
         "1password"
         # TODO: this constantly updates
         "1password/tap/1password-cli"
-        "eloston-chromium"
+        # "eloston-chromium"
         "iterm2"
         "little-snitch"
         "obsidian"
@@ -67,9 +67,9 @@
 
     taps = [
       "1password/tap"
-      "abridoux/formulae"
-      "aerobounce/tap"
-      "homebrew/bundle"
+      # "abridoux/formulae"
+      # "aerobounce/tap"
+      # "homebrew/bundle"
     ];
   };
 }
