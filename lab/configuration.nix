@@ -66,4 +66,16 @@
   # Enable the OpenSSH daemon.
   services.openssh.enable = true;
   programs.mosh.enable = true;
+
+  # store /tmp in memory
+  boot.tmp.useTmpfs = true;
+  systemd.services.nix-daemon = {
+    environment.TMPDIR = "/var/tmp";
+  };
+
+  # ssd maintenance
+  services.fstrim.enable = true;
+
+  # fast dbus
+  services.dbus.implementation = "broker";
 }
