@@ -6,6 +6,8 @@
     enableZshIntegration = true;
 
     settings = {
+      ignore_timeout = true;
+
       format = lib.concatStrings [
         "$time| "
         "$hostname"
