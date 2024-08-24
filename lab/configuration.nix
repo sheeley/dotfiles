@@ -77,5 +77,5 @@
   services.fstrim.enable = true;
 
   # fast dbus
-  services.dbus.implementation = "broker";
+  # services.dbus.implementation = "broker";
 }
