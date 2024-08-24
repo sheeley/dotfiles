@@ -58,4 +58,4 @@ fi
 
 date >last-applied.txt
 
-source ~/.config/fish/config.fish
+# source ~/.config/fish/config.fish
