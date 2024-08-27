@@ -1,5 +1,5 @@
 //
-//  GenerateCommand.swift
+//  MeetingNotesCommand.swift
 //
 //
 //  Created by Johnny Sheeley on 11/18/22.
@@ -99,13 +99,13 @@ struct MeetingNotesCommand: ParsableCommand {
             try createNotes(meetings, in: baseDir, with: template, and: options)
 
             if open, let meeting = meetings.first {
-                openNote(meeting, vault: options.vaultName)
+                openNote(meeting, vault: options.vaultName, options: options.obsidianOptionsMap())
             }
 
             if let openNoteID = options.openNoteID {
                 verboseLog("attempting to open \(openNoteID)")
                 if let event = getEvents(in: EventWindow.specificEvent(id: openNoteID)).first {
-                    openNote(Meeting(from: event), vault: options.vaultName)
+                    openNote(Meeting(from: event), vault: options.vaultName, options: options.obsidianOptionsMap())
                 }
             }
         }
@@ -133,46 +133,56 @@ struct MeetingNotesCommand: ParsableCommand {
             }
         }
 
-      let fm = FileManager.default
+        let fm = FileManager.default
         try toCreate.forEach { n in
             let noteURL = n.fullPath(dir: notesURL)
-          
-          let parentDirectory = noteURL.deletingLastPathComponent()
-          if !fm.fileExists(atPath: parentDirectory.path()) {
-            try fm.createDirectory(at: parentDirectory, withIntermediateDirectories: true)
-          }
-          
-          guard !fm.fileExists(atPath: noteURL.path) || options.force else {
-              print("\(noteURL) exists, skipping")
-              return
-          }
 
-          guard let d = n.note(with: template).data(using: .utf8) else {
-              print("\(noteURL) couldn't convert to data")
-              return
-          }
+            let parentDirectory = noteURL.deletingLastPathComponent()
+            if !fm.fileExists(atPath: parentDirectory.path()) {
+                try fm.createDirectory(at: parentDirectory, withIntermediateDirectories: true)
+            }
 
-          if !options.dryRun {
-              verboseLog("creating \(noteURL.absoluteString)")
-              try d.write(to: noteURL)
-              written.append(n)
-          }
+            guard !fm.fileExists(atPath: noteURL.path) || options.force else {
+                print("\(noteURL) exists, skipping")
+                return
+            }
+
+            guard let d = n.note(with: template).data(using: .utf8) else {
+                print("\(noteURL) couldn't convert to data")
+                return
+            }
+
+            if !options.dryRun {
+                verboseLog("creating \(noteURL.absoluteString)")
+                try d.write(to: noteURL)
+                written.append(n)
+            }
         }
     }
 }
 
 func summarize(_ u: URL, _ allNotes: [Meeting], _ toCreate: [Meeting]) {
     print("Found \(allNotes.count) events, will create \(toCreate.count):")
-    toCreate.forEach {
-        print($0.fullPath(dir: u))
+    for item in toCreate {
+        print(item.fullPath(dir: u))
     }
 }
 
-func openNote(_ note: Meeting, vault vaultName: String) {
-    let notePath = note.filename()
+func openNote(_ note: Meeting, vault vaultName: String, options: [String: String] = [:]) {
 //    let url = "obsidian://open?vault=Notes&file=\(notePath)"
     // Advanced URI plugin lets us open in a new split.
-    let url = "obsidian://advanced-uri?vault=\(vaultName)&filepath=\(notePath)&openmode=split"
+    guard var URL = URL(string: "obsidian://advanced-uri") else {
+        print("NO URL!?!?!?!?")
+        return
+    }
+    URL.append(queryItems: [
+        URLQueryItem(name: "vault", value: vaultName),
+        URLQueryItem(name: "filepath", value: note.filename()),
+    ])
+    for (key, value) in options {
+        URL.append(queryItems: [URLQueryItem(name: key, value: value)])
+    }
+    let url = URL.absoluteString
     let task = Process()
     let pipe = Pipe()
     task.standardOutput = pipe
