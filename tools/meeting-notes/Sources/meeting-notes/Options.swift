@@ -1,12 +1,12 @@
 //
-//  File.swift
-//  
+//  Options.swift
+//
 //
 //  Created by Johnny Sheeley on 11/29/23.
 //
 
-import Foundation
 import ArgumentParser
+import Foundation
 
 enum DeleteWindow: String, CaseIterable {
     case past, future, all, none
@@ -62,6 +62,9 @@ struct GlobalOptions: ParsableArguments, CustomStringConvertible {
     @Option(name: .long, help: "ID of note to open")
     var openNoteID: String?
 
+    @Option(name: .long, help: "Map of options to pass to Obsidian key=value,")
+    var obsidianOptions: String?
+
     @Flag
     var verbose = false
 
@@ -73,4 +76,19 @@ struct GlobalOptions: ParsableArguments, CustomStringConvertible {
 
     @Flag
     var force = false
+
+    func obsidianOptionsMap() -> [String: String] {
+        var out = [String: String]()
+        guard let opts = obsidianOptions else { return out }
+        let tuples = opts.split(separator: ",")
+        for t in tuples {
+            let split = t.split(separator: "=").map { String($0) }
+            guard split.count == 2 else {
+                print("skipping \(split)")
+                continue
+            }
+            out[split[0]] = split[1]
+        }
+        return out
+    }
 }
