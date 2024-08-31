@@ -73,6 +73,9 @@ in {
         TOOLS_DIR = "${config.home.homeDirectory}/dotfiles/bin";
         WORK_NOTES_DIR = "${config.home.homeDirectory}/Library/Mobile Documents/iCloud~md~obsidian/Documents/Apple Notes";
         WORKMACHINE = "false";
+
+        # Starship spcific
+        STARSHIP_LOG = "error";
       };
 
       # this sometimes doesn't work with fish
