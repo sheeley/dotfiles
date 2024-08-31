@@ -39,6 +39,7 @@ with pkgs; [
   rename
   ripgrep
   rsync
+  sd
   shellcheck
   shfmt
   silver-searcher
