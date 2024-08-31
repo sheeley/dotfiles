@@ -8,7 +8,12 @@ bash -c "$(curl -fsSL https://raw.githubusercontent.com/sheeley/dotfiles/main/in
 
 ```sh
 ./update
+
+# just apply config changes
 ./apply
+
+# apply including downloads
+./apply --online
 ```
 
 ## Explanation
