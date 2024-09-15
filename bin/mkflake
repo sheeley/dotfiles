@@ -1,0 +1,30 @@
+#! /usr/bin/env nu
+
+let envrc_contents = "use flake ."
+let flake_contents = r#'
+ {
+     description = "A new flake";
+     inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+     inputs.flake-utils.url = "github:numtide/flake-utils";
+        outputs = { self, nixpkgs, flake-utils }:
+       flake-utils.lib.eachDefaultSystem (system:
+         let
+           pkgs = nixpkgs.legacyPackages.${system};
+         in
+         {
+           devShells.default = pkgs.mkShell {
+             buildInputs = with pkgs; [ terraform awscli2 ];
+  
+             shellHook = ''
+                echo "terraform `${pkgs.terraform}/bin/terraform --version`"
+             '';
+           };
+         }
+       );
+}
+'#
+
+
+
+$envrc_contents | save ".envrc"
+$flake_contents | save flake.nix
