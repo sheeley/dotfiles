@@ -2,9 +2,9 @@
 set -e
 
 PATH="$PATH:./bin"
-OFFLINE="--offline"
-if [[ "$1" == "-online" ]]; then
-	OFFLINE=""
+OFFLINE=""
+if [[ "$1" == "--offline" ]]; then
+	OFFLINE="--offline"
 fi
 set -u
 
@@ -36,9 +36,9 @@ if [[ ! "${VALID_HOSTNAMES[*]}" =~ $HN ]]; then
 fi
 
 if [[ "$OS" == *"Darwin"* ]]; then
-	nix build ".#${OSC}.${HN}.system" --impure --extra-experimental-features "nix-command flakes" --show-trace "$OFFLINE"
+	nix build ".#${OSC}.${HN}.system" --impure --extra-experimental-features "nix-command flakes" --show-trace # "$OFFLINE"
 else
-	nix build ".#${OSC}.${HN}.config.system.build.toplevel" --impure --extra-experimental-features "nix-command flakes" --show-trace "$OFFLINE"
+	nix build ".#${OSC}.${HN}.config.system.build.toplevel" --impure --extra-experimental-features "nix-command flakes" --show-trace # "$OFFLINE"
 fi
 
 # if possible, diff the derivations and ask for input
