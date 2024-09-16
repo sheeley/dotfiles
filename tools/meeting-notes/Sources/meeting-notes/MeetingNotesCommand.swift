@@ -11,6 +11,8 @@ import Foundation
 import MeetingKit
 import OSLog
 import RegexBuilder
+import System
+import UserNotifications
 
 let logger = Logger()
 
@@ -36,6 +38,7 @@ struct MeetingNotesCommand: ParsableCommand {
     }
 
     func verboseLog(_ msg: String) {
+        notify(msg)
         guard options.verbose else { return }
         print(msg)
     }
@@ -71,6 +74,10 @@ struct MeetingNotesCommand: ParsableCommand {
                 window = .tomorrow
             case "either":
                 window = .either
+            case "interactive":
+                let eventId = interactivelySelectEvent()
+                window = EventWindow.specificEvent(id: eventId)
+                open = true
             default:
                 window = EventWindow.specificEvent(id: create)
                 open = true
@@ -82,6 +89,11 @@ struct MeetingNotesCommand: ParsableCommand {
             verboseLog("template file (\(access)): \(templateFile)")
 
             let template = try String(contentsOf: templateFile)
+            if template.isEmpty {
+                print("WTF template is empty!!!!!")
+              notify("TEMPLATE IS EMPTY")
+                Darwin.exit(1)
+            }
             templateFile.stopAccessingSecurityScopedResource()
 
             let events = getEvents(in: window)
@@ -95,9 +107,11 @@ struct MeetingNotesCommand: ParsableCommand {
             }
 
             let meetings = events.map { Meeting(from: $0) }
+
             verboseLog("\(meetings.humanReadable())")
             try createNotes(meetings, in: baseDir, with: template, and: options)
 
+            verboseLog("created, opening notes")
             if open, let meeting = meetings.first {
                 openNote(meeting, vault: options.vaultName, options: options.obsidianOptionsMap())
             }
@@ -113,16 +127,19 @@ struct MeetingNotesCommand: ParsableCommand {
 
     func createNotes(_ notes: [Meeting], in notesURL: URL, with template: String, and options: GlobalOptions) throws {
         var written = [Meeting]()
+        let fm = FileManager.default
+      
         let toCreate = options.force ? notes : notes.filter {
-            !FileManager.default.fileExists(atPath: $0.fullPath(dir: notesURL).path)
+          !fm.fileExists(atPath: $0.fullPath(dir: notesURL).path)
         }
 
         if toCreate.isEmpty {
-            return
+          notify("No notes to create")
+          return
         }
 
         if options.interactive || options.verbose {
-            summarize(notesURL, notes, toCreate)
+            summarize(notesURL, notes, toCreate, template)
         }
 
         if options.interactive {
@@ -132,8 +149,7 @@ struct MeetingNotesCommand: ParsableCommand {
                 return
             }
         }
-
-        let fm = FileManager.default
+        
         try toCreate.forEach { n in
             let noteURL = n.fullPath(dir: notesURL)
 
@@ -161,11 +177,39 @@ struct MeetingNotesCommand: ParsableCommand {
     }
 }
 
-func summarize(_ u: URL, _ allNotes: [Meeting], _ toCreate: [Meeting]) {
-    print("Found \(allNotes.count) events, will create \(toCreate.count):")
+func interactivelySelectEvent() -> String {
+    let events = getEvents(in: .today)
+    if events.isEmpty {
+        print("No events today")
+        exit(1)
+    }
+
+    var id = 0
+    for event in events {
+        print("\(id): \(event.title!)")
+        id += 1
+    }
+
+    while true {
+        if let line = readLine(strippingNewline: true), let selectedId = Int(line), selectedId < events.count {
+            return events[selectedId].calendarItemIdentifier
+        }
+    }
+}
+
+func notify(_ s: String) {
+  print(s)
+  // TODO: Do I actually want notifications?
+//  NotificationCenterWrapper.requestAuth()
+//  NotificationCenterWrapper.sendNotification(title: "Meeting Notes", body: s)
+}
+
+func summarize(_ u: URL, _ allNotes: [Meeting], _ toCreate: [Meeting], _ template: String) {
+    print("SUMMARY\nFound \(allNotes.count) events, will create \(toCreate.count):")
     for item in toCreate {
         print(item.fullPath(dir: u))
     }
+    print("using template:\n------\(template)------\n")
 }
 
 func openNote(_ note: Meeting, vault vaultName: String, options: [String: String] = [:]) {
@@ -240,6 +284,9 @@ func cleanEmptyNotes(using options: GlobalOptions) throws {
         print("found \(files.count) empty note files")
         try files.forEach {
             let path = String($0)
+            if options.verbose {
+                print("Deleting \(path)")
+            }
             guard path.contains(options.subDirectory) else { return }
 
             guard let match = path.firstMatch(of: dateRegex) else { return }
@@ -248,9 +295,14 @@ func cleanEmptyNotes(using options: GlobalOptions) throws {
             if let fileDate = Calendar.current.date(from: DateComponents(year: year, month: month, day: day, hour: hour ?? 0, minute: minutes ?? 0)),
                options.clean.includes(date: fileDate)
             {
-                print("Deleting \(path)")
-                if !options.dryRun {
-                    try FileManager.default.removeItem(atPath: path)
+                let cleanedPath = FilePath(path)
+                if !FileManager.default.fileExists(atPath: cleanedPath.string) {
+                    print("missing \(cleanedPath.string)")
+                } else {
+                    print("Deleting \(cleanedPath.string)")
+                    if !options.dryRun {
+                        try FileManager.default.removeItem(atPath: cleanedPath.string)
+                    }
                 }
             }
         }
