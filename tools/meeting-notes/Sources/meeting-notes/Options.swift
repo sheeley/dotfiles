@@ -32,11 +32,14 @@ struct GlobalOptions: ParsableArguments, CustomStringConvertible {
     var description: String {
         """
         ---
-        baseDirectory:\t\(baseDirectory)
-        vaultName:\t\(vaultName)
-        subDirectory:\t\(subDirectory)
-        clean:\t\(clean)
-        openNoteID:\t\(openNoteID ?? "")
+        baseDirectory:  \(baseDirectory)
+        vaultName:      \(vaultName)
+        subDirectory:   \(subDirectory)
+        clean:          \(clean)
+        openNoteID:     \(openNoteID ?? "")
+        interactive:    \(interactive)
+        obsidian:       \(obsidianOptions ?? "")
+        force:          \(force)
         ---
         """
     }
@@ -50,7 +53,7 @@ struct GlobalOptions: ParsableArguments, CustomStringConvertible {
     @Option(name: .long, help: "Vault to open notes in")
     var vaultName = "Apple Notes"
 
-    @Option(name: .long, help: "'today', 'tomorrow', 'both', or a specific note ID")
+    @Option(name: .long, help: "'today', 'tomorrow', 'both', 'interactive', or a specific note ID")
     var create: String?
 
     @Option(name: .long, help: "Subdirectory to use")
