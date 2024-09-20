@@ -49,6 +49,7 @@ with pkgs; [
   wget
   # yarn
   yq-go
+  zellij
 ]
 # ++ ((lib.optionals (lib.hasAttr "homebase" private)) [
 #   borgmatic
