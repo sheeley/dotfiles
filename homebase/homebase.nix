@@ -23,6 +23,16 @@ in {
         secret = "${private.borgSecret}";
         user = "${private.borgUser}";
       };
+
+      # TODO: set this up
+      #       file.".smtp.json".source = ""
+      # {
+      # 	"hostname": "",
+      # 	"email": "",
+      # 	"password": ""
+      # }
+      #
+      #         "";
     };
   };
 
