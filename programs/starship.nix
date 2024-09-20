@@ -6,8 +6,6 @@
     enableZshIntegration = true;
 
     settings = {
-      ignore_timeout = true;
-
       format = lib.concatStrings [
         "$time| "
         "$hostname"
@@ -54,6 +52,10 @@
         truncate_to_repo = true;
       };
 
+      hostname = {
+        style = "bold red";
+      };
+
       custom = {
         git_status_simplified = {
           when = "test - n \"$(git status --porcelain)\"";
@@ -61,6 +63,7 @@
           style = "yellow bold";
           format = "[ $symbol ] ($style)";
           shell = ["bash"];
+          ignore_timeout = true;
         };
       };
     };
