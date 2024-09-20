@@ -60,7 +60,7 @@ in {
     };
 
     serviceConfig = {
-      Label = "housekeeping";
+      Label = "org.aigee.housekeeping";
       ProcessType = "Background";
       StandardOutPath = "/tmp/housekeeping.log";
       StandardErrorPath = "/tmp/housekeeping.log";

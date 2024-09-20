@@ -2,8 +2,10 @@
 set -euo pipefail # x
 
 # >/tmp/housekeeping.log
+echo ""
 echo "--- housekeeping ---"
 date
+echo ""
 
 FIRST_OF_MONTH=""
 day=$(date -u +%d)
@@ -54,4 +56,4 @@ if [[ "$HOST" != "homebase" ]]; then
 fi
 
 printf "\n\n"
-full_backup
+full_backup || send-email --subject "Backup Error" --attachment /tmp/housekeeping.log
