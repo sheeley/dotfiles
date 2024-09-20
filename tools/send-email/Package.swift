@@ -16,7 +16,7 @@ let package = Package(
         .executableTarget(
             name: "send-email", dependencies: [
                 .product(name: "SwiftSMTP", package: "swift-SMTP"),
-                .product(name: "ArgumentParser", package: "swift-argument-parser")
+                .product(name: "ArgumentParser", package: "swift-argument-parser"),
             ]
         ),
     ]
