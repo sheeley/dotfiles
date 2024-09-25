@@ -63,83 +63,83 @@ struct MeetingNotesCommand: ParsableCommand {
             verboseLog("cleaning \(options.clean.rawValue)")
             try cleanEmptyNotes(using: options)
         }
-      
-      let create = options.create ?? ((options.interactive) ? "interactive" : nil)
 
-      guard let create else {
-        print("no create option!");
-        return
-      }
-            var open = false
-            var window = EventWindow.today
-            switch create {
-            case "today":
-                window = .today
-            case "tomorrow":
-                window = .tomorrow
-            case "either":
-                window = .either
-            case "interactive":
-                let eventId = interactivelySelectEvent()
-                window = EventWindow.specificEvent(id: eventId)
-                open = true
-            default:
-                window = EventWindow.specificEvent(id: create)
-                open = true
-            }
-            verboseLog("create: \(create)")
+        let create = options.create ?? ((options.interactive) ? "interactive" : nil)
 
-            let templateFile = parentDir.appending(components: "shared/templates/meeting.md")
-            let access = templateFile.startAccessingSecurityScopedResource()
-            verboseLog("template file (\(access)): \(templateFile)")
+        guard let create else {
+            print("no create option!")
+            return
+        }
+        var open = false
+        var window = EventWindow.today
+        switch create {
+        case "today":
+            window = .today
+        case "tomorrow":
+            window = .tomorrow
+        case "either":
+            window = .either
+        case "interactive":
+            let eventId = interactivelySelectEvent()
+            window = EventWindow.specificEvent(id: eventId)
+            open = true
+        default:
+            window = EventWindow.specificEvent(id: create)
+            open = true
+        }
+        verboseLog("create: \(create)")
 
-            let template = try String(contentsOf: templateFile)
-            if template.isEmpty {
-                print("WTF template is empty!!!!!")
-              notify("TEMPLATE IS EMPTY")
+        let templateFile = parentDir.appending(components: "shared/templates/meeting.md")
+        let access = templateFile.startAccessingSecurityScopedResource()
+        verboseLog("template file (\(access)): \(templateFile)")
+
+        let template = try String(contentsOf: templateFile)
+        if template.isEmpty {
+            print("WTF template is empty!!!!!")
+            notify("TEMPLATE IS EMPTY")
+            Darwin.exit(1)
+        }
+        templateFile.stopAccessingSecurityScopedResource()
+
+        let events = getEvents(in: window)
+        verboseLog("events found: \(events.count)")
+        if events.isEmpty {
+            if case let .specificEvent(id) = window {
+                print("Couldn't find event \(id)")
                 Darwin.exit(1)
             }
-            templateFile.stopAccessingSecurityScopedResource()
+            Darwin.exit(0)
+        }
 
-            let events = getEvents(in: window)
-            verboseLog("events found: \(events.count)")
-            if events.isEmpty {
-                if case let .specificEvent(id) = window {
-                    print("Couldn't find event \(id)")
-                    Darwin.exit(1)
-                }
-                Darwin.exit(0)
+        let meetings = events.map { Meeting(from: $0) }
+
+        verboseLog("\(meetings.humanReadable())")
+        try createNotes(meetings, in: baseDir, with: template, and: options)
+
+        verboseLog("created, opening notes")
+        if open, let meeting = meetings.first {
+            openNote(meeting, vault: options.vaultName, options: options.obsidianOptionsMap())
+        }
+
+        if let openNoteID = options.openNoteID {
+            verboseLog("attempting to open \(openNoteID)")
+            if let event = getEvents(in: EventWindow.specificEvent(id: openNoteID)).first {
+                openNote(Meeting(from: event), vault: options.vaultName, options: options.obsidianOptionsMap())
             }
-
-            let meetings = events.map { Meeting(from: $0) }
-
-            verboseLog("\(meetings.humanReadable())")
-            try createNotes(meetings, in: baseDir, with: template, and: options)
-
-            verboseLog("created, opening notes")
-            if open, let meeting = meetings.first {
-                openNote(meeting, vault: options.vaultName, options: options.obsidianOptionsMap())
-            }
-
-            if let openNoteID = options.openNoteID {
-                verboseLog("attempting to open \(openNoteID)")
-                if let event = getEvents(in: EventWindow.specificEvent(id: openNoteID)).first {
-                    openNote(Meeting(from: event), vault: options.vaultName, options: options.obsidianOptionsMap())
-                }
-            }
+        }
     }
 
     func createNotes(_ notes: [Meeting], in notesURL: URL, with template: String, and options: GlobalOptions) throws {
         var written = [Meeting]()
         let fm = FileManager.default
-      
+
         let toCreate = options.force ? notes : notes.filter {
-          !fm.fileExists(atPath: $0.fullPath(dir: notesURL).path)
+            !fm.fileExists(atPath: $0.fullPath(dir: notesURL).path)
         }
 
         if toCreate.isEmpty {
-          notify("No notes to create")
-          return
+            notify("No notes to create")
+            return
         }
 
         if options.interactive || options.verbose {
@@ -153,7 +153,7 @@ struct MeetingNotesCommand: ParsableCommand {
                 return
             }
         }
-        
+
         try toCreate.forEach { n in
             let noteURL = n.fullPath(dir: notesURL)
 
@@ -202,10 +202,10 @@ func interactivelySelectEvent() -> String {
 }
 
 func notify(_ s: String) {
-  print(s)
-  // TODO: Do I actually want notifications?
-//  NotificationCenterWrapper.requestAuth()
-//  NotificationCenterWrapper.sendNotification(title: "Meeting Notes", body: s)
+    print(s)
+    // TODO: Do I actually want notifications?
+    //  NotificationCenterWrapper.requestAuth()
+    //  NotificationCenterWrapper.sendNotification(title: "Meeting Notes", body: s)
 }
 
 func summarize(_ u: URL, _ allNotes: [Meeting], _ toCreate: [Meeting], _ template: String) {
