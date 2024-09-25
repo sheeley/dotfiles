@@ -51,8 +51,13 @@ public func getEvents(in window: EventWindow) -> [EKEvent] {
     default:
         let today = Date().beginning(of: .day)!
         let tomorrow = Date().end(of: .day)!
+      
+//      print("Dates: \(today) -> \(tomorrow)")
+      
+      let calendar = store.calendars(for: .event)
+        .filter { $0.source.title == "Calendar@Apple" && $0.title == "calendar" }
 
-        let predicate = store.predicateForEvents(withStart: today, end: tomorrow, calendars: nil)
+        let predicate = store.predicateForEvents(withStart: today, end: tomorrow, calendars: calendar)
         let events = store.events(matching: predicate)
         return events.filter { event in
             guard event.attendees?.count ?? 0 > 1 else { return false }
