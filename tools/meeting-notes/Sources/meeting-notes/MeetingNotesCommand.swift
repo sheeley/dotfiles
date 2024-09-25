@@ -63,8 +63,13 @@ struct MeetingNotesCommand: ParsableCommand {
             verboseLog("cleaning \(options.clean.rawValue)")
             try cleanEmptyNotes(using: options)
         }
+      
+      let create = options.create ?? ((options.interactive) ? "interactive" : nil)
 
-        if let create = options.create {
+      guard let create else {
+        print("no create option!");
+        return
+      }
             var open = false
             var window = EventWindow.today
             switch create {
@@ -122,7 +127,6 @@ struct MeetingNotesCommand: ParsableCommand {
                     openNote(Meeting(from: event), vault: options.vaultName, options: options.obsidianOptionsMap())
                 }
             }
-        }
     }
 
     func createNotes(_ notes: [Meeting], in notesURL: URL, with template: String, and options: GlobalOptions) throws {
@@ -186,7 +190,7 @@ func interactivelySelectEvent() -> String {
 
     var id = 0
     for event in events {
-        print("\(id): \(event.title!)")
+        print("\(id): \(event.title!) (\(event.calendar.title))")
         id += 1
     }
 
