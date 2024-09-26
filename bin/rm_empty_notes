@@ -1,0 +1,4 @@
+#! /usr/bin/env bash
+
+#                              --target-directory
+find_empty_notes | xargs -0 gmv -t ~/.Trash
