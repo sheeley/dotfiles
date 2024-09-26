@@ -1,8 +1,12 @@
 #! /usr/bin/env bash
-set -xuo pipefail # x
+set -o pipefail # x
+set -u
 
-rg -g '*.md' -g '!shared/' --files-with-matches --multiline -e '```\W+(#.*\n)?\*\W+```' "$NOTES_DIR"
+find_files() {
+	rg -g '*.md' -g '!shared/' --files-with-matches --multiline -e '```\W+(#.*\n)?\*\W+```' -0 "$1"
+}
 
+find_files "$NOTES_DIR"
 if [[ -n "$WORK_NOTES_DIR" ]]; then
-	rg -g '*.md' -g '!shared/' --files-with-matches --multiline -e '```\W+(#.*\n)?\*\W+```' "$WORK_NOTES_DIR"
+	find_files "$WORK_NOTES_DIR"
 fi
