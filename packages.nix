@@ -14,6 +14,7 @@ with pkgs; [
   du-dust
   duf
   entr
+  exa
   fd
   findutils
   fzf
