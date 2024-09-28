@@ -50,6 +50,16 @@ in {
         ./home-darwin-defaults.nix
       ]);
 
+    programs.zellij = {
+      enable = true;
+      enableBashIntegration = false;
+      enableFishIntegration = false;
+      enableZshIntegration = false;
+      settings = {
+        copy_command = "pbcopy";
+      };
+    };
+
     home = {
       stateVersion = "22.05";
 
