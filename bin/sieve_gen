@@ -4,7 +4,7 @@ set -euo pipefail # x
 (
 	cd "$PRIVATE_TOOLS_DIR"
 	swiftformat .
-	./bin/sieve.swift | tee aigee-mail.sieve | pbcopy
+	./bin/sieve.swift 1>aigee-mail.sieve
 	if [ $# -gt 0 ]; then
 		# skip for local testing
 		exit 0
@@ -20,6 +20,8 @@ set -euo pipefail # x
 	if opt_out "Continue?"; then
 		exit 0
 	fi
+
+	pbcopy <aigee-mail.sieve
 	echo "sieve copied"
 	open "https://www.fastmail.com/settings/rules/sieve?u=9619409e"
 )
