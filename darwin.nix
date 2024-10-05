@@ -8,6 +8,9 @@
   # imports = [
   #   ./dock.nix
   # ];
+  system = {
+    stateVersion = 5;
+  };
 
   # Add substituter for local cache
   nix.settings.substituters = ["http://lab.aigee.org" "http://192.168.1.17"];

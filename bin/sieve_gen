@@ -4,7 +4,7 @@ set -euo pipefail # x
 (
 	cd "$PRIVATE_TOOLS_DIR"
 	swiftformat .
-	./bin/sieve.swift 1>aigee-mail.sieve
+	swift run --package-path sieve-gen/ 1>aigee-mail.sieve
 	if [ $# -gt 0 ]; then
 		# skip for local testing
 		exit 0
