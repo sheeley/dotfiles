@@ -272,6 +272,10 @@ in {
       # ];
     };
 
+    plugins.web-devicons = {
+      enable = true;
+    };
+
     plugins.telescope = {
       enable = true;
       enabledExtensions = ["ui-select"];
@@ -317,7 +321,7 @@ in {
         regex
         toml
         vim
-        yaml
+        # yaml
       ];
     };
 
@@ -404,7 +408,7 @@ in {
         nushell.enable = true;
         # sourcekit.enable = true;
         terraformls.enable = true;
-        yamlls.enable = true;
+        # yamlls.enable = true;
         jsonls.enable = true;
         # gopls.enable = true;
         # eslint.enable = true;
@@ -493,7 +497,7 @@ in {
 
     extraPackages = with pkgs; [
       shfmt
-      yaml-language-server
+      # yaml-language-server
       nodePackages.bash-language-server
       nil
       # pyright

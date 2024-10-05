@@ -14,7 +14,7 @@ with pkgs; [
   du-dust
   duf
   entr
-  exa
+  eza
   fd
   findutils
   fzf
@@ -59,4 +59,3 @@ with pkgs; [
 #   obsidian
 #   # dockutil
 # ])
-
