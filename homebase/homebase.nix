@@ -5,6 +5,7 @@
   ...
 }: let
   homeDirectory = "/Users/sheeley";
+  storagePath = "/Volumes/Stash";
 in {
   home-manager.users.${user} = {
     config,
@@ -22,6 +23,7 @@ in {
         src = ../files/borgmatic/config.yaml;
         secret = "${private.borgSecret}";
         user = "${private.borgUser}";
+        storagePath = storagePath;
       };
 
       # TODO: set this up
@@ -52,9 +54,9 @@ in {
     ];
 
     environment = {
-      BORG_REPO = "/Volumes/money/borgbackup";
-      HOME = "/Users/${user}";
-      TOOLS_DIR = "/Users/${user}/dotfiles/bin";
+      BORG_REPO = "${storagePath}/borgbackup";
+      HOME = homeDirectory;
+      TOOLS_DIR = "${homeDirectory}/dotfiles/bin";
       PRIVATE_TOOLS_DIR = "${homeDirectory}/projects/sheeley/infrastructure";
       WORKMACHINE = "false";
     };
