@@ -2,8 +2,11 @@
 source_directories:
   - ~/projects
   - ~/Documents
-  - ~/Media
-  - ~/Pictures
+  - @storagePath/Music
+  - @storagePath/Movies
+  - @storagePath/Photos
+  - @storagePath/TV
+  - @storagePath/Videos
 
 repositories:
   - path: @storagePath@/borgbackup
@@ -22,8 +25,7 @@ exclude_patterns:
   - "*.webloc"
   - Thumbs.db
   - .fseventsd*
-  - ~/Media/Music/Downloads-Music/
-  - "~/Media/Music/Apple Music"
+  - "Apple Music/*"
   - "**/.*.swp"
   - "**/.DS_Store"
   - "**/.VolumeIcon.icns"
