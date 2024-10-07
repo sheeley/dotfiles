@@ -1,12 +1,15 @@
 {
   pkgs,
   private,
+  storagePath,
   user,
   ...
 }: let
   homeDirectory = "/Users/sheeley";
-  storagePath = "/Volumes/Stash";
 in {
+  homebrew.casks = [
+    "utm"
+  ];
   home-manager.users.${user} = {
     config,
     lib,
@@ -16,15 +19,26 @@ in {
     home = {
       packages = with pkgs; [
         borgmatic
+        # utm
       ];
 
-      file.".config/borgmatic/config.yaml".source = pkgs.substituteAll {
-        name = "config.yaml";
-        src = ../files/borgmatic/config.yaml;
+      sessionVariables = {
+        BORG_REPO = "${storagePath}/borgbackup";
+      };
+
+      file.".config/borgmatic/config.yaml".source = pkgs.replaceVars ../files/borgmatic/config.yaml {
         secret = "${private.borgSecret}";
         user = "${private.borgUser}";
         storagePath = storagePath;
       };
+      #     pkgs.substituteAll {
+      #   name = "config.yaml";
+      #   src = ../files/borgmatic/config.yaml;
+      #
+      #   secret = "${private.borgSecret}";
+      #   user = "${private.borgUser}";
+      #   storagePath = storagePath;
+      # };
 
       # TODO: set this up
       #       file.".smtp.json".source = ""

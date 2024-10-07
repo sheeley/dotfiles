@@ -8,7 +8,6 @@
   ...
 }: let
   isMac = pkgs.system == "aarch64-darwin";
-  storagePath = "/Volumes/Stash";
 in {
   home-manager = {
     backupFileExtension = "bak";
@@ -88,7 +87,6 @@ in {
       # TODO: pkgs.callPackage ./environment_variables.nix {private = private;};
       sessionVariables = {
         # BORG_PASSPHRASE = "${private.borgSecret}";
-        BORG_REPO = "${storagePath}/borgbackup";
         DOTFILES_DIR = "${config.home.homeDirectory}/dotfiles";
         EDITOR = "nvim";
         GITHUB_TOKEN = "${private.githubSecret}";
