@@ -110,6 +110,7 @@
         inherit inputs;
         user = "sheeley";
         private = private;
+        storagePath = "/Volumes/Stash";
       };
     };
 
