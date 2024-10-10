@@ -1,5 +1,5 @@
 {
-  pkgs,
+  # pkgs,
   private,
   storagePath,
   user,
@@ -23,22 +23,25 @@ in {
       ];
 
       sessionVariables = {
+        BORG_RELOCATED_REPO_ACCESS_IS_OK = "yes";
         BORG_REPO = "${storagePath}/borgbackup";
       };
 
-      file.".config/borgmatic/config.yaml".source = pkgs.replaceVars ../files/borgmatic/config.yaml {
-        secret = "${private.borgSecret}";
-        user = "${private.borgUser}";
-        storagePath = storagePath;
-      };
-      #     pkgs.substituteAll {
-      #   name = "config.yaml";
-      #   src = ../files/borgmatic/config.yaml;
-      #
+      # Supposed to be better, but I couldn't get it to replace all of the vars
+      # file.".config/borgmatic/config.yaml".source = pkgs.replaceVars ../files/borgmatic/config.yaml {
       #   secret = "${private.borgSecret}";
       #   user = "${private.borgUser}";
-      #   storagePath = storagePath;
+      #   storagePath = "${storagePath}";
       # };
+
+      file.".config/borgmatic/config.yaml".source = pkgs.substituteAll {
+        name = "config.yaml";
+        src = ../files/borgmatic/config.yaml;
+
+        secret = "${private.borgSecret}";
+        user = "${private.borgUser}";
+        storagePath = "${storagePath}";
+      };
 
       # TODO: set this up
       #       file.".smtp.json".source = ""

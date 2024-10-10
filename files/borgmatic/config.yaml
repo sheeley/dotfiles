@@ -2,11 +2,11 @@
 source_directories:
   - ~/projects
   - ~/Documents
-  - @storagePath/Music
-  - @storagePath/Movies
-  - @storagePath/Photos
-  - @storagePath/TV
-  - @storagePath/Videos
+  - "@storagePath@/Music"
+  - "@storagePath@/Movies"
+  - "@storagePath@/Photos"
+  - "@storagePath@/TV"
+  - "@storagePath@/Videos"
 
 repositories:
   - path: @storagePath@/borgbackup
@@ -16,16 +16,16 @@ repositories:
 
 exclude_patterns:
   - "*.pyc"
-  - ~/*/.cache
-  - ~/.cache/*
-  - /var/cache/*
-  - /var/tmp/*
+  - "~/*/.cache"
+  - "~/.cache/*"
+  - "/var/cache/*"
+  - "/var/tmp/*"
   - "*.nzb"
   - "*.url"
   - "*.webloc"
-  - Thumbs.db
-  - .fseventsd*
-  - "Apple Music/*"
+  - "Thumbs.db"
+  - ".fseventsd*"
+  - "**/Apple Music/*"
   - "**/.*.swp"
   - "**/.DS_Store"
   - "**/.VolumeIcon.icns"
