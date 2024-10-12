@@ -47,7 +47,7 @@ else
 fi
 
 
-if [[ "$OS" == *"NixOS" ]]; then
+if [[ "$OS" == *"NixOS"* ]]; then
 	# git to clone the repo, ripgrep to run ./apply
 	echo "installing git and ripgrep"
 	nix-env -iA nixos.git nixos.ripgrep
@@ -71,6 +71,7 @@ if [[ "$OS" == *"Darwin"* ]]; then
 	if ! command -v nix &>/dev/null; then
 	echo "installing nix"
 		curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install
+		# shellcheck disable=SC1091
 		. /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
 
 		# create /run
@@ -98,7 +99,9 @@ fi
 if [ ! -f ~/.gh_done ]; then
 	# store key in github
 	cat ~/.ssh/id_ed25519.pub
-	if confirm "Copy token to clipboard and open browser?"; then
+	echo 'Generate token: https://github.com/settings/tokens/new?scopes=gist,public_repo,workflow&description=Homebrew'
+	echo 'SSH Key: https://github.com/settings/keys'
+	if confirm "Copy token to clipboard and open browser ^?"; then
 		pbcopy <~/.ssh/id_ed25519.pub
 		open 'https://github.com/settings/tokens/new?scopes=gist,public_repo,workflow&description=Homebrew'
 		open https://github.com/settings/keys
