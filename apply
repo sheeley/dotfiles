@@ -12,10 +12,10 @@ elif [[ "$IS_MAC" ]]; then
 	IS_MAC=true
 fi
 
-OFFLINE=""
-if [[ "$1" == "--offline" ]]; then
-	OFFLINE="--offline"
-fi
+# OFFLINE=""
+# if [[ "$1" == "--offline" ]]; then
+# 	OFFLINE="--offline"
+# fi
 set -u
 
 if command -v scutil &>/dev/null; then
@@ -53,9 +53,9 @@ if [[ ! "${VALID_HOSTNAMES[*]}" =~ $HN ]]; then
 fi
 
 if [[ "$IS_MAC" ]]; then
-	nix build ".#${OSC}.${HN}.system" --impure --extra-experimental-features "nix-command flakes" --show-trace "$OFFLINE"
+	nix build ".#${OSC}.${HN}.system" --impure --extra-experimental-features "nix-command flakes" --show-trace # "$OFFLINE"
 else
-	nix build ".#${OSC}.${HN}.config.system.build.toplevel" --impure --extra-experimental-features "nix-command flakes" --show-trace "$OFFLINE"
+	nix build ".#${OSC}.${HN}.config.system.build.toplevel" --impure --extra-experimental-features "nix-command flakes" --show-trace # "$OFFLINE"
 fi
 
 # if possible, diff the derivations and ask for input
