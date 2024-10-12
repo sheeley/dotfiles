@@ -1,7 +1,5 @@
 #! /usr/bin/env bash
-set -euxo pipefail
-
-
+set -euo pipefail
 
 export PATH=$PATH:~/bin
 OS=$(uname -a)
@@ -33,7 +31,7 @@ if [ ! -f ~/.ssh/id_ed25519 ]; then
 		echo "Enter email to use for ssh key"
 		read -r EMAIL
 	fi
-
+	set -x
 	ssh-keygen -t ed25519 -C "$EMAIL"
 	eval "$(ssh-agent -s)"
 	if ! ssh-add -l -E sha256 | grep ED25519; then
@@ -43,37 +41,45 @@ if [ ! -f ~/.ssh/id_ed25519 ]; then
 			ssh-add ~/.ssh/id_ed25519
 		fi
 	fi
+	set +x
 else
 	EMAIL=$(cut -d' ' -f3 <~/.ssh/id_ed25519.pub)
 fi
 
 
 if [[ "$OS" == *"NixOS" ]]; then
-	# nixos prerequisites: git, ripgrep
+	# git to clone the repo, ripgrep to run ./apply
+	echo "installing git and ripgrep"
 	nix-env -iA nixos.git nixos.ripgrep
 fi
 
 if [[ "$OS" == *"Darwin"* ]]; then
-	# nix doesn't install brew. Yay.
-	if ! which brew; then
+	# nix-darwin can't install brew.
+	if ! command -v brew &>/dev/null; then
+	echo "installing brew"
 		bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 		eval "\$(/opt/homebrew/bin/brew shellenv)"
 		brew install --cask 1password
 	fi
 
 	if ! xcode-select -p; then
+	echo "installing xcode"
 		xcode-select --install
 		confirm "Hit enter when install finished" || exit 1
 	fi
 
 	if ! command -v nix &>/dev/null; then
+	echo "installing nix"
 		curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install
 		. /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
 
 		# create /run
 		if [ ! -f /run ]; then
+			echo "creating /run"
+			set +x
 			printf 'run\tprivate/var/run\n' | sudo tee -a /etc/synthetic.conf
 			/System/Library/Filesystems/apfs.fs/Contents/Resources/apfs.util -t
+			set -x
 		fi
 	fi
 
@@ -91,8 +97,8 @@ fi
 
 if [ ! -f ~/.gh_done ]; then
 	# store key in github
-	echo "Open Github to create token and save SSH key?"
-	if confirm; then
+	cat ~/.ssh/id_ed25519.pub
+	if confirm "Copy token to clipboard and open browser?"; then
 		pbcopy <~/.ssh/id_ed25519.pub
 		open 'https://github.com/settings/tokens/new?scopes=gist,public_repo,workflow&description=Homebrew'
 		open https://github.com/settings/keys
@@ -100,11 +106,13 @@ if [ ! -f ~/.gh_done ]; then
 	fi
 fi
 
+set +u
 if [ "$HOMEBREW_GITHUB_API_TOKEN" == "" ]; then
 	echo "Enter Github token"
 	read -r HOMEBREW_GITHUB_API_TOKEN
 	export HOMEBREW_GITHUB_API_TOKEN
 fi
+set -u
 
 if [ ! -d ~/dotfiles ]; then
 	git clone git@github.com:sheeley/dotfiles.git ~/dotfiles
@@ -114,7 +122,7 @@ if [ ! -f ~/.nix-private/private.nix ]; then
 	mkdir -p ~/.nix-private
 	cp ~/dotfiles/private.nix ~/.nix-private/private.nix
 	echo "set values in ~/.nix-private/private.nix"
-	confirm
+	confirm "return when you've set up ^"
 fi
 
 if [[ "$OS" == *"Darwin"* ]]; then
