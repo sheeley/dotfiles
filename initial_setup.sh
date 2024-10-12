@@ -72,10 +72,12 @@ fi
 if [[ "$IS_MAC" ]]; then
 	# nix-darwin can't install brew.
 	if ! command -v brew &>/dev/null; then
-	echo "installing brew"
-		bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-		eval "\$(/opt/homebrew/bin/brew shellenv)"
-		brew install --cask 1password
+		if confirm "Install brew "; then
+			echo "installing brew"
+			bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+			eval "\$(/opt/homebrew/bin/brew shellenv)"
+			brew install --cask 1password
+		fi
 	fi
 
 	if ! xcode-select -p; then
@@ -148,7 +150,7 @@ if [ ! -f ~/.nix-private/private.nix ]; then
 	mkdir -p ~/.nix-private
 	cp ~/dotfiles/private.nix ~/.nix-private/private.nix
 	echo "set values in ~/.nix-private/private.nix"
-	confirm "return when you've set up ^"
+	sed -i "" "s/EMAIL_HERE/$EMAIL/g" ~/.nix-private/private.nix
 fi
 
 if [[ "$IS_MAC" ]]; then
@@ -183,6 +185,9 @@ fi
 echo ""
 echo ""
 echo "rm ~/.gh_token"
+echo ""
+echo "Customize private.nix"
+echo "$EDITOR ~/.nix-private/private.nix"
 echo ""
 echo "cd ~/dotfiles"
 echo "./apply"
