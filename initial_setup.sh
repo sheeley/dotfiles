@@ -8,7 +8,8 @@ IS_MAC=
 IS_NIX=
 if [[ "$OS" == *"NixOS"* ]]; then
 	IS_NIX=true
-elif [[ "$OS" == *"Darwin"* ]]; then
+fi
+if [[ "$OS" == *"Darwin"* ]]; then
 	IS_MAC=true
 fi
 
@@ -30,7 +31,7 @@ set_hostname() {
 			sudo scutil --set HostName "$NEW_HOST"
 		elif [[ "$IS_NIX" ]]; then
 			echo "put in /etc/nixos/configuration.nix: "
-			echo "networking.hostName = \"$NEW_HOST\";";
+			echo "networking.hostName = \"$NEW_HOST\";"
 			echo "sudo nixos-build switch"
 			echo "sudo reboot"
 		fi
@@ -62,7 +63,6 @@ else
 	EMAIL=$(cut -d' ' -f3 <~/.ssh/id_ed25519.pub)
 fi
 
-
 if [[ "$IS_NIX" ]]; then
 	# git to clone the repo, ripgrep to run ./apply
 	echo "installing git and ripgrep"
@@ -81,13 +81,13 @@ if [[ "$IS_MAC" ]]; then
 	fi
 
 	if ! xcode-select -p; then
-	echo "installing xcode"
+		echo "installing xcode"
 		xcode-select --install
 		confirm "Hit enter when install finished" || exit 1
 	fi
 
 	if ! command -v nix &>/dev/null; then
-	echo "installing nix"
+		echo "installing nix"
 		curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install
 		# shellcheck disable=SC1091
 		. /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
@@ -137,7 +137,7 @@ if [ "$HOMEBREW_GITHUB_API_TOKEN" == "" ]; then
 		echo "Enter Github token"
 		read -r HOMEBREW_GITHUB_API_TOKEN
 		export HOMEBREW_GITHUB_API_TOKEN
-		echo "$HOMEBREW_GITHUB_API_TOKEN" > ~/.gh_token
+		echo "$HOMEBREW_GITHUB_API_TOKEN" >~/.gh_token
 	fi
 fi
 set -u
@@ -176,7 +176,7 @@ if [[ "$IS_NIX" ]]; then
 	echo ""
 	echo "maybe change hostname from $(hostname)?"
 	echo "put in /etc/nixos/configuration.nix: "
-	echo "networking.hostName = \"$NEW_HOST\";";
+	echo "networking.hostName = \"$NEW_HOST\";"
 	echo ""
 	echo "sudo nixos-build switch"
 	echo "sudo reboot"
