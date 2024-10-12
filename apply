@@ -2,6 +2,16 @@
 set -e
 
 PATH="$PATH:./bin"
+
+OS=$(uname -a)
+IS_MAC=
+IS_NIX=
+if [[ "$OS" == *"NixOS"* ]]; then
+	IS_NIX=true
+elif [[ "$IS_MAC" ]]; then
+	IS_MAC=true
+fi
+
 OFFLINE=""
 if [[ "$1" == "--offline" ]]; then
 	OFFLINE="--offline"
@@ -20,7 +30,7 @@ upgrade_nix
 OSC="nixosConfigurations"
 
 OS=$(uname -a)
-if [[ "$OS" == *"Darwin"* ]]; then
+if [[ "$IS_MAC" ]]; then
 	OSC="darwinConfigurations"
 fi
 
@@ -31,11 +41,17 @@ VALID_HOSTNAMES=$(grep "$OSC" flake.nix | grep -o '".*"' | sed 's/"//g')
 
 if [[ ! "${VALID_HOSTNAMES[*]}" =~ $HN ]]; then
 	echo "invalid hostname: '$HN'"
-	echo "sudo scutil --set LocalHostName ..."
+	if [[ "$IS_MAC" ]]; then
+		echo "sudo scutil --set LocalHostName ..."
+	elif [[ "$IS_NIX" ]]; then
+		echo "put in /etc/nixos/configuration.nix: "
+		echo "networking.hostName = \"$HN\";";
+		echo "sudo nixos-build switch"
+	fi
 	exit 1
 fi
 
-if [[ "$OS" == *"Darwin"* ]]; then
+if [[ "$IS_MAC" ]]; then
 	nix build ".#${OSC}.${HN}.system" --impure --extra-experimental-features "nix-command flakes" --show-trace "$OFFLINE"
 else
 	nix build ".#${OSC}.${HN}.config.system.build.toplevel" --impure --extra-experimental-features "nix-command flakes" --show-trace "$OFFLINE"
@@ -54,7 +70,7 @@ if command -v nvd; then
 	fi
 fi
 
-if [[ "$OS" == *"Darwin"* ]]; then
+if [[ "$IS_MAC" ]]; then
 	echo "darwin-rebuild"
 	./result/sw/bin/darwin-rebuild switch --flake . --impure
 else

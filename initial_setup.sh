@@ -2,6 +2,7 @@
 set -euo pipefail
 
 export PATH=$PATH:~/bin
+
 OS=$(uname -a)
 IS_MAC=
 IS_NIX=
@@ -10,7 +11,6 @@ if [[ "$OS" == *"NixOS"* ]]; then
 elif [[ "$OS" == *"Darwin"* ]]; then
 	IS_MAC=true
 fi
-
 
 confirm() {
 	echo -n "${1:-Continue?} [y/N] "
@@ -23,9 +23,16 @@ confirm() {
 set_hostname() {
 	echo -n "New hostname: "
 	read -r NEW_HOST
-	if confirm; then
-		sudo scutil --set ComputerName "$NEW_HOST"
-		sudo scutil --set HostName "$NEW_HOST"
+
+	if confirm "Set hostname to $NEW_HOST?"; then
+		if [[ "$IS_MAC" ]]; then
+			sudo scutil --set ComputerName "$NEW_HOST"
+			sudo scutil --set HostName "$NEW_HOST"
+		elif [[ "$IS_NIX" ]]; then
+			echo "put in /etc/nixos/configuration.nix: "
+			echo "networking.hostName = \"$NEW_HOST\";";
+			echo "sudo nixos-build switch"
+		fi
 	else
 		return 1
 	fi

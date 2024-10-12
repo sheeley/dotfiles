@@ -143,13 +143,49 @@
       };
     };
 
-    apps.repl = flake-utils.lib.mkApp {
-      drv = legacyDarwinPackages.aarch64-darwin.writeShellScriptBin "repl" ''
-        confnix=$(mktemp)
-        echo "builtins.getFlake (toString $(git rev-parse --show-toplevel))" >$confnix
-        trap "rm $confnix" EXIT
-        nix repl $confnix
-      '';
+    nixosConfigurations."lab" = nixpkgs.lib.nixosSystem {
+      system = "x86_64-linux";
+      pkgs = legacyNixPackages.x86_64-linux;
+      modules =
+        [
+          home-manager.nixosModules.home-manager
+          ./lab/configuration.nix
+        ]
+        ++ sharedModules;
+
+      specialArgs = {
+        inherit inputs;
+        user = "sheeley";
+        private = private;
+      };
     };
+
+    nixosConfigurations."tiny" = nixpkgs.lib.nixosSystem {
+      system = "x86_64-linux";
+      pkgs = legacyNixPackages.x86_64-linux;
+      modules =
+        [
+          home-manager.nixosModules.home-manager
+          ./tiny/configuration.nix
+        ]
+        ++ sharedModules;
+
+      specialArgs = {
+        inherit inputs;
+        user = "sheeley";
+        private = private;
+      };
+    };
+
+
+# This creates a REPL I guess, but I've never used it so commenting out.
+#    apps.repl = flake-utils.lib.mkApp {
+#      drv = legacyDarwinPackages.aarch64-darwin.writeShellScriptBin "repl" ''
+#        confnix=$(mktemp)
+#        echo "builtins.getFlake (toString $(git rev-parse --show-toplevel))" >$confnix
+#        trap "rm $confnix" EXIT
+#        nix repl $confnix
+#      '';
+#    };
   };
 }
