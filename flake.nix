@@ -143,23 +143,6 @@
       };
     };
 
-    nixosConfigurations."lab" = nixpkgs.lib.nixosSystem {
-      system = "x86_64-linux";
-      pkgs = legacyNixPackages.x86_64-linux;
-      modules =
-        [
-          home-manager.nixosModules.home-manager
-          ./lab/configuration.nix
-        ]
-        ++ sharedModules;
-
-      specialArgs = {
-        inherit inputs;
-        user = "sheeley";
-        private = private;
-      };
-    };
-
     nixosConfigurations."tiny" = nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
       pkgs = legacyNixPackages.x86_64-linux;
