@@ -4,6 +4,7 @@ set -euxo pipefail
 
 
 export PATH=$PATH:~/bin
+OS=$(uname -a)
 
 confirm() {
 	echo -n "${1:-Continue?} [y/N] "
@@ -36,16 +37,20 @@ if [ ! -f ~/.ssh/id_ed25519 ]; then
 	ssh-keygen -t ed25519 -C "$EMAIL"
 	eval "$(ssh-agent -s)"
 	if ! ssh-add -l -E sha256 | grep ED25519; then
-		ssh-add -K ~/.ssh/id_ed25519
+		if [[ "$OS" == *"Darwin"* ]]; then
+			ssh-add -K ~/.ssh/id_ed25519
+		else
+			ssh-add ~/.ssh/id_ed25519
+		fi
 	fi
 else
 	EMAIL=$(cut -d' ' -f3 <~/.ssh/id_ed25519.pub)
 fi
 
-OS=$(uname -a)
+
 if [[ "$OS" == *"NixOS" ]]; then
-# nixos prerequisites: git, ag
-nix-env -iA nixos.git nixos.silver-searcher
+	# nixos prerequisites: git, ripgrep
+	nix-env -iA nixos.git nixos.ripgrep
 fi
 
 if [[ "$OS" == *"Darwin"* ]]; then

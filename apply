@@ -9,7 +9,7 @@ fi
 set -u
 
 if command -v scutil &>/dev/null; then
-	ag 'TODO:' || true # ignore this
+	rg 'TODO:' || true # ignore this
 fi
 
 HN=$(hostname_wrapper)
