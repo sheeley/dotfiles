@@ -1,7 +1,7 @@
 #! /usr/bin/env bash
 set -euxo pipefail
 
-# nixos prerequisites: git, ag
+
 
 export PATH=$PATH:~/bin
 
@@ -43,6 +43,11 @@ else
 fi
 
 OS=$(uname -a)
+if [[ "$OS" == *"NixOS" ]]; then
+# nixos prerequisites: git, ag
+nix-env -iA nixos.git nixos.silver-searcher
+fi
+
 if [[ "$OS" == *"Darwin"* ]]; then
 	# nix doesn't install brew. Yay.
 	if ! which brew; then

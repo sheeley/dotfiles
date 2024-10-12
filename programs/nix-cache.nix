@@ -1,6 +1,6 @@
-{...}: let
+{ localIp, ...}: let
   # TODO: swap these for dynamic IPs
-  localIp = "192.168.1.17";
+  localIp = "192.168.1.254";
   resolverIp = "8.8.8.8";
   cacheDirectory = "/var/cache/nginx/";
 in {

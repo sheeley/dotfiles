@@ -47,6 +47,7 @@ with pkgs; [
   ssh-copy-id
   sshfs
   tldr
+  uv
   wget
   # yarn
   yq-go
