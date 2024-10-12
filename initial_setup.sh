@@ -32,6 +32,7 @@ set_hostname() {
 			echo "put in /etc/nixos/configuration.nix: "
 			echo "networking.hostName = \"$NEW_HOST\";";
 			echo "sudo nixos-build switch"
+			echo "sudo reboot"
 		fi
 	else
 		return 1
@@ -165,6 +166,18 @@ if [[ "$IS_MAC" ]]; then
 		# 	echo "couldn't set shell to fish"
 		# fi
 	fi
+fi
+
+if [[ "$IS_NIX" ]]; then
+	echo "mkdir $(hostname)"
+	echo "cp /etc/nixos/*.nix ./$(hostname)/"
+	echo ""
+	echo "maybe change hostname from $(hostname)?"
+	echo "put in /etc/nixos/configuration.nix: "
+	echo "networking.hostName = \"$NEW_HOST\";";
+	echo ""
+	echo "sudo nixos-build switch"
+	echo "sudo reboot"
 fi
 
 echo ""

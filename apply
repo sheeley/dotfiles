@@ -47,6 +47,7 @@ if [[ ! "${VALID_HOSTNAMES[*]}" =~ $HN ]]; then
 		echo "put in /etc/nixos/configuration.nix: "
 		echo "networking.hostName = \"$HN\";";
 		echo "sudo nixos-build switch"
+		echo "sudo reboot"
 	fi
 	exit 1
 fi
