@@ -1,11 +1,12 @@
 {...}: {
+  # TODO: stub email
   email = "";
-  workEmail = "";
+  # workEmail = "";
 
   githubSecret = "";
 
   personal = false;
-  borgSecret = "";
-  borgUser = "";
-  tailscaleKey = "";
+  # borgSecret = "";
+  # borgUser = "";
+  # tailscaleKey = "";
 }
