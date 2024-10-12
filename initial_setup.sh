@@ -3,6 +3,14 @@ set -euo pipefail
 
 export PATH=$PATH:~/bin
 OS=$(uname -a)
+IS_MAC=
+IS_NIX=
+if [[ "$OS" == *"NixOS"* ]]; then
+	IS_NIX=true
+elif [[ "$OS" == *"Darwin"* ]]; then
+	IS_MAC=true
+fi
+
 
 confirm() {
 	echo -n "${1:-Continue?} [y/N] "
@@ -35,7 +43,7 @@ if [ ! -f ~/.ssh/id_ed25519 ]; then
 	ssh-keygen -t ed25519 -C "$EMAIL"
 	eval "$(ssh-agent -s)"
 	if ! ssh-add -l -E sha256 | grep ED25519; then
-		if [[ "$OS" == *"Darwin"* ]]; then
+		if [[ "$IS_MAC" ]]; then
 			ssh-add -K ~/.ssh/id_ed25519
 		else
 			ssh-add ~/.ssh/id_ed25519
@@ -47,13 +55,13 @@ else
 fi
 
 
-if [[ "$OS" == *"NixOS"* ]]; then
+if [[ "$IS_NIX" ]]; then
 	# git to clone the repo, ripgrep to run ./apply
 	echo "installing git and ripgrep"
 	nix-env -iA nixos.git nixos.ripgrep
 fi
 
-if [[ "$OS" == *"Darwin"* ]]; then
+if [[ "$IS_MAC" ]]; then
 	# nix-darwin can't install brew.
 	if ! command -v brew &>/dev/null; then
 	echo "installing brew"
@@ -135,7 +143,7 @@ if [ ! -f ~/.nix-private/private.nix ]; then
 	confirm "return when you've set up ^"
 fi
 
-if [[ "$OS" == *"Darwin"* ]]; then
+if [[ "$IS_MAC" ]]; then
 	confirm "Log in to App Store then hit enter"
 	(
 		cd ~/dotfiles || exit
@@ -152,6 +160,9 @@ if [[ "$OS" == *"Darwin"* ]]; then
 	fi
 fi
 
+echo ""
+echo ""
 echo "rm ~/.gh_token"
+echo ""
 echo "cd ~/dotfiles"
 echo "./apply"
