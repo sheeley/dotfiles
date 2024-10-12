@@ -28,15 +28,11 @@
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
-  networking.hostName = "lab"; # Define your hostname.
-  # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
+  networking.hostName = "tiny"; # Define your hostname.
 
   # Enable networking
   networking.networkmanager.enable = true;
   systemd.services.NetworkManager-wait-online.enable = false;
-  # TODO: networking.interfaces.<name>.wakeOnLan.enable = true;
-  # systemd.network.wait-online.enable = false;
-  # boot.initrd.systemd.network.wait-online.enable = false;
 
   # Set your time zone.
   time.timeZone = "America/Los_Angeles";
@@ -65,7 +61,6 @@
 
   # Enable the OpenSSH daemon.
   services.openssh.enable = true;
-  programs.mosh.enable = true;
 
   # store /tmp in memory
   boot.tmp.useTmpfs = true;
