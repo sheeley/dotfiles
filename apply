@@ -8,7 +8,8 @@ IS_MAC=
 IS_NIX=
 if [[ "$OS" == *"NixOS"* ]]; then
 	IS_NIX=true
-elif [[ "$IS_MAC" ]]; then
+fi
+if [[ "$OS" == *"Darwin"* ]]; then
 	IS_MAC=true
 fi
 
@@ -29,7 +30,6 @@ upgrade_nix
 
 OSC="nixosConfigurations"
 
-OS=$(uname -a)
 if [[ "$IS_MAC" ]]; then
 	OSC="darwinConfigurations"
 fi
@@ -45,7 +45,7 @@ if [[ ! "${VALID_HOSTNAMES[*]}" =~ $HN ]]; then
 		echo "sudo scutil --set LocalHostName ..."
 	elif [[ "$IS_NIX" ]]; then
 		echo "put in /etc/nixos/configuration.nix: "
-		echo "networking.hostName = \"$HN\";";
+		echo "networking.hostName = \"$HN\";"
 		echo "sudo nixos-build switch"
 		echo "sudo reboot"
 	fi
