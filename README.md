@@ -23,10 +23,6 @@ TODO: add more guidance here.
 
 ## TODO
 
-- [ ] secrets.yaml
-- [ ] hatch HA integration
-- [ ] hyundai HA integration
-
 - [ ] notifications settings
 - [ ] nightshift
 - [ ] various FUTUREs spread throughout repo

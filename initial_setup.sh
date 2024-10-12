@@ -111,9 +111,16 @@ fi
 
 set +u
 if [ "$HOMEBREW_GITHUB_API_TOKEN" == "" ]; then
-	echo "Enter Github token"
-	read -r HOMEBREW_GITHUB_API_TOKEN
-	export HOMEBREW_GITHUB_API_TOKEN
+	if [ -f ~/.gh_token ]; then
+		# store token for repeat runs
+		HOMEBREW_GITHUB_API_TOKEN=$(cat ~/.gh_token)
+	fi
+	if [ "$HOMEBREW_GITHUB_API_TOKEN" == "" ]; then
+		echo "Enter Github token"
+		read -r HOMEBREW_GITHUB_API_TOKEN
+		export HOMEBREW_GITHUB_API_TOKEN
+		echo "$HOMEBREW_GITHUB_API_TOKEN" > ~/.gh_token
+	fi
 fi
 set -u
 
@@ -145,5 +152,6 @@ if [[ "$OS" == *"Darwin"* ]]; then
 	fi
 fi
 
+echo "rm ~/.gh_token"
 echo "cd ~/dotfiles"
 echo "./apply"
