@@ -66,7 +66,8 @@ in {
       "/usr/bin"
       "/usr/sbin"
       "/etc/profiles/per-user/${user}/bin"
-      "/Users/${user}/dotfiles/bin"
+      "${homeDirectory}/dotfiles/bin"
+      "${homeDirectory}/bin"
       "/opt/homebrew/bin"
     ];
 
