@@ -32,6 +32,12 @@ OSC="nixosConfigurations"
 
 if [[ "$IS_MAC" ]]; then
 	OSC="darwinConfigurations"
+
+	set +e
+	if ! xcode_license_accepted; then
+		sudo xcodebuild -license
+	fi
+	set -e
 fi
 
 # TODO: is there a cleaner way of doing this?
