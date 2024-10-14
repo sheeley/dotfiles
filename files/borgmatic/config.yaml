@@ -4,7 +4,7 @@ source_directories:
   - ~/Documents
   - "@storagePath@/Music"
   - "@storagePath@/Movies"
-  - "@storagePath@/Photos"
+  - "@storagePath@/Pictures"
   - "@storagePath@/TV"
   - "@storagePath@/Videos"
 
