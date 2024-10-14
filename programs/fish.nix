@@ -22,6 +22,9 @@
 
       test -e {$HOME}/.iterm2_shell_integration.fish
       and source {$HOME}/.iterm2_shell_integration.fish
+
+      test -n "$SSH_CONNECTION"
+      and zellij attach --create
     '';
 
     loginShellInit = "fish_add_path --move --prepend --path $HOME/.nix-profile/bin /run/wrappers/bin /etc/profiles/per-user/$USER/bin /nix/var/nix/profiles/default/bin /run/current-system/sw/bin";

@@ -8,6 +8,12 @@
 IdentityFile ~/.ssh/id_ed25519
 AddKeysToAgent yes
 ConnectTimeout = 3
+
+Host homebase
+  HostName homebase.local
+  User sheeley
+  # RequestTTY force
+  # RemoteCommand zellij attach --create
       ";
   };
 }
