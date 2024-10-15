@@ -37,9 +37,9 @@ in {
     zsh
   ];
 
-  services.tailscale = {
-    enable = true;
-  };
+  # services.tailscale = {
+  #   enable = true;
+  # };
 
   system.activationScripts = {
     preActivation.text = ''
