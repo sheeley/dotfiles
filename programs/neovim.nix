@@ -397,14 +397,14 @@ in {
       };
 
       servers = {
-        nil-ls = {
+        nil_ls = {
           enable = true;
           settings = {
             formatting.command = ["alejandra" "--quiet"];
           };
         };
         bashls.enable = true;
-        helm-ls.enable = true;
+        helm_ls.enable = true;
         nushell.enable = true;
         # sourcekit.enable = true;
         terraformls.enable = true;
