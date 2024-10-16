@@ -53,7 +53,7 @@ in {
     programs.zellij = {
       enable = true;
       enableBashIntegration = false;
-      enableFishIntegration = true;
+      enableFishIntegration = false;
       enableZshIntegration = false;
       settings = {
         copy_command = "pbcopy";
