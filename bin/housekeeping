@@ -47,7 +47,8 @@ check_git_status "$TOOLS_DIR"
 check_git_status "$PRIVATE_TOOLS_DIR"
 
 # ensure applications are open and syncing
-# open /Applications/Obsidian.app
+open /Applications/Obsidian.app
+open /Volumes/Stash/Pictures/Photos\ Library.photoslibrary/
 
 # if [[ "$WORKMACHINE" = "true" ]]; then
 # 	exit
@@ -58,7 +59,4 @@ if [[ "$HOST" != "homebase" ]]; then
 	exit
 fi
 
-echo "PATHHHH: $PATH"
-echo "WHICH: $(which send-email)"
-printf "\n\n"
 full_backup || send-email --subject "Backup Error" --attachment /tmp/housekeeping.log
