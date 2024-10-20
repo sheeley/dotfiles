@@ -1,4 +1,5 @@
 #! /usr/bin/env bash
 set -euo pipefail # x
 
-$EDITOR "$PRIVATE_TOOLS_DIR/bin/sieve.swift"
+# $EDITOR "$PRIVATE_TOOLS_DIR/bin/sieve.swift"
+open "$PRIVATE_TOOLS_DIR/sieve-gen/Package.swift"
