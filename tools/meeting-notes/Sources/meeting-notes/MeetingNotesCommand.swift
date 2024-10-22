@@ -64,12 +64,12 @@ struct MeetingNotesCommand: ParsableCommand {
             try cleanEmptyNotes(using: options)
         }
 
-        let create = options.create ?? ((options.interactive) ? "interactive" : nil)
+        let create = options.create // ?? ((options.interactive) ? "interactive" : nil)
 
-        guard let create else {
-            print("no create option!")
-            return
-        }
+//        guard let create else {
+//            print("no create option!")
+//            return
+//        }
         var open = false
         var window = EventWindow.today
         switch create {

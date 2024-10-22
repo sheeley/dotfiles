@@ -41,6 +41,7 @@ struct GlobalOptions: ParsableArguments, CustomStringConvertible {
         obsidian:       \(obsidianOptions ?? "")
         force:          \(force)
         ---
+        
         """
     }
 
@@ -54,7 +55,7 @@ struct GlobalOptions: ParsableArguments, CustomStringConvertible {
     var vaultName = "Apple Notes"
 
     @Option(name: .long, help: "'today', 'tomorrow', 'both', 'interactive', or a specific note ID")
-    var create: String?
+    var create: String = "interactive"
 
     @Option(name: .long, help: "Subdirectory to use")
     var subDirectory = ""
