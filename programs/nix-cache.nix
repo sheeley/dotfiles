@@ -1,6 +1,6 @@
-{ localIp, ...}: let
+{...}: let
   # TODO: swap these for dynamic IPs
-  localIp = "192.168.1.254";
+  hostname = "nix-cache.aigee.org";
   resolverIp = "8.8.8.8";
   cacheDirectory = "/var/cache/nginx/";
 in {
@@ -20,7 +20,7 @@ in {
       access_log /var/log/nginx/access.log;
     '';
 
-    virtualHosts."${localIp}" = {
+    virtualHosts."${hostname}" = {
       locations."/" = {
         root = cacheDirectory;
         extraConfig = ''
