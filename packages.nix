@@ -9,6 +9,7 @@ with pkgs; [
   alejandra
   atool
   bat
+  broot
   coreutils-prefixed
   # dovecot
   du-dust
@@ -47,6 +48,7 @@ with pkgs; [
   ssh-copy-id
   sshfs
   tldr
+  tre
   uv
   wget
   # yarn
