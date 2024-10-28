@@ -28,6 +28,12 @@ HN=$(hostname_wrapper)
 # minimally, yell if nix version out of date
 upgrade_nix
 
+set +e
+if ! ssh-add -l; then
+	ssh-add ~/.ssh/id_ed25519
+fi
+set -e
+
 OSC="nixosConfigurations"
 
 if [[ "$IS_MAC" ]]; then
