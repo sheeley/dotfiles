@@ -9,7 +9,6 @@ with pkgs; [
   alejandra
   atool
   bat
-  broot
   coreutils-prefixed
   # dovecot
   du-dust
@@ -29,7 +28,7 @@ with pkgs; [
   kubernetes-helm
   ldns
   lz4
-  mosh
+  # mosh
   nerdfonts
   nix-diff
   nix-tree
