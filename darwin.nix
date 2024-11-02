@@ -12,8 +12,21 @@
     stateVersion = 5;
   };
 
-  # Add substituter for local cache
-  nix.settings.substituters = ["http://nix-cache.aigee.org"];
+  nix = {
+    settings = {
+      # Add substituter for local cache
+      substituters = ["http://nix-cache.aigee.org"];
+      # "http://192.168.1.17"];
+
+      # extra-nix-path = "nixpkgs=flake:nixpkgs";
+    };
+
+    extraOptions = ''
+      # nix fails on the _first_ failure instead of falling back by default
+        # Ensure we can still build when missing-server is not accessible
+        fallback = true
+    '';
+  };
 
   home-manager.users.${user} = {...}: {
     home.packages = [
