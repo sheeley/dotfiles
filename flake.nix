@@ -27,9 +27,9 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    flake-utils = {
-      url = "github:numtide/flake-utils";
-    };
+    # flake-utils = {
+    #   url = "github:numtide/flake-utils";
+    # };
   };
 
   outputs = {
@@ -38,7 +38,7 @@
     home-manager,
     darwin,
     nixvim,
-    flake-utils,
+    # flake-utils,
   } @ inputs: let
     legacyDarwinPackages = nixpkgs.lib.genAttrs ["aarch64-darwin"] (
       system:
@@ -160,15 +160,14 @@
       };
     };
 
-
-# This creates a REPL I guess, but I've never used it so commenting out.
-#    apps.repl = flake-utils.lib.mkApp {
-#      drv = legacyDarwinPackages.aarch64-darwin.writeShellScriptBin "repl" ''
-#        confnix=$(mktemp)
-#        echo "builtins.getFlake (toString $(git rev-parse --show-toplevel))" >$confnix
-#        trap "rm $confnix" EXIT
-#        nix repl $confnix
-#      '';
-#    };
+    # This creates a REPL I guess, but I've never used it so commenting out.
+    #    apps.repl = flake-utils.lib.mkApp {
+    #      drv = legacyDarwinPackages.aarch64-darwin.writeShellScriptBin "repl" ''
+    #        confnix=$(mktemp)
+    #        echo "builtins.getFlake (toString $(git rev-parse --show-toplevel))" >$confnix
+    #        trap "rm $confnix" EXIT
+    #        nix repl $confnix
+    #      '';
+    #    };
   };
 }
