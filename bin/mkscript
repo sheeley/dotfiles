@@ -1,24 +1,25 @@
-#! /usr/bin/env bash
-set -eu
-
-FILE="$HOME/dotfiles/bin/$1"
-
-if [[ -f "$FILE" ]]; then
-	echo "script exists"
-	exit 1
-fi
-
-cat <<EOD >>"$FILE"
 #! /usr/bin/env nu
 
+def main [
+	scriptName: string, # name of script to create
+	local: bool = false # create in current directory
+] {
+	let scriptDir = $"($env.HOME)/dotfiles/bin/"
+	if $local {
+		let scriptDir = (pwd)
+	}
 
-EOD
+	let file = $"($scriptDir)/($scriptName)"
 
-chmod +x "$FILE"
+	if ($file | path exists) {
+		echo "script exists"
+		exit 1
+	}
 
-# first, open code for the full repo
-# $EDITOR "$GOPATH/src/github.com/sheeley/tools/"
-# then open the file within that window
-if [ -t 1 ]; then
-	$EDITOR "$FILE"
-fi
+	script_template | save $file
+	chmod +x $file
+
+	# TOOD?: check if in terminal
+	^$env.EDITOR $file
+}
+

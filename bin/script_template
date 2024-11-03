@@ -1,0 +1,10 @@
+#! /usr/bin/env nu
+
+print '#! /usr/bin/env nu --stdin
+
+def main [
+foo: string # foo documentation
+] {
+  echo $"stdin: ($in)"
+}
+'
