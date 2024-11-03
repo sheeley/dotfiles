@@ -19,7 +19,8 @@ def main [
 	script_template | save $file
 	chmod +x $file
 
-	# TOOD?: check if in terminal
-	^$env.EDITOR $file
+	if $env.TERM != "" {
+		^$env.EDITOR $file
+	}
 }
 
