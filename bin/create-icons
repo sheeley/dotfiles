@@ -1,0 +1,9 @@
+#! /usr/bin/env nu
+
+let sizes = [16, 32, 64, 128, 256]
+
+def main [sourceImage: string] {
+$sizes | each { |size|
+sips -z $size $size $sourceImage --out $"($size)x($size).png"
+}
+}
