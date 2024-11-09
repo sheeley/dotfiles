@@ -8,25 +8,22 @@ if [ -z "$1" ]; then
 fi
 
 FILE="$1"
+LAST_UPDATED=99
 
 # Check if the file exists
 if [ -f "$FILE" ]; then
 	# Get the last modified time of the file in days
 	last_modified=$(gstat -c %Y "$FILE")
 	current_time=$(gdate +%s)
-	diff_days=$(((current_time - last_modified) / 86400))
+	LAST_UPDATED=$(((current_time - last_modified) / 86400))
+fi
 
-	touch "$FILE"
-	# Check if the file was modified more than 14 days ago
-	if [ $diff_days -gt 14 ]; then
-		# echo "File '$FILE' exists and was modified more than 14 days ago. Updated its modified date."
-		exit 1
-	else
-		# echo "File '$FILE' exists but was modified within the last 14 days. No update made."
-		exit 0
-	fi
+touch "$FILE"
+# Check if the file was modified more than 14 days ago
+if [ $LAST_UPDATED -gt 14 ]; then
+	# echo "File '$FILE' exists and was modified more than 14 days ago. Updated its modified date."
+	exit 0
 else
-	# does not exist
-	touch "$FILE"
+	# echo "File '$FILE' exists but was modified within the last 14 days. No update made."
 	exit 1
 fi
