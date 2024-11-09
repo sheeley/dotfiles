@@ -2,25 +2,31 @@
 set -euo pipefail # x
 
 # >/tmp/housekeeping.log
-echo ""
+printf "\n\n"
 echo "--- housekeeping ---"
+whoami
 date
+echo "--- ------------ ---"
 echo ""
 
-FIRST_OF_MONTH=""
-day=$(date -u +%d)
-if [[ $((10#$day)) -lt 10 ]]; then
-	FIRST_OF_MONTH="y"
-fi
+# FIRST_OF_MONTH=""
+# day=$(date -u +%d)
+# if [[ $((10#$day)) -lt 10 ]]; then
+# 	FIRST_OF_MONTH="y"
+# fi
 
-if [[ "$FIRST_OF_MONTH" = "y" ]]; then
-	echo "Nix last updated"
+if should_update ~/dotfiles/flake.lock; then
+	echo "Haven't updated nix in more than 2 weeks"
 	gstat -c '%y' ~/dotfiles/flake.lock || echo "never"
 
-	echo "Nix last applied"
-	cat ~/dotfiles/last-applied.txt || echo "never"
+fi
+if should_update ~/dotfiles/nix-apply.updated; then
+	echo "Haven't applied nix in more than 2 weeks"
 	printf "\n\n"
+fi
 
+if should_update ~/dotfiles/tldr.updated; then
+	echo "Haven't updated tldr in more than 2 weeks"
 	tldr --update
 
 	printf "\n\n"
@@ -43,7 +49,6 @@ check_git_status() {
 }
 
 check_git_status "$HOME/dotfiles/"
-check_git_status "$TOOLS_DIR"
 check_git_status "$PRIVATE_TOOLS_DIR"
 
 # ensure applications are open and syncing
@@ -59,4 +64,7 @@ if [[ "$HOST" != "homebase" ]]; then
 	exit
 fi
 
-full_backup || send-email --subject "Backup Error" --attachment /tmp/housekeeping.log
+full_backup || send-email --subject "Backup Error" --attachment /tmp/housekeeping.txt
+date
+echo "--- -----END----- ---"
+printf "\n\n\n"

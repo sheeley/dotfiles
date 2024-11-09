@@ -25,6 +25,7 @@ in {
       sessionVariables = {
         BORG_RELOCATED_REPO_ACCESS_IS_OK = "yes";
         BORG_REPO = "${storagePath}/borgbackup";
+        BORG_EXIT_CODES = "modern";
       };
 
       # Supposed to be better, but I couldn't get it to replace all of the vars
@@ -82,8 +83,8 @@ in {
     serviceConfig = {
       Label = "org.aigee.housekeeping";
       ProcessType = "Background";
-      StandardOutPath = "/tmp/housekeeping.log";
-      StandardErrorPath = "/tmp/housekeeping.log";
+      StandardOutPath = "/tmp/housekeeping.txt";
+      StandardErrorPath = "/tmp/housekeeping.txt";
       StartCalendarInterval = [
         {
           Hour = 1;
