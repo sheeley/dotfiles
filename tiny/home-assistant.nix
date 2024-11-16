@@ -9,12 +9,18 @@
 }: let
   # Define the URL and SHA for the latest Home Assistant OS QCOW2.xz compressed release
   haCompressedImageUrl = "https://github.com/home-assistant/operating-system/releases/download/13.2/haos_generic-aarch64-13.2.qcow2.xz";
-  haImageSha256 = ""; # Replace this with the SHA-256 hash
+  haImageSha256 = "sha256-wPLDGkiVh8h5BM3jodlzRQCnDYt2TV4DyhsTWfOb2yc="; # Replace this with the SHA-256 hash
 
-  homeAssistantImage = pkgs.fetchzip {
+  homeAssistantImage = pkgs.fetchurl {
     url = haCompressedImageUrl;
     hash = haImageSha256;
     nativeBuildInputs = [pkgs.xz];
+    downloadToTemp = true;
+    postFetch = ''
+      mv $downloadedFile ./ha.qcow2.xz
+      ${pkgs.xz}/bin/xz --force --decompress ./ha.qcow2.xz
+      mv ./ha.qcow2 $out
+    '';
   };
   # unpackPhase = ":";
   # unpackPhase = ''
