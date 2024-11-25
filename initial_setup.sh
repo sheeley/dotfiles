@@ -72,6 +72,7 @@ fi
 if [[ "$IS_MAC" ]]; then
 	# nix-darwin can't install brew.
 	if ! command -v brew &>/dev/null; then
+		echo "brew is required - if you don't have it and don't want it installed this way, install it your way now."
 		if confirm "Install brew "; then
 			echo "installing brew"
 			bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
