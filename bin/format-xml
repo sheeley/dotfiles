@@ -1,0 +1,25 @@
+#! /usr/bin/env bash
+set -euo pipefail
+
+# Check if a directory was provided as an argument
+if [ $# -ne 1 ]; then
+	echo "Usage: $0 <directory>"
+	exit 1
+fi
+
+# Directory to process
+TARGET_DIR=$1
+
+# Ensure the provided argument is a directory
+if [ ! -d "$TARGET_DIR" ]; then
+	echo "Error: $TARGET_DIR is not a directory"
+	exit 1
+fi
+
+# Recursively find and format XML files
+find "$TARGET_DIR" -type f -name "*.xml" | while read -r file; do
+	echo "Formatting $file"
+	xmllint --format "$file" --output "$file" || echo "Failed to format $file"
+done
+
+echo "Formatting complete."

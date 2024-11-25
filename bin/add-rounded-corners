@@ -1,0 +1,14 @@
+#! /usr/bin/env bash
+set -eux
+#
+# def main [
+# 	inputImage: string # Source image to process
+# ] {
+# magick "$1" \
+# 	\( +clone -alpha set -background none -draw "roundrectangle 0,0 %[w],%[h] %[fx:h*0.216],%[fx:h*0.216]" \) \
+# -compose CopyOpacity -composite "$1_rounded.png"
+# }
+#
+LENGTH=$(identify -format "%w" "$1")
+RADIUS=$(awk "BEGIN {print $LENGTH * 0.216}")
+magick -size "${LENGTH}x$LENGTH" xc:none -draw "roundrectangle 0,0,$LENGTH,$LENGTH,$RADIUS,$RADIUS" png:- | magick "$1" -alpha Set - -compose DstIn -composite "$1.rounded.png"
