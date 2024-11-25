@@ -29,7 +29,7 @@ HN=$(hostname_wrapper)
 upgrade_nix
 
 set +e
-if ! ssh-add -l; then
+if ! ssh-add -l >/dev/null; then
 	ssh-add ~/.ssh/id_ed25519
 fi
 set -e
