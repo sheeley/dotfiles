@@ -35,7 +35,7 @@
         "1password/tap/1password-cli"
         # "eloston-chromium"
         "iterm2"
-        "little-snitch"
+        # "little-snitch"
         "obsidian"
         "shortcat"
         "slack"
