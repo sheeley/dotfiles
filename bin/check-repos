@@ -1,0 +1,57 @@
+#! /usr/bin/env bash
+set -euo pipefail
+
+# Colors for output
+GREEN="\033[0;32m"
+YELLOW="\033[0;33m"
+RED="\033[0;31m"
+RESET="\033[0m"
+
+# Symbols
+CHECKMARK="${GREEN}✔${RESET}"
+PENCIL="${YELLOW}✎${RESET}"
+DOWN_ARROW="${RED}↓${RESET}"
+
+# Iterate through each child of the current directory
+for dir in */; do
+	# Initialize output line
+	output="Checking $dir:"
+
+	# Check if it's a directory and has a .git folder
+	if [ ! -d "$dir/.git" ]; then
+		echo "$output not git directory"
+		continue
+	fi
+	# Navigate into the git repository
+	(
+		cd "$dir"
+		set +e
+		if ! git fetch >/dev/null 2>&1; then
+			echo -e "$output ${RED}couldn't fetch${RESET}"
+			exit
+		fi
+		set -e
+		# Check for uncommitted changes
+		STATUS_OUTPUT=$(git status --porcelain || true)
+		# Check if the branch is behind the remote
+		PORCELAIN_STATUS=$(git status --branch --porcelain 2>/dev/null)
+		set +e
+		BEHIND_COUNT=$(echo "$PORCELAIN_STATUS" | grep -o "behind [0-9]*" | awk '{print $2}')
+		set -e
+
+		# Determine the status symbol
+		if [[ -z "$STATUS_OUTPUT" && -z "$BEHIND_COUNT" ]]; then
+			output="$output $CHECKMARK"
+		else
+			if [[ -n "$STATUS_OUTPUT" ]]; then
+				output="$output $PENCIL"
+			fi
+			if [[ -n "$BEHIND_COUNT" ]]; then
+				output="$output $DOWN_ARROW"
+			fi
+		fi
+
+		echo -e "$output"
+	) & # run each check in parallel.
+	wait
+done
