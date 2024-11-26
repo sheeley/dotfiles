@@ -2,7 +2,7 @@
 
 def main [
 	scriptName: string, # name of script to create
-	--local: bool = false # create in current directory
+	--local = false # create in current directory
 	--shell: string = bash # shell to use (bash, nu)
 ] {
 	let scriptDir = $"($env.HOME)/dotfiles/bin/"
