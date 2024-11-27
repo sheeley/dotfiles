@@ -12,16 +12,14 @@
 
     onActivation = {
       autoUpdate = true;
-      cleanup = "uninstall"; # use "uninstall" if you want to manage everything; zap removes configuration and cache also.
+      # TODO: uninstall is great for machines without any other brew deps
+      # cleanup = "uninstall"; # use "uninstall" if you want to manage everything; zap removes configuration and cache also.
       upgrade = true;
     };
 
     brews =
       [
-        # "ds"
         "git-delta"
-        # "n" # node version manager
-        # "scout"
         "swiftformat"
       ]
       ++ ((lib.optionals (lib.hasAttr "personal" private && private.personal)) [
@@ -66,9 +64,6 @@
 
     taps = [
       "1password/tap"
-      # "abridoux/formulae"
-      # "aerobounce/tap"
-      # "homebrew/bundle"
     ];
   };
 }
