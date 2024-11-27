@@ -6,7 +6,7 @@ let maxTime = 1
 
 def main [
 	on: string = "toggle" # On or off
-	--ignoreErrors: bool = false # No-op when http calls fail
+	--ignoreErrors = false # No-op when http calls fail
 ] {
 	try {
 		mut isOn = 0
