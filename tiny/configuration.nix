@@ -69,8 +69,8 @@
   # fast dbus
   # services.dbus.implementation = "broker";
 
-  fileSystems."/mnt/Stash" = {
-    device = "/dev/sda1";
-    fsType = "ext4";
-  };
+  # fileSystems."/mnt/Stash" = {
+  #   device = "/dev/sda1";
+  #   fsType = "ext4";
+  # };
 }
