@@ -280,6 +280,26 @@
         "type": "github"
       }
     },
+    "nixvirt": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1729962349,
+        "narHash": "sha256-IJXoaJ8s8nXkFjdrgg6tsytR/gEhztoTYXRRVtR5NTQ=",
+        "owner": "AshleyYakeley",
+        "repo": "NixVirt",
+        "rev": "a95847465536bc8ebfcd677672141d79cd13ba3c",
+        "type": "github"
+      },
+      "original": {
+        "owner": "AshleyYakeley",
+        "repo": "NixVirt",
+        "type": "github"
+      }
+    },
     "nuschtosSearch": {
       "inputs": {
         "flake-utils": "flake-utils",
@@ -308,7 +328,8 @@
         "darwin": "darwin",
         "home-manager": "home-manager",
         "nixpkgs": "nixpkgs",
-        "nixvim": "nixvim"
+        "nixvim": "nixvim",
+        "nixvirt": "nixvirt"
       }
     },
     "systems": {

@@ -22,6 +22,7 @@ with pkgs; [
   gitui
   # go
   gron
+  inetutils
   jid
   jq
   kubectl
@@ -60,4 +61,3 @@ with pkgs; [
 #   obsidian
 #   # dockutil
 # ])
-

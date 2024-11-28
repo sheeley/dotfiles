@@ -27,6 +27,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    nixvirt = {
+      url = "github:AshleyYakeley/NixVirt";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     # flake-utils = {
     #   url = "github:numtide/flake-utils";
     # };
@@ -38,6 +43,7 @@
     home-manager,
     darwin,
     nixvim,
+    nixvirt,
     # flake-utils,
   } @ inputs: let
     legacyDarwinPackages = nixpkgs.lib.genAttrs ["aarch64-darwin"] (
@@ -62,11 +68,15 @@
           config.allowUnfree = true;
         }
     );
+
+    stdenv = legacyNixPackages.stdenv;
+
     sharedModules = [
       ./environment.nix
       ./home.nix
       ./system.nix
     ];
+
     sharedDarwinModules =
       [
         home-manager.darwinModules.home-manager
@@ -74,6 +84,7 @@
         ./homebrew.nix
       ]
       ++ sharedModules;
+
     private =
       if builtins.currentSystem == "aarch64-darwin"
       then legacyDarwinPackages.aarch64-darwin.callPackage ~/.nix-private/private.nix {}
@@ -150,6 +161,8 @@
         [
           home-manager.nixosModules.home-manager
           ./tiny/configuration.nix
+          nixvirt.nixosModules.default
+          ./tiny/home-assistant.nix
         ]
         ++ sharedModules;
 
@@ -157,6 +170,7 @@
         inherit inputs;
         user = "sheeley";
         private = private;
+        nixvirt = nixvirt;
       };
     };
 

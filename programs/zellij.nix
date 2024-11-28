@@ -7,6 +7,7 @@
     settings = {
       copy_command = "pbcopy";
       default_layout = "compact";
+      mouse_mode = false;
     };
     #       keybinds {
     #     // keybinds are divided into modes

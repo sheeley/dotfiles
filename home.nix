@@ -25,6 +25,7 @@ in {
     pkgs,
     ...
   }: {
+    # services.ssh-agent.enable = true;
     programs.bash.enable = true;
     programs.home-manager.enable = true;
 
