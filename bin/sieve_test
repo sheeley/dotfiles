@@ -1,12 +1,19 @@
 #! /usr/bin/env bash
 set -euo pipefail # x
 
+TEST_EMAIL_FILE="$1"
+if [[ "$TEST_EMAIL_FILE" != /* ]]; then
+	TEST_EMAIL_FILE="$(pwd)/$1"
+fi
+
 (
 	cd "$PRIVATE_TOOLS_DIR"
-	./bin/sieve.swift >aigee-mail.sieve
+	swift run --package-path sieve-gen/ 1>aigee-mail.sieve
 	TMP_SIEVE=$(mktemp)
 	cp aigee-mail.sieve "$TMP_SIEVE"
 	sed -i'' -e 's/# require/require/' "$TMP_SIEVE"
 
-	sieve-test -c ~/dotfiles/files/dovecot.conf "$TMP_SIEVE" "$1"
+	# -t trace file - "-" sends to stdout
+	# -T _level_ of trace: https://doc.dovecot.org/main/core/man/sieve-test.1.html#runtime-trace-debugging
+	sieve-test -t "-" -T level=matching -c ~/dotfiles/files/dovecot.conf "$TMP_SIEVE" "$TEST_EMAIL_FILE" | tail -n 30
 )
