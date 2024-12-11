@@ -20,7 +20,7 @@ fi
 set -u
 
 if command -v scutil &>/dev/null; then
-	rg 'TODO:' || true # ignore this
+	rg --pcre2 'TODO:(?!.*# ignore)' || true # ignore
 fi
 
 HN=$(hostname_wrapper)
