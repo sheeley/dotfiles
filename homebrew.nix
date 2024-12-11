@@ -31,7 +31,6 @@
     casks =
       [
         "1password"
-        # TODO: this constantly updates
         "1password/tap/1password-cli"
         # "eloston-chromium"
         "iterm2"
