@@ -35,6 +35,7 @@ in {
         };
 
         diff = {
+          algorithm = "patience";
           meta = "yellow bold";
           frag = "magenta bold";
           old = "red bold";

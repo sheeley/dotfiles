@@ -9,7 +9,14 @@ set -euo pipefail # x
 		# skip for local testing
 		exit 0
 	fi
-	git diff aigee-mail.sieve
+
+	set +e
+	git diff --exit-code aigee-mail.sieve
+	DIFF_CODE=$?
+	set -e
+	if [[ "$DIFF_CODE" -eq 0 ]]; then
+		exit 0
+	fi
 
 	TMP_SIEVE=$(mktemp)
 	cp aigee-mail.sieve "$TMP_SIEVE"
