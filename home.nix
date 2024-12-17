@@ -119,6 +119,7 @@ in {
         clone = "git clone";
         la = "ls -la";
         v = "vim .";
+        vdot = "vim ~/dotfiles";
       };
     };
   };
