@@ -11,10 +11,11 @@ set -euo pipefail # x
 	fi
 
 	set +e
-	git diff --exit-code aigee-mail.sieve
+	git --paginate diff --patience --color=always --exit-code aigee-mail.sieve
 	DIFF_CODE=$?
 	set -e
 	if [[ "$DIFF_CODE" -eq 0 ]]; then
+		echo "no changes."
 		exit 0
 	fi
 
