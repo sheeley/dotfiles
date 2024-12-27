@@ -86,8 +86,12 @@ fi
 if [[ "$IS_MAC" ]]; then
 	echo "darwin-rebuild"
 
-	sudo mv -f /etc/bashrc /etc/bashrc.backup-before-nix
-	sudo mv -f /etc/zshrc /etc/bashrc.backup-before-nix
+	if [[ -f /etc/bashrc ]]; then
+		sudo mv -f /etc/bashrc /etc/bashrc.backup-before-nix
+	fi
+	if [[ -f /etc/zshrc ]]; then
+		sudo mv -f /etc/zshrc /etc/bashrc.backup-before-nix
+	fi
 
 	./result/sw/bin/darwin-rebuild switch --flake . --impure
 else
