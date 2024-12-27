@@ -31,6 +31,7 @@
         "1password"
         "1password/tap/1password-cli"
         # "eloston-chromium"
+        "ghostty"
         "iterm2"
         # "little-snitch"
         "obsidian"
