@@ -90,6 +90,8 @@ in {
       file = {
         ".mongorc.js".text = builtins.readFile ./files/.mongorc.js;
         ".swiftformat".text = builtins.readFile ./files/.swiftformat;
+        ".config/ghostty/config".text = builtins.readFile ./files/ghostty;
+
         # ".swiftlint.yml".text = builtins.readFile ./files/.swiftlint.yml;
         # ".vim/ftdetect/toml.vim".text = "autocmd BufNewFile,BufRead *.toml set filetype=toml";
 
