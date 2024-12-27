@@ -85,6 +85,10 @@ fi
 
 if [[ "$IS_MAC" ]]; then
 	echo "darwin-rebuild"
+
+	sudo mv -f /etc/bashrc /etc/bashrc.backup-before-nix
+	sudo mv -f /etc/zshrc /etc/bashrc.backup-before-nix
+
 	./result/sw/bin/darwin-rebuild switch --flake . --impure
 else
 	sudo nixos-rebuild switch --flake . --impure
