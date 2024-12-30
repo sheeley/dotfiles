@@ -56,6 +56,7 @@
       "Pure Paste" = 1611378436;
       "Reeder" = 1529448980;
       "Remove Web Limits" = 1626843895;
+      "Sim Daltonism" = 693112260;
       "Space Gremlin" = 414515628;
       "The Unarchiver" = 425424353;
       "Watchdog" = 734258109;
