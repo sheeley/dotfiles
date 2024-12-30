@@ -3,11 +3,9 @@
   user,
   ...
 }: {
-  # TODO: this currently rebuilds swift-5.8 every time
-  # disabling until that is resolved.
-  # imports = [
-  #   ./dock.nix
-  # ];
+  imports = [
+    ./dock.nix
+  ];
   system = {
     stateVersion = 5;
   };
