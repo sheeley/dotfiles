@@ -15,7 +15,7 @@
   nix = {
     settings = {
       # Add substituter for local cache
-      substituters = ["http://nix-cache.aigee.org"];
+      # substituters = ["http://nix-cache.aigee.org"];
       # "http://192.168.1.17"];
 
       # extra-nix-path = "nixpkgs=flake:nixpkgs";
