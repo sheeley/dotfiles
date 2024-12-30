@@ -14,10 +14,43 @@
         "$git_commit"
         "$git_state"
         "\${custom.git_status_simplified}"
+        "$docker_context"
+        "$package"
+        "$deno"
+        "$golang"
+        "$helm"
+        "$nodejs"
+        "$python"
+        "$ruby"
+        "$rust"
+        "$swift"
+        "$terraform"
+        "$nix_shell"
+        "$aws"
+        "$direnv"
+        "$env_var"
+        "$sudo"
         "$jobs"
+        "$battery"
+        "$status"
+        "$os"
+        "$container"
+        "$shell"
         "$cmd_duration"
         "$line_break"
         "$character"
+
+        # "$time| "
+        # "$hostname"
+        # "$directory"
+        # "$git_branch"
+        # "$git_commit"
+        # "$git_state"
+        # "\${custom.git_status_simplified}"
+        # "$jobs"
+        # "$cmd_duration"
+        # "$line_break"
+        # "$character"
       ];
 
       git_branch = {
@@ -54,6 +87,10 @@
 
       hostname = {
         style = "bold red";
+      };
+
+      direnv = {
+        disabled = false;
       };
 
       custom = {
