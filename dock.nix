@@ -5,7 +5,8 @@
 
   local.dock.enable = true;
   local.dock.entries = [
-    {path = "/Applications/iTerm.app/";}
+    # {path = "/Applications/iTerm.app/";}
+    {path = "/Applications/Ghostty.app/";}
     {path = "/System/Volumes/Preboot/Cryptexes/App/System/Applications/Safari.app";}
     {path = "/System/Applications/Mail.app/";}
     {path = "/System/Applications/Calendar.app/";}
