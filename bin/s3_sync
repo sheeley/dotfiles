@@ -16,7 +16,8 @@ for DIR in $DIRS; do
 		echo "sync $DIR? [y/N]"
 		read -r GO
 		if [ "$GO" == "y" ]; then
-			PYTHONPATH="" aws --profile "$PROFILE" s3 sync --delete --acl public-read "$DIR" "s3://$DIR"
+			# PYTHONPATH="" aws --profile "$PROFILE" s3 sync --delete --acl public-read "$DIR" "s3://$DIR"
+			PYTHONPATH="" aws --profile "$PROFILE" s3 sync --delete "$DIR" "s3://$DIR"
 		fi
 	fi
 done
