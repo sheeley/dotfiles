@@ -30,5 +30,9 @@
     # enableFishIntegration is unecessary, works by default
     enableNushellIntegration = true;
     enableZshIntegration = true;
+
+    config = {
+      warn_timeout = 0;
+    };
   };
 }
