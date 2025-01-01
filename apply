@@ -34,6 +34,7 @@ if ! ssh-add -l >/dev/null; then
 fi
 set -e
 
+OSC="nixosConfigurations"
 if [[ "$IS_MAC" ]]; then
 	OSC="darwinConfigurations"
 
@@ -48,15 +49,27 @@ VALID_HOSTNAMES=$(get-flake-configurations)
 
 if [[ ! "${VALID_HOSTNAMES[*]}" =~ $HN ]]; then
 	echo "invalid hostname: '$HN'"
-	if [[ "$IS_MAC" ]]; then
-		echo "sudo scutil --set LocalHostName ..."
-	elif [[ "$IS_NIX" ]]; then
-		echo "put in /etc/nixos/configuration.nix: "
-		echo "networking.hostName = \"$HN\";"
-		echo "sudo nixos-build switch"
-		echo "sudo reboot"
+	if confirm "override hostname?"; then
+		while true; do
+			read -r FAUX_HOST
+			if [[ "${VALID_HOSTNAMES[*]}" =~ $FAUX_HOST ]]; then
+				if confirm "use $FAUX_HOST?"; then
+					HN="$FAUX_HOST"
+					break
+				fi
+			fi
+		done
+	else
+		if [[ "$IS_MAC" ]]; then
+			echo "sudo scutil --set LocalHostName ..."
+		elif [[ "$IS_NIX" ]]; then
+			echo "put in /etc/nixos/configuration.nix: "
+			echo "networking.hostName = \"$HN\";"
+			echo "sudo nixos-rebuild switch"
+			echo "sudo reboot"
+		fi
+		exit 1
 	fi
-	exit 1
 fi
 
 if [[ "$IS_MAC" ]]; then

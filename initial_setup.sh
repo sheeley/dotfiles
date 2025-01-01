@@ -13,6 +13,9 @@ if [[ "$OS" == *"Darwin"* ]]; then
 	IS_MAC=true
 fi
 
+YELLOW="\033[1;33m"
+RESET="\033[0m"
+
 confirm() {
 	echo -n "${1:-Continue?} [y/N] "
 	read -r CONFIRM
@@ -32,13 +35,22 @@ set_hostname() {
 		elif [[ "$IS_NIX" ]]; then
 			echo "put in /etc/nixos/configuration.nix: "
 			echo "networking.hostName = \"$NEW_HOST\";"
-			echo "sudo nixos-build switch"
+			echo "sudo nixos-rebuild switch"
 			echo "sudo reboot"
 		fi
 	else
 		return 1
 	fi
 }
+
+if [[ "sheeley" != $(whoami) ]]; then
+	if confirm "username is $(whoami), change to sheeley?"; then
+		sudo useradd -m -G wheel -s /run/current-system/sw/bin/bash
+		sudo passwd sheeley
+		sudo su sheeley
+		cd "$HOME"
+	fi
+fi
 
 EMAIL=""
 # generate ssh key
@@ -65,10 +77,16 @@ fi
 
 if [[ "$IS_NIX" ]]; then
 	# git to clone the repo, ripgrep to run ./apply
-	echo "installing git and ripgrep"
-	nix-env -iA nixos.git nixos.ripgrep
+	if ! command -v git &>/dev/null; then
+		nix-env -iA nixos.git
+	fi
+
+	if ! command -v rg &>/dev/null; then
+		nix-env -iA nixos.ripgrep
+	fi
 fi
 
+HOST=$(hostname)
 if [[ "$IS_MAC" ]]; then
 	# nix-darwin can't install brew.
 	if ! command -v brew &>/dev/null; then
@@ -103,7 +121,6 @@ if [[ "$IS_MAC" ]]; then
 		fi
 	fi
 
-	HOST=$(hostname)
 	if command -v scutil &>/dev/null; then
 		HOST=$(scutil --get HostName)
 	fi
@@ -117,15 +134,17 @@ fi
 
 if [ ! -f ~/.gh_done ]; then
 	# store key in github
+	echo -e "$YELLOW"
 	cat ~/.ssh/id_ed25519.pub
-	echo 'Generate token: https://github.com/settings/tokens/new?scopes=gist,public_repo,workflow&description=Homebrew'
-	echo 'SSH Key: https://github.com/settings/keys'
-	if confirm "Copy token to clipboard and open browser ^?"; then
-		pbcopy <~/.ssh/id_ed25519.pub
-		open 'https://github.com/settings/tokens/new?scopes=gist,public_repo,workflow&description=Homebrew'
+	echo 'Input SSH Key: https://github.com/settings/keys'
+	echo -e "$RESET"
+	if confirm "Copy public key to clipboard and open browser ^?"; then
+		if command -v pbcopy &>/dev/null; then
+			pbcopy <~/.ssh/id_ed25519.pub
+		fi
 		open https://github.com/settings/keys
-		touch ~/.gh_done
 	fi
+	touch ~/.gh_done
 fi
 
 set +u
@@ -135,6 +154,13 @@ if [ "$HOMEBREW_GITHUB_API_TOKEN" == "" ]; then
 		HOMEBREW_GITHUB_API_TOKEN=$(cat ~/.gh_token)
 	fi
 	if [ "$HOMEBREW_GITHUB_API_TOKEN" == "" ]; then
+
+		echo 'Generate a token at https://github.com/settings/tokens/new?scopes=gist,public_repo,workflow&description=Homebrew'
+		if confirm "open a browser to go to github to create a token for homebrew?"; then
+			set -x
+			open 'https://github.com/settings/tokens/new?scopes=gist,public_repo,workflow&description=Homebrew'
+			set +x
+		fi
 		echo "Enter Github token"
 		read -r HOMEBREW_GITHUB_API_TOKEN
 		export HOMEBREW_GITHUB_API_TOKEN
@@ -143,7 +169,13 @@ if [ "$HOMEBREW_GITHUB_API_TOKEN" == "" ]; then
 fi
 set -u
 
-if [ ! -d ~/dotfiles ]; then
+if [ -d ~/dotfiles ]; then
+	echo "pulling latest dotfiles"
+	(
+		cd ~/dotfiles
+		git pull
+	)
+else
 	git clone git@github.com:sheeley/dotfiles.git ~/dotfiles
 fi
 
@@ -151,16 +183,55 @@ if [ ! -f ~/.nix-private/private.nix ]; then
 	mkdir -p ~/.nix-private
 	cp ~/dotfiles/private.nix ~/.nix-private/private.nix
 	echo "set values in ~/.nix-private/private.nix"
-	sed -i "" "s/EMAIL_HERE/$EMAIL/g" ~/.nix-private/private.nix
+	if [[ "$IS_MAC" ]]; then
+		sed -i "" "s/EMAIL_HERE/$EMAIL/g" ~/.nix-private/private.nix
+		sed -i "" "s/EMAIL_HERE/$EMAIL/g" ~/.nix-private/private.nix
+	else
+		sed -i "s/GH_TOKEN_HERE/$HOMEBREW_GITHUB_API_TOKEN/g" ~/.nix-private/private.nix
+		sed -i "s/EMAIL_HERE/$EMAIL/g" ~/.nix-private/private.nix
+	fi
+	echo "BLAH" >~/.gh_token
 fi
 
 if [[ "$IS_MAC" ]]; then
 	confirm "Log in to App Store then hit enter"
-	(
-		cd ~/dotfiles || exit
-		./apply
-	)
+fi
 
+if [[ "$IS_NIX" && ! -d "$HOME/dotfiles/$(hostname)" ]]; then
+	if confirm "Change from current hostname: $HOST?"; then
+		while true; do
+			set_hostname && break
+		done
+	fi
+	if confirm "Make a new directory for this host?"; then
+		echo "mkdir $(hostname)"
+		echo "cp /etc/nixos/*.nix ./$(hostname)/"
+		echo ""
+		echo "ensure configuration.nix has:"
+		echo "networking.hostName = \"$(hostname)\";"
+		echo ""
+		if confirm "apply changes and reboot?"; then
+			sudo nixos-rebuild switch
+			sudo reboot
+		else
+			echo "sudo nixos-rebuild switch"
+			echo "sudo reboot"
+			exit 1
+		fi
+	fi
+fi
+
+echo ""
+if confirm "Customize private.nix"; then
+	$EDITOR ~/.nix-private/private.nix
+fi
+
+(
+	cd ~/dotfiles || exit
+	./apply
+)
+
+if [[ "$IS_MAC" ]]; then
 	if [[ "$SHELL" != "/run/current-system/sw/bin/fish" ]]; then
 		echo "Shell isn't fish - may want to chsh!"
 		# if cat /etc/shells | grep /run/current-system/sw/bin/fish; then
@@ -170,25 +241,3 @@ if [[ "$IS_MAC" ]]; then
 		# fi
 	fi
 fi
-
-if [[ "$IS_NIX" ]]; then
-	echo "mkdir $(hostname)"
-	echo "cp /etc/nixos/*.nix ./$(hostname)/"
-	echo ""
-	echo "maybe change hostname from $(hostname)?"
-	echo "put in /etc/nixos/configuration.nix: "
-	echo "networking.hostName = \"$NEW_HOST\";"
-	echo ""
-	echo "sudo nixos-build switch"
-	echo "sudo reboot"
-fi
-
-echo ""
-echo ""
-echo "rm ~/.gh_token"
-echo ""
-echo "Customize private.nix"
-echo "$EDITOR ~/.nix-private/private.nix"
-echo ""
-echo "cd ~/dotfiles"
-echo "./apply"
