@@ -1,7 +1,6 @@
 {...}: let
-  # TODO: swap these for dynamic IPs
   hostname = "nix-cache.aigee.org";
-  resolverIp = "8.8.8.8";
+  resolverIp = "192.168.1.1";
   cacheDirectory = "/var/cache/nginx/";
 in {
   networking.firewall.allowedTCPPorts = [80];
