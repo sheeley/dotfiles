@@ -1,0 +1,14 @@
+#! /usr/bin/env bash
+set -euo pipefail
+
+OS=$(uname -a)
+HN=$(hostname_wrapper)
+
+OSC="nixosConfigurations"
+if [[ "$OS" == *"Darwin"* ]]; then
+	OSC="darwinConfigurations"
+	nix why-depends ".#${OSC}.${HN}.system" --impure --extra-experimental-features "nix-command flakes" "github:nixos/nixpkgs#$1"
+	nix why-depends ".#${OSC}.${HN}.system" --impure --extra-experimental-features "nix-command flakes" --derivation "github:nixos/nixpkgs#$1"
+else
+	nix why-depends ".#${OSC}.${HN}.config.system.build.toplevel" --impure --extra-experimental-features "nix-command flakes" "github:nixos/nixpkgs#$1"
+fi

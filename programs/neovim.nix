@@ -55,14 +55,14 @@ in {
       scrolloff = 7;
       shiftwidth = 4;
       signcolumn = "yes";
-      spell = true;
+      spell = false;
       tabstop = 4;
       termguicolors = true;
       undodir = "${config.home.homeDirectory}/.nvim/undodir";
       undofile = true;
       updatetime = 100;
       shortmess = "c";
-      shell = "${pkgs.zsh}/bin/zsh";
+      shell = "${pkgs.fish}/bin/fish";
       # can't use this with noice
       # lazyredraw = true;
     };
@@ -188,7 +188,7 @@ in {
       sources = {
         diagnostics = {
           # shellcheck.enable = true;
-          cppcheck.enable = true;
+          # cppcheck.enable = true;
           gitlint.enable = true;
         };
         #        code_actions = {
@@ -197,7 +197,7 @@ in {
         formatting = {
           alejandra.enable = true;
           black.enable = true;
-          stylua.enable = true;
+          # stylua.enable = true;
           cbfmt.enable = true;
           shfmt.enable = true;
           # taplo.enable = true;
@@ -348,9 +348,9 @@ in {
     };
 
     plugins.vim-matchup = {
-      treesitterIntegration = {
+      treesitter = {
         enable = true;
-        includeMatchWords = true;
+        include_match_words = true;
       };
       enable = true;
     };
@@ -464,24 +464,26 @@ in {
     plugins.noice = {
       enable = true;
 
-      messages = {
-        view = "mini";
-        viewError = "mini";
-        viewWarn = "mini";
-      };
+      settings = {
+        messages = {
+          view = "mini";
+          viewError = "mini";
+          viewWarn = "mini";
+        };
 
-      lsp.override = {
-        "vim.lsp.util.convert_input_to_markdown_lines" = true;
-        "vim.lsp.util.stylize_markdown" = true;
-        "cmp.entry.get_documentation" = true;
-      };
+        lsp.override = {
+          "vim.lsp.util.convert_input_to_markdown_lines" = true;
+          "vim.lsp.util.stylize_markdown" = true;
+          "cmp.entry.get_documentation" = true;
+        };
 
-      presets = {
-        bottom_search = true;
-        command_palette = true;
-        long_message_to_split = true;
-        inc_rename = true;
-        lsp_doc_border = false;
+        presets = {
+          bottom_search = true;
+          command_palette = true;
+          long_message_to_split = true;
+          inc_rename = true;
+          lsp_doc_border = false;
+        };
       };
     };
 

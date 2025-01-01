@@ -26,7 +26,10 @@ with pkgs; [
   lz4 # Fast compression/decompression utility
   moreutils # Collection of additional Unix utilities (e.g., `ts`, `sponge`)
   ncdu # Disk usage analyzer with an interactive interface
-  nerdfonts # Patched fonts for terminal icons and ligatures
+  # nerdfonts # Patched fonts for terminal icons and ligatures
+  nerd-fonts.fira-mono
+  nerd-fonts.fira-code
+
   nix-diff # Tool for showing differences between Nix derivations
   nix-tree # Visualize Nix dependency trees
   nvd # Nix/NixOS package version diff tool
