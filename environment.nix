@@ -20,8 +20,7 @@ in {
     ]
     ++ ((lib.optionals (lib.hasAttr "personal" private && private.personal)) [
       # personal only
-      # TODO: bring back
-      # ./programs/tailscale.nix
+      # ./programs/tailscale.nix - if desired again
     ]);
   users.users.${user} = {
     # TODO: nix-darwin can't manage login shell yet

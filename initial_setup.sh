@@ -41,13 +41,13 @@ set_hostname() {
 }
 
 EMAIL=""
-# TODO: XCode doesn't like ed25519. Maybe generate more than one? Hrm.
 # generate ssh key
 if [ ! -f ~/.ssh/id_ed25519 ]; then
 	if [ "$EMAIL" == "" ]; then
 		echo "Enter email to use for ssh key"
 		read -r EMAIL
 	fi
+	echo "At this point, XCode doesn't like ed25519. Maybe generate more than one? Hrm."
 	set -x
 	ssh-keygen -t ed25519 -C "$EMAIL"
 	eval "$(ssh-agent -s)"

@@ -179,6 +179,10 @@ in {
       }
     ];
 
+    plugins.todo-comments = {
+      enable = true;
+    };
+
     plugins.none-ls = {
       enable = true;
       sources = {

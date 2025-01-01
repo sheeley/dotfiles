@@ -99,7 +99,7 @@ in {
         # ".swiftlint.yml".text = builtins.readFile ./files/.swiftlint.yml;
         # ".vim/ftdetect/toml.vim".text = "autocmd BufNewFile,BufRead *.toml set filetype=toml";
 
-        # TODO: this always changes?
+        # for right now, seems more effective to just copy .npmrc
         # link instead of make a real file because this needs to be modified to login/etc
         # ".npmrc".source = config.lib.file.mkOutOfStoreSymlink ./files/.npmrc;
 
