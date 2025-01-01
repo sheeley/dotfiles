@@ -14,6 +14,7 @@
     if pkgs.system == "aarch64-darwin"
     then "Users"
     else "home";
+  homeDir = "/${prefix}/${user}";
 in {
   imports =
     [
@@ -26,7 +27,7 @@ in {
     # TODO: nix-darwin can't manage login shell yet
     shell = pkgs.fish;
     name = user;
-    home = "/${prefix}/${user}";
+    home = homeDir;
   };
 
   programs.zsh.enable = true;
@@ -43,11 +44,11 @@ in {
   system.activationScripts = {
     preActivation.text = ''
       DIRS=(
-      	"$HOME/.ssh/control"
-      	"$HOME/Screenshots"
-      	"$HOME/projects/sheeley"
-      	"$HOME/bin"
-      	"$HOME/scratch"
+      	"${homeDir}/.ssh/control"
+      	"${homeDir}/Screenshots"
+      	"${homeDir}/projects/sheeley"
+      	"${homeDir}/bin"
+      	"${homeDir}/scratch"
       )
       for DIR in "''${DIRS[@]}"; do
       	mkdir -p "$DIR"
