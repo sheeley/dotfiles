@@ -12,8 +12,8 @@
 
     onActivation = {
       autoUpdate = true;
-      # TODO: uninstall is great for machines without any other brew deps
-      # cleanup = "uninstall"; # use "uninstall" if you want to manage everything; zap removes configuration and cache also.
+      # use "uninstall" if you want nix to manage everything; zap removes configuration and cache also.
+      # cleanup = "uninstall";
       upgrade = true;
     };
 

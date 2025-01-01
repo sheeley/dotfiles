@@ -5,17 +5,7 @@ PATH="$PATH:./bin"
 
 HN=$(hostname_wrapper)
 
-OSC="nixosConfigurations"
-
-OS=$(uname -a)
-if [[ "$OS" == *"Darwin"* ]]; then
-	OSC="darwinConfigurations"
-fi
-
-# TODO: is there a cleaner way of doing this?
-# this doesn't work with darwinConfigurations yet.
-# nix flake show --extra-experimental-features "flakes nix-command" --impure .
-VALID_HOSTNAMES=$(grep "$OSC" flake.nix | grep -o '".*"' | sed 's/"//g')
+VALID_HOSTNAMES=$(get-flake-configurations)
 
 if [[ ! "${VALID_HOSTNAMES[*]}" =~ $HN ]]; then
 	echo "invalid hostname: '$HN'"
@@ -23,8 +13,9 @@ if [[ ! "${VALID_HOSTNAMES[*]}" =~ $HN ]]; then
 	exit 1
 fi
 
+echo "rebuild"
+OS=$(uname -a)
 if [[ "$OS" == *"Darwin"* ]]; then
-	echo "darwin-rebuild"
 	./result/sw/bin/darwin-rebuild --rollback switch --flake . --impure
 else
 	sudo nixos-rebuild --rollback switch --flake . --impure

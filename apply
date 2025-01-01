@@ -34,8 +34,6 @@ if ! ssh-add -l >/dev/null; then
 fi
 set -e
 
-OSC="nixosConfigurations"
-
 if [[ "$IS_MAC" ]]; then
 	OSC="darwinConfigurations"
 
@@ -46,10 +44,7 @@ if [[ "$IS_MAC" ]]; then
 	set -e
 fi
 
-# TODO: is there a cleaner way of doing this?
-# this doesn't work with darwinConfigurations yet.
-# nix flake show --extra-experimental-features "flakes nix-command" --impure .
-VALID_HOSTNAMES=$(grep "$OSC" flake.nix | grep -o '".*"' | sed 's/"//g')
+VALID_HOSTNAMES=$(get-flake-configurations)
 
 if [[ ! "${VALID_HOSTNAMES[*]}" =~ $HN ]]; then
 	echo "invalid hostname: '$HN'"

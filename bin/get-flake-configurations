@@ -1,0 +1,14 @@
+#! /usr/bin/env bash
+set -euo pipefail
+
+# TODO: is there a cleaner way of doing this?
+# this doesn't work with darwinConfigurations yet.
+# nix flake show --extra-experimental-features "flakes nix-command" --impure .
+
+OS=$(uname -a)
+OSC="nixosConfigurations"
+if [[ "$OS" == *"Darwin"* ]]; then
+	OSC="darwinConfigurations"
+fi
+
+grep "$OSC" flake.nix | grep -o '".*"' | sed 's/"//g'

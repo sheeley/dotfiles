@@ -9,7 +9,7 @@
       "media-folder-url" = "file:///Users/${user}/Media/Music/";
     };
 
-    # TODO: try this
+    # TODO: try this to manage photo library location? is that something I want to do?
     # "com.apple.photolibraryd" = {
     #   SystemLibraryPath = "/Users/${user}/Media/Photos Library.photoslibrary";
     # };

@@ -72,7 +72,7 @@ in {
 
     (lib.mkIf (cfg.enable) {
       # && config.module.programs.homebrew.enable) {
-      # TODO: move back to nix package eventually
+      # TODO: move back to nix package eventually - can re-enable in darwin.nix
       homebrew.brews = ["dockutil"];
 
       system.activationScripts.postUserActivation.text = ''

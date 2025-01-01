@@ -42,6 +42,7 @@ with pkgs; [
   ssh-copy-id # Add SSH public key to a remote machine
   sshfs # Mount remote directories over SSH
   tldr # Community-driven man pages with practical examples
+  tailspin # Log file highlighter
   tre-command # Modern `tree` command alternative
   ugrep # Ultra-fast grep alternative with additional features
   uv # Disk usage analyzer

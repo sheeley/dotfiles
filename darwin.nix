@@ -28,8 +28,6 @@
 
   home-manager.users.${user} = {...}: {
     home.packages = [
-      # TODO: see above
-      # pkgs.dockutil
       pkgs.obsidian
     ];
 

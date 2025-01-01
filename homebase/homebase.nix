@@ -44,15 +44,13 @@ in {
         storagePath = "${storagePath}";
       };
 
-      # TODO: set this up
-      #       file.".smtp.json".source = ""
-      # {
-      # 	"hostname": "",
-      # 	"email": "",
-      # 	"password": ""
-      # }
-      #
-      #         "";
+      file.".smtp.json".text = ''
+        {
+        	"hostname": "${private.emailHostname}",
+        	"email": "${private.email}",
+        	"password": "${private.emailPassword}"
+        }
+      '';
     };
   };
 
