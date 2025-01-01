@@ -2,7 +2,9 @@
   pkgs,
   user,
   ...
-}: {
+}: let
+  cacheHost = "nix-cache.aigee.org";
+in {
   imports = [
     ./dock.nix
   ];
@@ -13,7 +15,7 @@
   nix = {
     settings = {
       # Add substituter for local cache
-      # substituters = ["http://nix-cache.aigee.org"];
+      substituters = ["http://${cacheHost}"];
       # "http://192.168.1.17"];
 
       # extra-nix-path = "nixpkgs=flake:nixpkgs";
@@ -34,7 +36,7 @@
     programs.ssh = {
       extraConfig = ''
         # Ensure the local cache fails fast so fallback can happen
-        Host lab.aigee.org
+        Host ${cacheHost}
             ConnectTimeout 3
       '';
     };
@@ -43,8 +45,11 @@
   services.nix-daemon.enable = true;
 
   fonts.packages = [
-    pkgs.nerdfonts
+    pkgs.nerd-fonts.fira-mono
+    pkgs.nerd-fonts.fira-code
   ];
+  # to turn all on:
+  # fonts.packages = [ ... ] ++ builtins.filter lib.attrsets.isDerivation (builtins.attrValues pkgs.nerd-fonts)
 
   #system.keyboard.enableKeyMapping = true;
   security.pam.enableSudoTouchIdAuth = true;

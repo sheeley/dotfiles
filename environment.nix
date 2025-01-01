@@ -24,7 +24,6 @@ in {
       # ./programs/tailscale.nix - if desired again
     ]);
   users.users.${user} = {
-    # TODO: nix-darwin can't manage login shell yet
     shell = pkgs.fish;
     name = user;
     home = homeDir;

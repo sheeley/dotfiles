@@ -1,8 +1,6 @@
 {...}: {
   nix = {
-    settings = {
-      auto-optimise-store = true;
-    };
+    optimise.automatic = true;
     extraOptions = ''
       experimental-features = nix-command flakes
 
