@@ -1,13 +1,12 @@
 {...}: {
   email = "EMAIL_HERE";
-  # workEmail = "";
-
-  githubSecret = "";
-
+  githubSecret = "GH_TOKEN_HERE";
   personal = false;
 
-  emailHostname = "";
-  emailPassword = "";
+  # workEmail = "";
+
+  # emailHostname = "";
+  # emailPassword = "";
   # borgSecret = "";
   # borgUser = "";
 

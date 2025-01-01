@@ -3,5 +3,5 @@
 ## Usage
 
 ```sh
-bash -c "$(curl -fsSL https://raw.githubusercontent.com/sheeley/dotfiles/main/initial_setup.sh)"
+bash -c "$(curl -fsSL https://raw.githubusercontent.com/sheeley/dotfiles/refs/heads/main/initial_setup.sh)"
 ```
