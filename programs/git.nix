@@ -1,10 +1,9 @@
 {
   lib,
-  pkgs,
+  # pkgs,
   private,
   ...
-}: let
-in {
+}: {
   programs.git = {
     enable = true;
 
