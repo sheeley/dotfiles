@@ -29,7 +29,6 @@ with pkgs; [
   # nerdfonts # Patched fonts for terminal icons and ligatures
   nerd-fonts.fira-mono
   nerd-fonts.fira-code
-
   nix-diff # Tool for showing differences between Nix derivations
   nix-tree # Visualize Nix dependency trees
   nvd # Nix/NixOS package version diff tool
