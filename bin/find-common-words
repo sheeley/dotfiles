@@ -1,0 +1,4 @@
+#! /usr/bin/env bash
+set -euo pipefail
+
+find . -type f -name "*.md" -exec cat {} + | tr '[:space:]' '[\n*]' | tr -d '[:punct:]' | tr '[:upper:]' '[:lower:]' | grep -v '^$' | sort | uniq -c | sort -nr | head -n 100
