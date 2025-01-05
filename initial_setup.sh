@@ -95,7 +95,7 @@ if [[ "$IS_MAC" ]]; then
 			echo "installing brew"
 			bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 			eval "\$(/opt/homebrew/bin/brew shellenv)"
-			brew install --cask 1password
+			brew install --cask 1password 1password/tap/1password-cli
 		fi
 	fi
 
@@ -147,6 +147,9 @@ if [ ! -f ~/.gh_done ]; then
 	touch ~/.gh_done
 fi
 
+if command -v op &>/dev/null; then
+	HOMEBREW_GITHUB_API_TOKEN=$(op read 'op://Personal/Homebrew Github Token/password')
+fi
 set +u
 if [ "$HOMEBREW_GITHUB_API_TOKEN" == "" ]; then
 	if [ -f ~/.gh_token ]; then
