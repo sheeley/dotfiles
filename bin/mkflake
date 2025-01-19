@@ -2,25 +2,25 @@
 
 let envrc_contents = "use flake ."
 let flake_contents = r#'
- {
-     description = "A new flake";
-     inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
-     inputs.flake-utils.url = "github:numtide/flake-utils";
-        outputs = { self, nixpkgs, flake-utils }:
-       flake-utils.lib.eachDefaultSystem (system:
-         let
-           pkgs = nixpkgs.legacyPackages.${system};
-         in
-         {
-           devShells.default = pkgs.mkShell {
-             buildInputs = with pkgs; [ terraform awscli2 ];
-  
-             shellHook = ''
-                echo "terraform `${pkgs.terraform}/bin/terraform --version`"
+{
+	description = "A new flake";
+	inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+    inputs.flake-utils.url = "github:numtide/flake-utils";
+    outputs = { self, nixpkgs, flake-utils }:
+	    flake-utils.lib.eachDefaultSystem (system:
+        let pkgs = nixpkgs.legacyPackages.${system};
+        in
+        {
+			devShells.default = pkgs.mkShell {
+            buildInputs = with pkgs; [ terraform ];
+			
+			shellHook = ''
+				# this prints out all the installed packages magically
+				nix eval .#devShells.aarch64-darwin.default.buildInputs --json | jq
              '';
-           };
-         }
-       );
+        	};
+        }
+	);
 }
 '#
 
