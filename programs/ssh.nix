@@ -14,6 +14,14 @@ Host homebase
   User sheeley
   # RequestTTY force
   # RemoteCommand zellij attach --create
+
+Host proxmox
+  HostName proxmox.aigee.org
+  User root
+
+Host pbs
+  HostName pbs.aigee.org
+  User root
       ";
   };
 }
