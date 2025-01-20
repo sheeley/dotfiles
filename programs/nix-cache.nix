@@ -1,6 +1,6 @@
 {...}: let
   hostname = "nix-cache.aigee.org";
-  resolverIp = "192.168.1.1";
+  resolverIp = "172.20.1.1";
   cacheDirectory = "/var/cache/nginx/";
 in {
   networking.firewall.allowedTCPPorts = [80];
