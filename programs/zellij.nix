@@ -6,7 +6,7 @@
     enableZshIntegration = false;
     settings = {
       copy_command = "pbcopy";
-      default_layout = "compact";
+      # default_layout = "compact";
     };
     #       keybinds {
     #     // keybinds are divided into modes
