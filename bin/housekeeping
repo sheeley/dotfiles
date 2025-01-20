@@ -52,8 +52,8 @@ check_git_status "$HOME/dotfiles/"
 check_git_status "$PRIVATE_TOOLS_DIR"
 
 # ensure applications are open and syncing
-open /Applications/Obsidian.app
-open /Volumes/Stash/Pictures/Photos\ Library.photoslibrary/
+open -j /Applications/Obsidian.app
+open -j /Volumes/Slash/Pictures/Photos\ Library.photoslibrary/
 
 # if [[ "$WORKMACHINE" = "true" ]]; then
 # 	exit
