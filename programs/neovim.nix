@@ -67,6 +67,8 @@ in {
       # lazyredraw = true;
     };
 
+    plugins.cmp-path = {enable = true;};
+
     plugins.nix = {
       enable = true;
     };
@@ -228,53 +230,70 @@ in {
 
     plugins.cmp = {
       enable = true;
+      autoEnableSources = true;
+      settings = {
+        mapping = {
+          "<C-Space>" = "cmp.mapping.complete()";
+          "<C-d>" = "cmp.mapping.scroll_docs(-4)";
+          "<C-e>" = "cmp.mapping.close()";
+          "<C-f>" = "cmp.mapping.scroll_docs(4)";
+          "<CR>" = "cmp.mapping.confirm({ select = true })";
+          # "<Tab>" = {
+          #   action = ''
+          #     function(fallback)
+          #       if cmp.visible() then
+          #         cmp.select_next_item()
+          #       elseif luasnip.expandable() then
+          #         luasnip.expand()
+          #       elseif luasnip.expand_or_jumpable() then
+          #         luasnip.expand_or_jump()
+          #       elseif check_backspace() then
+          #         fallback()
+          #       else
+          #         fallback()
+          #       end
+          #     end
+          #   '';
+          "<S-Tab>" = "cmp.mapping(cmp.mapping.select_prev_item(), {'i', 's'})";
+          "<Tab>" = "cmp.mapping(cmp.mapping.select_next_item(), {'i', 's'})";
+          # modes = ["i" "s"];
+          # };
+        };
+        snippet.expand = ''
+          function(args)
+            require('luasnip').lsp_expand(args.body)
+          end
+        '';
 
-      # snippet.expand = "luasnip";
+        completion = {
+          autocomplete = [
+            "require('cmp.types').cmp.TriggerEvent.TextChanged"
+          ];
+        };
 
-      #      mapping = {
-      #        "<CR>" = "cmp.mapping.confirm({select = true })";
-      #        "<C-d>" = "cmp.mapping.scroll_docs(-4)";
-      #        "<C-f>" = "cmp.mapping.scroll_docs(4)";
-      #        "<C-Space>" = "cmp.mapping.complete()";
-      #        "<Tab>" = ''
-      #          cmp.mapping(function(fallback)
-      #          if cmp.visible() then
-      #          cmp.select_next_item()
-      #          -- You could replace the expand_or_jumpable() calls with expand_or_locally_jumpable()
-      #          -- they way you will only jump inside the snippet region
-      #          elseif luasnip.expand_or_jumpable() then
-      #          luasnip.expand_or_jump()
-      #          elseif has_words_before() then
-      #          cmp.complete()
-      #          else
-      #          fallback()
-      #          end
-      #          end, { "i", "s" })
-      #        '';
-      #        "<S-Tab>" = ''
-      #          cmp.mapping(function(fallback)
-      #          if cmp.visible() then
-      #          cmp.select_prev_item()
-      #          elseif luasnip.jumpable(-1) then
-      #          luasnip.jump(-1)
-      #          else
-      #          fallback()
-      #          end
-      #          end, { "i", "s" })
-      #        '';
-      #        "<Down>" = "cmp.mapping(cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Select }), {'i'})";
-      #        "<Up>" = "cmp.mapping(cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Select }), {'i'})";
-      #      };
-
-      # sources = [
-      #      "function(args) require('luasnip').lsp_expand(args.body) end";
-      #        {name = "luasnip";}
-      #        {name = "nvim_lsp";}
-      #        {name = "path";}
-      #        {name = "buffer";}
-      #        {name = "calc";}
-      # ];
+        sources = [
+          {name = "nvim_lsp";}
+          {name = "path";}
+          {name = "buffer";}
+        ];
+      };
     };
+
+    # mapping = {
+    #   "<C-d>" = "cmp.mapping.scroll_docs(-4)";
+    #   "<C-f>" = "cmp.mapping.scroll_docs(4)";
+    #   "<C-Space>" = "cmp.mapping.complete()";
+    #   "<C-e>" = "cmp.mapping.close()";
+    #   "<Tab>" = {
+    #     modes = ["i" "s"];
+    #     action = "cmp.mapping.select_next_item()";
+    #   };
+    #   "<S-Tab>" = {
+    #     modes = ["i" "s"];
+    #     action = "cmp.mapping.select_prev_item()";
+    #   };
+    # "<CR>" = "cmp.mapping.confirm({ select = true })";
+    # };
 
     plugins.web-devicons = {
       enable = true;
