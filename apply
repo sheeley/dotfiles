@@ -85,13 +85,13 @@ if command -v nvd; then
 		exit 0
 	fi
 
-	if command -v nix-diff; then
-		nix-diff --line-oriented --context 5 /run/current-system result
-	fi
+	# if command -v nix-diff; then
+	# nix-diff --line-oriented --context 5 /run/current-system result
+	# fi
 
-	if opt_out "nix-diff ^ Continue?"; then
-		exit 0
-	fi
+	# if opt_out "nix-diff ^ Continue?"; then
+	# 	exit 0
+	# fi
 fi
 
 if [[ "$IS_MAC" ]]; then
