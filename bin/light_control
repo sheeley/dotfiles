@@ -1,8 +1,9 @@
 #! /usr/bin/env nu
 
-let host = "192.168.1.196"
+let host = "172.20.1.196"
+# keylight.local.aigee.org"
 let url = $"http://($host):9123/elgato/lights"
-let maxTime = 1
+let maxTime = "1sec" | into duration
 
 def main [
 	on: string = "toggle" # On or off
