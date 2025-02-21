@@ -8,4 +8,6 @@
       fallback = true
     '';
   };
+
+  nixpkgs.config.allowUnfree = true;
 }
