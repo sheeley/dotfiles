@@ -20,6 +20,7 @@
 
   services.coredns = {
     enable = true;
+    package = import ./coredns.nix {pkgs = pkgs;};
     config = ''
       local.aigee.org {
         mdns local.aigee.org
