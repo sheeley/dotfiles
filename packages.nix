@@ -17,6 +17,7 @@ with pkgs; [
   fzf # Command-line fuzzy finder for interactive filtering
   git # Version control system
   gitui # Terminal-based Git user interface
+  go # best language ever
   gron # Convert JSON into a grep-able format and back
   jid # Interactive JSON query tool
   jq # Lightweight JSON processor
@@ -44,7 +45,7 @@ with pkgs; [
   ssh-copy-id # Add SSH public key to a remote machine
   sshfs # Mount remote directories over SSH
   tldr # Community-driven man pages with practical examples
-  tailspin # Log file highlighter
+  # tailspin # Log file highlighter
   tre-command # Modern `tree` command alternative
   ugrep # Ultra-fast grep alternative with additional features
   uv # Disk usage analyzer
@@ -58,4 +59,3 @@ with pkgs; [
 #   obsidian
 #   # dockutil
 # ])
-

@@ -11,6 +11,8 @@ in {
   system = {
     stateVersion = 5;
   };
+  # necessary for mba for some reason
+  # ids.gids.nixbld = 30000;
 
   nix = {
     settings = {
@@ -42,8 +44,6 @@ in {
     };
   };
 
-  services.nix-daemon.enable = true;
-
   fonts.packages = [
     pkgs.nerd-fonts.fira-mono
     pkgs.nerd-fonts.fira-code
@@ -52,5 +52,5 @@ in {
   # fonts.packages = [ ... ] ++ builtins.filter lib.attrsets.isDerivation (builtins.attrValues pkgs.nerd-fonts)
 
   #system.keyboard.enableKeyMapping = true;
-  security.pam.enableSudoTouchIdAuth = true;
+  security.pam.services.sudo_local.touchIdAuth = true;
 }
