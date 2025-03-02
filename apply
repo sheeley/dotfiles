@@ -85,6 +85,7 @@ if command -v nvd; then
 		exit 0
 	fi
 
+	# TODO: fix nix-diff
 	# if command -v nix-diff; then
 	# nix-diff --line-oriented --context 5 /run/current-system result
 	# fi
