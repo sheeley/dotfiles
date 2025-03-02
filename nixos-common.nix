@@ -24,6 +24,7 @@
       enable = true;
       domain = true;
       addresses = true;
+      workstation = true;
     };
   };
   services.openssh.enable = true;

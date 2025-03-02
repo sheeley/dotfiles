@@ -8,11 +8,12 @@
     externalPlugins = [
       {
         name = "mdns";
-        repo = "github.com/openshift/coredns-mdns";
-        version = "master";
+        repo = "github.com/sheeley/coredns-mdns";
+        version = "4662567616a002983caf85130514261b382dde12";
+        #master";
       }
     ];
-    vendorHash = "sha256-CocHwNw6h6RJHkIarC7+ifHl7PmbodXwTeT99Jeg+xo=";
+    vendorHash = "";
   };
 in {
   imports = [
