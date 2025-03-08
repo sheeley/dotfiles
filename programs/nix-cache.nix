@@ -1,5 +1,5 @@
 {...}: let
-  hostname = "nix-cache.aigee.org";
+  hostname = "tiny.local.aigee.org";
   resolverIp = "172.20.1.1";
   cacheDirectory = "/var/cache/nginx/";
 in {
