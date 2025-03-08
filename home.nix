@@ -40,7 +40,6 @@ in {
         ./programs/nushell.nix
         ./programs/ssh.nix
         ./programs/starship.nix
-        ./programs/vscode.nix
         ./programs/zellij.nix
         ./programs/zsh.nix
       ]
@@ -48,12 +47,13 @@ in {
       #   # personal only
       # ])
       ++ ((lib.optionals isMac) [
+        # ./programs/ghostty.nix
+        ./programs/vscode.nix
         ./home-darwin-defaults.nix
       ]);
 
     xdg.configFile = {
       "ghostty/config".source = ./files/ghostty;
-      # "ghostty/config".text = builtins.readFile ./files/ghostty;
     };
 
     home = {

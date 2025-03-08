@@ -68,6 +68,7 @@ in {
     };
 
     plugins.cmp-path = {enable = true;};
+    plugins.toggleterm = {enable = true;};
 
     plugins.nix = {
       enable = true;
