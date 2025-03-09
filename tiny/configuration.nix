@@ -9,7 +9,7 @@
     ./hardware-configuration.nix
     ../nixos-common.nix
     ../programs/nix-cache.nix
-    # TODO: ./coredns.nix # https://github.com/NixOS/nixpkgs/pull/359426
+    ./coredns.nix
   ];
 
   boot.loader.grub.enable = true;
