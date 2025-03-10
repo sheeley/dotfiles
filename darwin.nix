@@ -32,7 +32,7 @@ in {
 
   home-manager.users.${user} = {...}: {
     home.packages = [
-      pkgs.obsidian
+      # pkgs.obsidian
     ];
 
     programs.ssh = {
