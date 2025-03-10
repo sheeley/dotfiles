@@ -70,13 +70,16 @@ in {
       "/opt/homebrew/bin"
     ];
 
-    environment = {
-      BORG_REPO = "${storagePath}/borgbackup";
-      HOME = homeDirectory;
-      TOOLS_DIR = "${homeDirectory}/dotfiles/bin";
-      PRIVATE_TOOLS_DIR = "${homeDirectory}/projects/sheeley/infrastructure";
-      WORKMACHINE = "false";
-    };
+    environment =
+      import ../environment_variables.nix {
+        config = config;
+        lib = lib;
+        private = private;
+      }
+      ++ {
+        BORG_REPO = "${storagePath}/borgbackup";
+        HOME = homeDirectory;
+      };
 
     serviceConfig = {
       Label = "org.aigee.housekeeping";
