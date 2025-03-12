@@ -1,4 +1,9 @@
-{}: [
+{user, ...}: [
+  "/bin"
+  "/usr/bin"
+  "/usr/sbin"
+  "/etc/profiles/per-user/${user}/bin"
+
   "$HOME/bin"
   "$HOME/dotfiles/bin"
 

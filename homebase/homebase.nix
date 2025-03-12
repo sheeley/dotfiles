@@ -60,15 +60,7 @@ in {
     housekeeping
     ";
 
-    path = [
-      "/bin"
-      "/usr/bin"
-      "/usr/sbin"
-      "/etc/profiles/per-user/${user}/bin"
-      "${homeDirectory}/dotfiles/bin"
-      "${homeDirectory}/bin"
-      "/opt/homebrew/bin"
-    ];
+    path = import ../environment_path.nix {user = user;};
 
     environment =
       import ../environment_variables.nix {

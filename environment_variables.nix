@@ -3,10 +3,15 @@
   lib,
   private,
   ...
-}: {
+}: let
+  isWorkMachine =
+    if (!lib.hasAttr "personal" private || !private.personal)
+    then "true"
+    else "";
+in {
   # general settings
-  GITHUB_TOKEN = "${private.githubSecret}";
-  WORKMACHINE = "${toString (!lib.hasAttr "personal" private || !private.personal)}";
+  GITHUB_TOKEN = private.githubSecret;
+  WORKMACHINE = isWorkMachine;
 
   # general tool settings
   EDITOR = "nvim";
