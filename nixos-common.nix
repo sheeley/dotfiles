@@ -2,6 +2,11 @@
   users.users.sheeley = {
     isNormalUser = true;
     extraGroups = ["wheel"]; # Enable ‘sudo’ for the user.
+
+    openssh.authorizedKeys.keys = [
+      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIL+lLS1vAe3MEUi9XXo9ZZwGZ+cpI/lafP8ytN+o2u78"
+      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOqtaVNjGmJFYZaGA1/tVVk+ZNOqkMLe3AIkjexe7yW3"
+    ];
   };
 
   time.timeZone = "America/Los_Angeles";
