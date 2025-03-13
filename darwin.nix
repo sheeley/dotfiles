@@ -3,7 +3,7 @@
   user,
   ...
 }: let
-  cacheHost = "nix-cache.aigee.org";
+  cacheHost = "tiny.sheeley.house";
 in {
   imports = [
     ./dock.nix
