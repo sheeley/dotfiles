@@ -106,7 +106,6 @@ in {
         cdworknotes = "cd $WORK_NOTES_DIR";
         clone = "git clone";
         la = "ls -la";
-        v = "vim .";
         vdot = "vim ~/dotfiles";
       };
     };

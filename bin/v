@@ -1,0 +1,32 @@
+#! /usr/bin/env bash
+set -euo pipefail
+
+# check if file(s) were passed in - if not just open the directory the command was run in
+if [ $# -eq 0 ]; then
+	vim .
+	exit
+fi
+
+# if the file exists, open vim to the directory called and open the file in the editor
+if [ -f "$1" ]; then
+	vim -s "e $1" "$(dirname "$1")"
+	exit
+fi
+
+# if the file doesn't exist, check if there is a filename that contains the filename passed in
+MATCH=$(find . -name "*$1*")
+LINES=$(echo "$MATCH" | wc -l)
+if [ "$LINES" -lt 2 ] && [ -f "$MATCH" ]; then
+	set +e
+	DIR=$(git rev-parse --show-toplevel "$MATCH")
+	set -e
+	if [ "$DIR" = "" ]; then
+		DIR="$MATCH"
+	fi
+	DIR=$(dirname "$DIR")
+	# vim -s "e $MATCH" "$DIR"
+	vim -c 'Neotree' "$MATCH"
+	# vim -p "$DIR" "$MATCH"
+	exit
+fi
+vim .
