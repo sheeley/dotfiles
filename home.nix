@@ -1,7 +1,7 @@
 {
   # config,
   pkgs,
-  lib,
+  # lib,
   user,
   inputs,
   private,
@@ -60,7 +60,7 @@ in {
       stateVersion = "22.05";
 
       sessionVariables = import ./environment_variables.nix {
-        config = config;
+        homeDirectory = config.home.homeDirectory;
         lib = lib;
         private = private;
       };

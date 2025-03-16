@@ -1,5 +1,7 @@
 {
   # pkgs,
+  config,
+  lib,
   private,
   storagePath,
   user,
@@ -64,11 +66,11 @@ in {
 
     environment =
       import ../environment_variables.nix {
-        config = config;
+        homeDirectory = homeDirectory;
         lib = lib;
         private = private;
       }
-      ++ {
+      // {
         BORG_REPO = "${storagePath}/borgbackup";
         HOME = homeDirectory;
       };
