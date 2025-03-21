@@ -50,6 +50,7 @@ in {
       clipboard = "unnamed";
       cot = ["menu" "menuone" "noselect"];
       foldmethod = "syntax";
+      foldlevel = 10;
       hidden = true;
       number = true;
       scrolloff = 7;
@@ -68,7 +69,12 @@ in {
     };
 
     plugins.cmp-path = {enable = true;};
-    plugins.toggleterm = {enable = true;};
+    plugins.toggleterm = {
+      enable = true;
+      settings = {
+        open_mapping = "[[<c-/>]]";
+      };
+    };
 
     plugins.nix = {
       enable = true;
@@ -432,10 +438,11 @@ in {
         nushell.enable = true;
         # sourcekit.enable = true;
         terraformls.enable = true;
-        # yamlls.enable = true;
+        yamlls.enable = true;
         jsonls.enable = true;
-        # gopls.enable = true;
-        # eslint.enable = true;
+        gopls.enable = true;
+        eslint.enable = true;
+        ruff.enable = true;
         # dartls.enable = true;
       };
     };
