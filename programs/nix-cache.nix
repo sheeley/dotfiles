@@ -1,5 +1,5 @@
 {...}: let
-  hostname = "tiny.local.aigee.org";
+  hostname = "tiny.sheeley.house";
   resolverIp = "172.20.1.1";
   cacheDirectory = "/var/cache/nginx/";
 in {

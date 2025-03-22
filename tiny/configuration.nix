@@ -9,7 +9,7 @@
     ./hardware-configuration.nix
     ../nixos-common.nix
     ../programs/nix-cache.nix
-    ./coredns.nix
+    # ./coredns.nix
   ];
 
   boot.loader.grub.enable = true;
