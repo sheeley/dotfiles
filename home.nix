@@ -93,6 +93,7 @@ in {
       };
 
       shellAliases = {
+        a = "./apply";
         cat = "bat";
         cddot = "cd ~/dotfiles";
         cdgo = "cd $GOPATH/src";
