@@ -207,6 +207,7 @@ in {
           alejandra.enable = true;
           black.enable = true;
           # stylua.enable = true;
+          goimports.enable = true;
           cbfmt.enable = true;
           shfmt.enable = true;
           # taplo.enable = true;
