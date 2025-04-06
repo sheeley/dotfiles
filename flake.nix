@@ -149,7 +149,7 @@
       modules =
         [
           home-manager.nixosModules.home-manager
-          ./tiny/configuration.nix
+          ./tiny/tiny.nix
         ]
         ++ sharedModules;
 

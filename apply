@@ -81,14 +81,16 @@ else
 fi
 
 # if possible, diff the derivations and ask for input
-if command -v nvd; then
+if command -v nvd &>/dev/null; then
 	nvd diff /run/current-system result
 	if opt_out "nvd ^ Continue?"; then
 		exit 0
 	fi
 
-	if command -v nix-diff; then
-		nix-diff --line-oriented --context 5 /run/current-system result
+	if command -v nix-diff &>/dev/null; then
+		if opt_out "Run nix-diff?"; then
+			nix-diff --line-oriented --context 5 /run/current-system result
+		fi
 	fi
 
 	if opt_out "nix-diff ^ Continue?"; then
