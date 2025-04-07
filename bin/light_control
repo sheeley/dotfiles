@@ -1,7 +1,7 @@
 #! /usr/bin/env nu
 
 let host = "172.20.1.196"
-# keylight.local.aigee.org"
+# keylight.sheeley.house"
 let url = $"http://($host):9123/elgato/lights"
 let maxTime = "1sec" | into duration
 
