@@ -24,6 +24,7 @@ with pkgs; [
   kubectl # Kubernetes command-line tool for managing clusters
   kubernetes-helm # Kubernetes package manager
   ldns # DNS library and utilities (e.g., `drill` for DNS lookups)
+  lnav # log file navigator
   lz4 # Fast compression/decompression utility
   moreutils # Collection of additional Unix utilities (e.g., `ts`, `sponge`)
   ncdu # Disk usage analyzer with an interactive interface
@@ -59,4 +60,3 @@ with pkgs; [
 #   obsidian
 #   # dockutil
 # ])
-
