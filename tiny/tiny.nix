@@ -2,11 +2,13 @@
   config,
   lib,
   pkgs,
+  private,
   ...
 }: {
   imports = [
     # Include the results of the hardware scan.
     ./hardware-configuration.nix
+    ./observability.nix
     ../nixos-common.nix
     ../programs/nix-cache.nix
     # ./coredns.nix
@@ -18,86 +20,54 @@
   networking.hostName = "tiny"; # Define your hostname.
   system.stateVersion = "24.05"; # Did you read the comment?
 
-  networking.firewall.allowedTCPPorts = [
-    # loki
-    3100
-    # prometheus
-    9001
+  # networking.firewall.allowedUDPPorts = [53];
+
+  # Useful other development tools
+  environment.systemPackages = with pkgs; [
+    podman
+    dive # look into docker image layers
+    podman-tui # status of containers in the terminal
+    # docker-compose # start group of containers for dev
+    #podman-compose # start group of containers for dev
   ];
-  networking.firewall.allowedUDPPorts = [53];
-
-  services.loki = {
-    enable = true;
-    configFile = ./loki.yaml;
-  };
-
-  services.prometheus = {
-    enable = true;
-    port = 9001;
-    globalConfig.scrape_interval = "10s"; # "1m"
-    extraFlags = [
-      "--log.level=debug"
-      "--web.enable-remote-write-receiver"
-    ];
-    scrapeConfigs = [
-      {
-        job_name = "un";
-        static_configs = [
-          {
-            targets = ["localhost:9130"];
-            # targets = ["localhost:${toString config.services.prometheus.exporters.node.port}"];
-          }
-        ];
-      }
-      {
-        job_name = "pve";
-        static_configs = [
-          {
-            targets = ["172.20.1.245:9221"];
-            labels = {
-              __metrics_path__ = "pve";
-              __param_target = "172.20.1.178";
-              __param_cluster = "1";
-            };
-          }
-        ];
-      }
-    ];
-
-    exporters = {
-      unpoller = {
-        enable = true;
-        user = "sheeley";
-
-        # log.prometheusErrors = true;
-
-        controllers = [
-          {
-            url = "https://172.20.1.1";
-            user = "prom";
-            pass = /home/sheeley/.unifiPass;
-
-            verify_ssl = false;
-            save_events = true;
-            save_alarms = true;
-          }
-        ];
-      };
-
-      node = {
-        enable = true;
-        port = 9000;
-        # https://github.com/NixOS/nixpkgs/blob/nixos-24.05/nixos/modules/services/monitoring/prometheus/exporters.nix
-        enabledCollectors = ["systemd"];
-
-        # /nix/store/zgsw0yx18v10xa58psanfabmg95nl2bb-node_exporter-1.8.1/bin/node_exporter  --help
-        extraFlags = ["--collector.ethtool" "--collector.softirqs" "--collector.tcpstat" "--collector.wifi"];
+  virtualisation.oci-containers.backend = "podman";
+  virtualisation.oci-containers.containers = {
+    hass-screenshot = {
+      image = "lanrat/hass-screenshot";
+      autoStart = true;
+      ports = ["127.0.0.1:5000:5000"];
+      # memory: 1G
+      # healthcheck:
+      #   test: "wget --no-verbose --tries=1 --spider http://localhost:5000/ || exit 1"
+      #   interval: 60s
+      #   timeout: 5s
+      #   retries: 3
+      #   start_period: 60s
+      environment = {
+        TZ = "America/Los_Angeles";
+        HA_BASE_URL = "https://hae.sheeley.house";
+        HA_ACCESS_TOKEN = private.HA_ACCESS_TOKEN;
+        LANGUAGE = "en";
+        MQTT_SERVER = "hae.sheeley.house";
+        REAL_TIME = true;
+        RENDERING_DELAY = 2;
+        COLOR_MODE = "GrayScale";
+        # image 1
+        HA_SCREENSHOT_URL = "/dashboard-inkplate/0?kiosk";
+        RENDERING_SCREEN_HEIGHT = 825;
+        RENDERING_SCREEN_WIDTH = 1200;
+        GRAYSCALE_DEPTH = 3;
+        # # image 2
+        # HA_SCREENSHOT_URL_2 = "/lovelace-infra/hud2?kiosk";
+        # RENDERING_SCREEN_HEIGHT_2 = 800;
+        # RENDERING_SCREEN_WIDTH_2 = 600;
+        # GRAYSCALE_DEPTH_2 = 4;
+        # # image 3
+        # HA_SCREENSHOT_URL_3 = "/lovelace-infra/hud3?kiosk";
+        # RENDERING_SCREEN_HEIGHT_3 = 800;
+        # RENDERING_SCREEN_WIDTH_3 = 600;
+        # GRAYSCALE_DEPTH_3 = 4;
       };
     };
-  };
-
-  services.alloy = {
-    enable = true;
-    configPath = ./alloy.conf;
   };
 }

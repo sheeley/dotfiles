@@ -33,6 +33,7 @@
     };
   };
   services.openssh.enable = true;
+  programs.ssh.startAgent = true;
 
   # store /tmp in memory
   boot.tmp.useTmpfs = true;
