@@ -17,12 +17,17 @@ get_git_root() {
 open_vim() {
 	DIR="$1"
 	FILE="$2"
+	if [[ "" = "$FILE" ]]; then
+		FILE="$DIR"
+	fi
+	echo "$1 $2"
+	# exit
 	vim -c "Neotree $DIR" "$FILE"
 }
 
 # check if file(s) were passed in - if not just open the directory the command was run in
 if [ $# -eq 0 ]; then
-	vim .
+	open_vim . .
 	exit
 fi
 
@@ -36,9 +41,15 @@ fi
 # if the file doesn't exist, check if there is a filename that contains the filename passed in
 MATCH=$(find . -name "*$1*")
 LINES=$(echo "$MATCH" | wc -l)
-if [ "$LINES" -lt 2 ] && [ -f "$MATCH" ]; then
+if [ "$LINES" -eq 0 ]; then
+	open_vim . .
+elif [ "$LINES" -eq 1 ] && [ -f "$MATCH" ]; then
 	DIR=$(get_git_root "$MATCH")
 	open_vim "$DIR" "$MATCH"
+else
+	# Display matches and allow picking
+	echo "ambiguous. $MATCH"
 	exit
+	DIR=$(get_git_root "$MATCH")
+	open_vim "$DIR" "$MATCH"
 fi
-vim .
