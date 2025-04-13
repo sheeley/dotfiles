@@ -6,12 +6,20 @@ PATH="$PATH:./bin"
 OS=$(uname -a)
 IS_MAC=
 IS_NIX=
+IS_LINUX=
+NOT_NIX=true
+NOT_MAC=true
 if [[ "$OS" == *"NixOS"* ]]; then
 	IS_NIX=true
-fi
-if [[ "$OS" == *"Darwin"* ]]; then
+	NOT_NIX=
+elif [[ "$OS" == *"Linux"* ]]; then
+	IS_LINUX=true
+elif [[ "$OS" == *"Darwin"* ]]; then
 	IS_MAC=true
+	NOT_MAC=
 fi
+YELLOW="\033[1;33m"
+RESET="\033[0m"
 
 OFFLINE=""
 if [[ "$1" == "--offline" ]]; then
@@ -26,7 +34,7 @@ fi
 HN=$(hostname_wrapper)
 
 # minimally, yell if nix version out of date - mac only
-if [[ "$IS_MAC" ]]; then
+if [[ "$NOT_NIX" ]]; then
 	upgrade_nix
 fi
 
@@ -36,22 +44,17 @@ if ! ssh-add -l >/dev/null; then
 fi
 set -e
 
-OSC="nixosConfigurations"
-if [[ "$IS_MAC" ]]; then
-	OSC="darwinConfigurations"
-
-	set +e
-	if ! xcode_license_accepted; then
-		sudo xcodebuild -license
-	fi
-	set -e
-fi
-
+OSC=$(get-osc)
 VALID_HOSTNAMES=$(get-flake-configurations)
 
+# is this a valid host, or the special case of sheeley (using home-manager on linux)
 if [[ ! "${VALID_HOSTNAMES[*]}" =~ $HN ]]; then
 	echo "invalid hostname: '$HN'"
-	if confirm "override hostname?"; then
+	if true || confirm "apply home manager configuration?"; then
+		# HN="sheeley"
+		home-manager --flake . --impure switch --show-trace -b backup
+		exit 0
+	elif confirm "override hostname?"; then
 		while true; do
 			read -r FAUX_HOST
 			if [[ "${VALID_HOSTNAMES[*]}" =~ $FAUX_HOST ]]; then
@@ -76,10 +79,11 @@ fi
 
 if [[ "$IS_MAC" ]]; then
 	nix build ".#${OSC}.${HN}.system" --impure --extra-experimental-features "nix-command flakes" $OFFLINE --show-trace
-else
+elif [[ "$IS_NIX" ]]; then
 	nix build ".#${OSC}.${HN}.config.system.build.toplevel" --impure --extra-experimental-features "nix-command flakes" $OFFLINE --show-trace
+else
+	nix build ".#${OSC}.${HN}" --impure --extra-experimental-features "nix-command flakes" $OFFLINE --show-trace
 fi
-
 # if possible, diff the derivations and ask for input
 if command -v nvd &>/dev/null; then
 	nvd diff /run/current-system result
