@@ -1,21 +1,31 @@
 #! /usr/bin/env bash
 set -euo pipefail
 
-export PATH=$PATH:~/bin
+# FYI: proxmox/debian don't install sudo by default
+# apt-get install sudo
+# vim /etc/sudoers
+# sheeley ALL=(ALL:ALL) ALL
+
+export PATH=$PATH:~/bin:~/.nix-profile/bin/
 
 OS=$(uname -a)
 IS_MAC=
 IS_NIX=
+IS_LINUX=
+NOT_NIX=true
+NOT_MAC=true
 if [[ "$OS" == *"NixOS"* ]]; then
 	IS_NIX=true
-fi
-if [[ "$OS" == *"Darwin"* ]]; then
+	NOT_NIX=
+elif [[ "$OS" == *"Linux"* ]]; then
+	IS_LINUX=true
+elif [[ "$OS" == *"Darwin"* ]]; then
 	IS_MAC=true
+	NOT_MAC=
 fi
 
 YELLOW="\033[1;33m"
 RESET="\033[0m"
-
 confirm() {
 	echo -n "${1:-Continue?} [y/N] "
 	read -r CONFIRM
@@ -52,37 +62,38 @@ if [[ "sheeley" != $(whoami) ]]; then
 	fi
 fi
 
-EMAIL=""
-# generate ssh key
-if [ ! -f ~/.ssh/id_ed25519 ]; then
-	if [ "$EMAIL" == "" ]; then
-		echo "Enter email to use for ssh key"
-		read -r EMAIL
-	fi
-	echo "At this point, XCode doesn't like ed25519. Maybe generate more than one? Hrm."
-	set -x
-	ssh-keygen -t ed25519 -C "$EMAIL"
-	eval "$(ssh-agent -s)"
-	if ! ssh-add -l -E sha256 | grep ED25519; then
-		if [[ "$IS_MAC" ]]; then
-			ssh-add -K ~/.ssh/id_ed25519
-		else
-			ssh-add ~/.ssh/id_ed25519
+if [[ "$NOT_NIX" ]]; then
+	if ! command -v nix &>/dev/null; then
+		echo "installing nix"
+		curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install
+		# shellcheck disable=SC1091
+		. /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
+
+		# create /run
+		if [[ "$IS_MAC" && ! -f /run ]]; then
+			echo "creating /run"
+			set +x
+			printf 'run\tprivate/var/run\n' | sudo tee -a /etc/synthetic.conf
+			/System/Library/Filesystems/apfs.fs/Contents/Resources/apfs.util -t
+			set -x
 		fi
 	fi
-	set +x
-else
-	EMAIL=$(cut -d' ' -f3 <~/.ssh/id_ed25519.pub)
 fi
 
-if [[ "$IS_NIX" ]]; then
+if [[ "$NOT_MAC" ]]; then
+	PREFIX="nixos"
+	if [[ "$NOT_NIX" ]]; then
+		PREFIX="nixpkgs"
+		nix-channel --add https://nixos.org/channels/nixpkgs-unstable
+		nix-channel --update
+	fi
 	# git to clone the repo, ripgrep to run ./apply
 	if ! command -v git &>/dev/null; then
-		nix-env -iA nixos.git
+		nix-env -iA "$PREFIX.git"
 	fi
 
 	if ! command -v rg &>/dev/null; then
-		nix-env -iA nixos.ripgrep
+		nix-env -iA "$PREFIX.ripgrep"
 	fi
 fi
 
@@ -105,22 +116,6 @@ if [[ "$IS_MAC" ]]; then
 		confirm "Hit enter when install finished" || exit 1
 	fi
 
-	if ! command -v nix &>/dev/null; then
-		echo "installing nix"
-		curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install
-		# shellcheck disable=SC1091
-		. /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
-
-		# create /run
-		if [ ! -f /run ]; then
-			echo "creating /run"
-			set +x
-			printf 'run\tprivate/var/run\n' | sudo tee -a /etc/synthetic.conf
-			/System/Library/Filesystems/apfs.fs/Contents/Resources/apfs.util -t
-			set -x
-		fi
-	fi
-
 	if command -v scutil &>/dev/null; then
 		HOST=$(scutil --get HostName)
 	fi
@@ -130,6 +125,29 @@ if [[ "$IS_MAC" ]]; then
 			set_hostname && break
 		done
 	fi
+fi
+
+EMAIL=""
+# generate ssh key
+if [ ! -f ~/.ssh/id_ed25519 ]; then
+	if [ "$EMAIL" == "" ]; then
+		echo "Enter email to use for ssh key"
+		read -r EMAIL
+	fi
+	echo "At this point, XCode doesn't like ed25519. Maybe generate more than one? Hrm."
+	set -x
+	ssh-keygen -t ed25519 -C "$EMAIL"
+	eval "$(ssh-agent -s)"
+	if ! ssh-add -l -E sha256 | grep ED25519; then
+		if [[ "$IS_MAC" ]]; then
+			ssh-add -K ~/.ssh/id_ed25519
+		else
+			ssh-add ~/.ssh/id_ed25519
+		fi
+	fi
+	set +x
+else
+	EMAIL=$(cut -d' ' -f3 <~/.ssh/id_ed25519.pub)
 fi
 
 if [ ! -f ~/.gh_done ]; then
@@ -226,7 +244,7 @@ fi
 
 echo ""
 if confirm "Customize private.nix"; then
-	$EDITOR ~/.nix-private/private.nix
+	$EDITOR --wait ~/.nix-private/private.nix
 fi
 
 (
