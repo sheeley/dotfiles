@@ -3,19 +3,13 @@
   inputs = {
     # unstable
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+    # stable
+    # nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-22.11-darwin";
 
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-
-    # stable
-    # nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-22.11-darwin";
-    #
-    # home-manager = {
-    #   url = "github:nix-community/home-manager/release-22.11";
-    #   inputs.nixpkgs.follows = "nixpkgs";
-    # };
 
     darwin = {
       url = "github:lnl7/nix-darwin";
@@ -27,9 +21,10 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # flake-utils = {
-    #   url = "github:numtide/flake-utils";
-    # };
+    flake-utils = {
+      url = "github:numtide/flake-utils";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = {
@@ -38,7 +33,7 @@
     home-manager,
     darwin,
     nixvim,
-    # flake-utils,
+    flake-utils,
   } @ inputs: let
     legacyDarwinPackages = nixpkgs.lib.genAttrs ["aarch64-darwin"] (
       system:
@@ -126,13 +121,13 @@
       };
     };
 
-    nixosConfigurations."lab" = nixpkgs.lib.nixosSystem {
+    homeConfigurations."sheeley" = home-manager.lib.homeManagerConfiguration {
       system = "x86_64-linux";
       pkgs = legacyNixPackages.x86_64-linux;
       modules =
         [
-          home-manager.nixosModules.home-manager
-          ./lab/configuration.nix
+          ./environment.nix
+          ./home.nix
         ]
         ++ sharedModules;
 
@@ -160,14 +155,14 @@
       };
     };
 
-    # This creates a REPL I guess, but I've never used it so commenting out.
-    #    apps.repl = flake-utils.lib.mkApp {
-    #      drv = legacyDarwinPackages.aarch64-darwin.writeShellScriptBin "repl" ''
-    #        confnix=$(mktemp)
-    #        echo "builtins.getFlake (toString $(git rev-parse --show-toplevel))" >$confnix
-    #        trap "rm $confnix" EXIT
-    #        nix repl $confnix
-    #      '';
-    #    };
+    # This creates a REPL I guess, `nix run #repl`
+    apps.repl = flake-utils.lib.mkApp {
+      drv = legacyDarwinPackages.aarch64-darwin.writeShellScriptBin "repl" ''
+        confnix=$(mktemp)
+        echo "builtins.getFlake (toString $(git rev-parse --show-toplevel))" >$confnix
+        trap "rm $confnix" EXIT
+        nix repl $confnix
+      '';
+    };
   };
 }
