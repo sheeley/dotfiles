@@ -13,6 +13,7 @@
     then "Users"
     else "home";
   homeDir = "/${prefix}/${user}";
+  # lib = config.home-manager.lib;
 in {
   programs.home-manager.enable = true;
 
@@ -21,29 +22,29 @@ in {
   programs.bash.enable = true;
   home.shell.enableShellIntegration = true;
 
-  imports =
-    [
-      ./programs/fish.nix
-      ./programs/general.nix
-      ./programs/git.nix
-      ./programs/gitui.nix
-      ./programs/helix.nix
-      inputs.nixvim.homeManagerModules.nixvim
-      ./programs/neovim.nix
-      ./programs/nushell.nix
-      ./programs/ssh.nix
-      ./programs/starship.nix
-      ./programs/zellij.nix
-      ./programs/zsh.nix
-    ]
-    # ++ ((lib.optionals (lib.hasAttr "personal" private && private.personal)) [
-    #   # personal only
-    # ])
-    ++ ((lib.optionals isMac) [
-      ./programs/ghostty.nix
-      ./programs/vscode.nix
-      ./home-darwin-defaults.nix
-    ]);
+  imports = [
+    ./programs/fish.nix
+    ./programs/general.nix
+    ./programs/git.nix
+    ./programs/gitui.nix
+    ./programs/helix.nix
+    inputs.nixvim.homeManagerModules.nixvim
+    ./programs/neovim.nix
+    ./programs/nushell.nix
+    ./programs/ssh.nix
+    ./programs/starship.nix
+    ./programs/zellij.nix
+    ./programs/zsh.nix
+  ];
+
+  # ++ ((lib.optionals (lib.hasAttr "personal" private && private.personal)) [
+  #   # personal only
+  # ])
+  # ++ ((lib.optionals isMac) [
+  #   # ./programs/ghostty.nix
+  #   ./programs/vscode.nix
+  #   ./home-darwin-defaults.nix
+  # ]);
 
   xdg.configFile = {
     "ghostty/config".source = ./files/ghostty;
@@ -107,7 +108,7 @@ in {
     };
 
     activation = {
-      createDirs = lib.hm.dag.entryAfter ["writeBoundary"] ''
+      createDirs = config.lib.hm.dag.entryAfter ["writeBoundary"] ''
         DIRS=(
         	"${homeDir}/.ssh/control"
         	"${homeDir}/Screenshots"

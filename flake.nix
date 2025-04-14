@@ -28,7 +28,6 @@
 
     flake-utils = {
       url = "github:numtide/flake-utils";
-      inputs.nixpkgs.follows = "nixpkgs";
     };
   };
 
@@ -80,6 +79,10 @@
       if builtins.currentSystem == "aarch64-darwin"
       then legacyDarwinPackages.aarch64-darwin.callPackage ~/.nix-private/private.nix {}
       else legacyNixPackages.x86_64-linux.callPackage /home/sheeley/.nix-private/private.nix {};
+    isMac =
+      if builtins.currentSystem == "aarch64-darwin"
+      then true
+      else false;
   in {
     darwinConfigurations."jmba" = darwin.lib.darwinSystem {
       system = "aarch64-darwin";
@@ -94,6 +97,7 @@
         inherit inputs;
         user = "sheeley";
         private = private;
+        isMac = isMac;
       };
     };
 
@@ -112,6 +116,7 @@
         inherit inputs;
         user = "sheeley";
         private = private;
+        isMac = isMac;
         storagePath = "/Volumes/Slash";
       };
     };
@@ -122,9 +127,11 @@
       modules = sharedDarwinModules;
 
       specialArgs = {
-        inherit inputs;
+        # inherit inputs;
+        inputs = inputs;
         user = "johnnysheeley";
         private = private;
+        isMac = isMac;
       };
     };
 
