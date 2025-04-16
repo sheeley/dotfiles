@@ -1,0 +1,10 @@
+#! /usr/bin/env bash
+set -euo pipefail
+
+if [[ -f ./apply ]]; then
+	./apply
+fi
+
+if [[ -f ./apply_sudo ]]; then
+	sudo ./apply_sudo
+fi
