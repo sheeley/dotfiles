@@ -88,7 +88,6 @@ in {
     };
 
     shellAliases = {
-      a = "./apply";
       amend = "git commit --amend --no-edit";
       cat = "bat";
       cddot = "cd ~/dotfiles";
