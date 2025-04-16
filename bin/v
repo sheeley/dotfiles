@@ -33,6 +33,10 @@ if [ $# -eq 0 ]; then
 	exit
 fi
 
+# if passed an absolute path
+if [[ "$1" = /* ]]; then
+	vim "$1"
+fi
 # if the file exists, open vim to the directory called and open the file in the editor
 if [ -f "$1" ]; then
 	DIR=$(get_git_root "$1")
