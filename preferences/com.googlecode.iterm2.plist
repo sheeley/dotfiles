@@ -590,6 +590,8 @@
 	</dict>
 	<key>PromptOnQuit</key>
 	<false/>
+	<key>RightOption</key>
+	<integer>12</integer>
 	<key>SoundForEsc</key>
 	<false/>
 	<key>TabViewType</key>

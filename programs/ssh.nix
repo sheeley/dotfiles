@@ -10,16 +10,18 @@
 IdentityFile ~/.ssh/id_ed25519
 AddKeysToAgent yes
 ConnectTimeout = 3
+User sheeley
 
 Host homebase
   HostName homebase.sheeley.house
-  User sheeley
   # RequestTTY force
   # RemoteCommand zellij attach --create
 
 Host proxmox
   HostName proxmox.sheeley.house
-  User root
+
+Host tiny
+  HostName tiny.sheeley.house
       ";
   };
 }
