@@ -22,7 +22,7 @@ in {
   # go settings
   GOPATH = "${homeDirectory}/go";
   GOPROXY = "direct";
-  GOSUMDB = "off";
+  # GOSUMDB = "off";
 
   # directories
   DOTFILES_DIR = "${homeDirectory}/dotfiles";
