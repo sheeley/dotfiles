@@ -22,7 +22,7 @@ open_vim() {
 	fi
 	echo "$1 $2"
 	# exit
-	vim -c "Neotree $DIR" "$FILE"
+	vim -c "Neotree $DIR" -c "wincmd l" "$FILE"
 }
 
 # check if file(s) were passed in - if not just open the directory the command was run in
@@ -50,6 +50,6 @@ else
 	# Display matches and allow picking
 	echo "ambiguous. $MATCH"
 	exit
-	DIR=$(get_git_root "$MATCH")
-	open_vim "$DIR" "$MATCH"
+	# DIR=$(get_git_root "$MATCH")
+	# open_vim "$DIR" "$MATCH"
 fi
