@@ -73,6 +73,7 @@ in {
       enable = true;
       settings = {
         open_mapping = "[[<c-/>]]";
+        start_in_insert = true;
       };
     };
 
@@ -484,7 +485,6 @@ in {
     plugins.trouble = {
       enable = true;
       settings = {
-        auto_open = true;
         auto_close = true;
       };
     };
