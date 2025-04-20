@@ -145,12 +145,12 @@
       };
     };
 
+    # just one of these because home manager uses username.
+    # to customize, create a host-specific script like proxmox/setup
     homeConfigurations."sheeley" = home-manager.lib.homeManagerConfiguration {
       pkgs = legacyNixPackages.x86_64-linux;
       modules = [
-        # not using ssharedModules because it includes nix/nix-darwin specifics
         home-manager-diff.hmModules.default
-        ./home.nix
         {
           programs.hmd = {
             enable = true;
@@ -158,6 +158,7 @@
           };
           services.home-manager.autoExpire.enable = true;
         }
+        ./home.nix
       ];
 
       extraSpecialArgs = {
