@@ -21,7 +21,7 @@
     ];
     scrapeConfigs = [
       {
-        job_name = "un";
+        job_name = "unifi";
         static_configs = [
           {
             targets = ["localhost:9130"];
@@ -33,10 +33,10 @@
         job_name = "pve";
         static_configs = [
           {
-            targets = ["172.20.1.245:9221"];
+            targets = ["proxmox-metrics.sheeley.house:9221"];
             labels = {
               __metrics_path__ = "pve";
-              __param_target = "172.20.1.178";
+              __param_target = "proxmox.sheeley.house";
               __param_cluster = "1";
             };
           }
