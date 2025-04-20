@@ -6,6 +6,7 @@
     enableZshIntegration = false;
     settings = {
       copy_command = "pbcopy";
+      show_startup_tips = "false";
       # default_layout = "compact";
     };
     #       keybinds {
