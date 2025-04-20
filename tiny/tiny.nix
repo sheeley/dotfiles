@@ -49,14 +49,14 @@
         HA_ACCESS_TOKEN = private.HA_ACCESS_TOKEN;
         LANGUAGE = "en";
         MQTT_SERVER = "hae.sheeley.house";
-        REAL_TIME = true;
-        RENDERING_DELAY = 2;
+#        REAL_TIME = true;
+        #RENDERING_DELAY = 2;
         COLOR_MODE = "GrayScale";
         # image 1
         HA_SCREENSHOT_URL = "/dashboard-inkplate/0?kiosk";
-        RENDERING_SCREEN_HEIGHT = 825;
-        RENDERING_SCREEN_WIDTH = 1200;
-        GRAYSCALE_DEPTH = 3;
+        #RENDERING_SCREEN_HEIGHT = 825;
+        #RENDERING_SCREEN_WIDTH = 1200;
+        #GRAYSCALE_DEPTH = 3;
         # # image 2
         # HA_SCREENSHOT_URL_2 = "/lovelace-infra/hud2?kiosk";
         # RENDERING_SCREEN_HEIGHT_2 = 800;
