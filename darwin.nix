@@ -21,6 +21,8 @@ in {
       # "http://192.168.1.17"];
 
       # extra-nix-path = "nixpkgs=flake:nixpkgs";
+      connect-timeout = 1;
+      stalled-download-timeout = 1;
     };
 
     extraOptions = ''
