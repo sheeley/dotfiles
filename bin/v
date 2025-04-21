@@ -1,12 +1,13 @@
 #! /usr/bin/env bash
 set -euo pipefail
+# set -x
 
 # function that takes a path and returns the git root directory
 get_git_root() {
 	MATCH="$1"
 	DIRNAME=$(dirname "$MATCH")
 	set +e
-	DIR=$(git -C "$DIRNAME" rev-parse --show-toplevel)
+	DIR=$(git -C "$DIRNAME" rev-parse --show-toplevel 2>/dev/null)
 	set -e
 	if [ "$DIR" = "" ]; then
 		DIR="$DIRNAME"
@@ -17,12 +18,13 @@ get_git_root() {
 open_vim() {
 	DIR="$1"
 	FILE="$2"
-	if [[ "" = "$FILE" ]]; then
+	MOVE_CURSOR="-c wincmd l"
+	if [[ "" = "$FILE" || "." = "$FILE" ]]; then
 		FILE="$DIR"
+		MOVE_CURSOR=""
 	fi
-	echo "$1 $2"
-	# exit
-	vim -c "Neotree $DIR" -c "wincmd l" "$FILE"
+	# echo "$1 $2"
+	vim -c "Neotree $DIR" "$MOVE_CURSOR" "$FILE"
 }
 
 # check if file(s) were passed in - if not just open the directory the command was run in
