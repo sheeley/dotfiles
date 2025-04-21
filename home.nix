@@ -106,6 +106,7 @@ in {
         cdwork = "cd ~/work";
         cdworknotes = "cd $WORK_NOTES_DIR";
         clone = "git clone";
+        l = "a";
         la = "ls -la";
         vdot = "vim ~/dotfiles";
       };
