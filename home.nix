@@ -13,6 +13,9 @@
     then "Users"
     else "home";
   homeDir = "/${prefix}/${user}";
+  keyFiles = builtins.attrNames (builtins.readDir ./authorized_keys);
+  keyContents = map (v: builtins.readFile (lib.path.append ./authorized_keys "${v}")) keyFiles;
+  keysJoined = builtins.concatStringsSep "\n" keyContents;
 in {
   programs.home-manager.enable = true;
 
@@ -72,7 +75,6 @@ in {
     file = {
       # ".mongorc.js".text = builtins.readFile ./files/.mongorc.js;
       # ".swiftformat".text = builtins.readFile ./files/.swiftformat;
-
       # ".swiftlint.yml".text = builtins.readFile ./files/.swiftlint.yml;
       # ".vim/ftdetect/toml.vim".text = "autocmd BufNewFile,BufRead *.toml set filetype=toml";
 
