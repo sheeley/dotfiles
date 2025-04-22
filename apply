@@ -90,11 +90,10 @@ if command -v nvd &>/dev/null; then
 	if command -v nix-diff &>/dev/null; then
 		if opt_out "Run nix-diff?"; then
 			nix-diff --line-oriented --context 5 /run/current-system result
+			if opt_out "nix-diff ^ Continue?"; then
+				exit 0
+			fi
 		fi
-	fi
-
-	if opt_out "nix-diff ^ Continue?"; then
-		exit 0
 	fi
 fi
 
