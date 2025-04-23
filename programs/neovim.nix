@@ -132,6 +132,14 @@ in {
         group = "numberToggle";
       }
       # {
+      #   event = ["QuickFixCmdPost"];
+      #   command = "Trouble diagnostics open focus=false filter.buf=0";
+      # }
+      # {
+      #   event = ["VimResized"];
+      #   command = "wincmd ";
+      # }
+      # {
       #   event = ["BufWritePost"];
       #   command = "set filetype=nothing | filetype detect";
       # }
@@ -290,259 +298,300 @@ in {
             {name = "buffer";}
           ];
         };
-      };
+        plugins.inc-rename = {
+          enable = true;
+        };
 
-      # mapping = {
-      #   "<C-d>" = "cmp.mapping.scroll_docs(-4)";
-      #   "<C-f>" = "cmp.mapping.scroll_docs(4)";
-      #   "<C-Space>" = "cmp.mapping.complete()";
-      #   "<C-e>" = "cmp.mapping.close()";
-      #   "<Tab>" = {
-      #     modes = ["i" "s"];
-      #     action = "cmp.mapping.select_next_item()";
-      #   };
-      #   "<S-Tab>" = {
-      #     modes = ["i" "s"];
-      #     action = "cmp.mapping.select_prev_item()";
-      #   };
-      # "<CR>" = "cmp.mapping.confirm({ select = true })";
-      # };
+        plugins.lualine = {
+          enable = true;
+        };
 
-      web-devicons = {
-        enable = true;
-      };
-
-      telescope = {
-        enable = true;
-        enabledExtensions = ["ui-select"];
-        # extensionConfig = {
-        #   ui-select = {
-        #     __raw = ''
-        #       require("telescope.themes").get_dropdown {
-        #         -- even more opts
-        #       }
-        #     '';
-        #   };
-        # };
-      };
-
-      treesitter = {
-        enable = true;
-        settings = {
-          indent = {
-            enable = true;
+        plugins.trouble = {
+          enable = true;
+          settings = {
+            auto_close = true;
+            auto_open = true;
           };
         };
 
-        grammarPackages = with config.programs.nixvim.plugins.treesitter.package.passthru.builtGrammars; [
-          arduino
-          bash
-          c
-          cpp
-          cuda
-          dart
-          devicetree
-          diff
-          dockerfile
-          gitattributes
-          gitignore
-          git_rebase
-          # help
-          html
-          json
-          markdown
-          markdown_inline
-          nix
-          # python
-          regex
-          toml
-          vim
-          # yaml
-        ];
-      };
-
-      treesitter-refactor = {
-        enable = true;
-        highlightDefinitions = {
+        plugins.noice = {
           enable = true;
-          clearOnCursorMove = true;
-        };
-        smartRename = {
-          enable = true;
-        };
-        navigation = {
-          enable = true;
-        };
-      };
 
-      treesitter-context = {
-        enable = true;
-      };
+          settings = {
+            messages = {
+              view = "mini";
+              viewError = "mini";
+              viewWarn = "mini";
+            };
 
-      vim-matchup = {
-        treesitter = {
-          enable = true;
-          include_match_words = true;
-        };
-        enable = true;
-      };
+            lsp.override = {
+              "vim.lsp.util.convert_input_to_markdown_lines" = true;
+              "vim.lsp.util.stylize_markdown" = true;
+              "cmp.entry.get_documentation" = true;
+            };
 
-      comment = {
-        enable = true;
-      };
-
-      neo-tree = {
-        enable = true;
-
-        closeIfLastWindow = true;
-        enableGitStatus = false;
-        filesystem.filteredItems = {
-          hideDotfiles = false;
-          # hideGitIgnored = true;
-          visible = true;
-        };
-      };
-
-      plantuml-syntax.enable = true;
-
-      indent-blankline = {
-        enable = true;
-
-        # useTreesitter = true;
-        settings = {
-          scope = {
-            enabled = true;
-            show_start = true;
-          };
-        };
-      };
-
-      lsp = {
-        enable = true;
-
-        keymaps = {
-          silent = true;
-
-          lspBuf = {
-            "gd" = "definition";
-            "gD" = "declaration";
-            "ca" = "code_action";
-            "ff" = "format";
-            "K" = "hover";
-          };
-        };
-
-        servers = {
-          nil_ls = {
-            enable = true;
-            settings = {
-              formatting.command = ["alejandra" "--quiet"];
+            presets = {
+              bottom_search = true;
+              command_palette = true;
+              long_message_to_split = true;
+              inc_rename = true;
+              lsp_doc_border = false;
             };
           };
-          bashls.enable = true;
-          helm_ls.enable = true;
-          nushell.enable = true;
-          # sourcekit.enable = true;
-          terraformls.enable = true;
-          yamlls.enable = true;
-          jsonls.enable = true;
-          gopls.enable = true;
-          eslint.enable = true;
-          ruff.enable = true;
-          # dartls.enable = true;
+
+          # mapping = {
+          #   "<C-d>" = "cmp.mapping.scroll_docs(-4)";
+          #   "<C-f>" = "cmp.mapping.scroll_docs(4)";
+          #   "<C-Space>" = "cmp.mapping.complete()";
+          #   "<C-e>" = "cmp.mapping.close()";
+          #   "<Tab>" = {
+          #     modes = ["i" "s"];
+          #     action = "cmp.mapping.select_next_item()";
+          #   };
+          #   "<S-Tab>" = {
+          #     modes = ["i" "s"];
+          #     action = "cmp.mapping.select_prev_item()";
+          #   };
+          # "<CR>" = "cmp.mapping.confirm({ select = true })";
+          # };
+
+          web-devicons = {
+            enable = true;
+          };
+
+          telescope = {
+            enable = true;
+            enabledExtensions = ["ui-select"];
+            # extensionConfig = {
+            #   ui-select = {
+            #     __raw = ''
+            #       require("telescope.themes").get_dropdown {
+            #         -- even more opts
+            #       }
+            #     '';
+            #   };
+            # };
+          };
+
+          treesitter = {
+            enable = true;
+            settings = {
+              indent = {
+                enable = true;
+              };
+            };
+
+            grammarPackages = with config.programs.nixvim.plugins.treesitter.package.passthru.builtGrammars; [
+              arduino
+              bash
+              c
+              cpp
+              cuda
+              dart
+              devicetree
+              diff
+              dockerfile
+              gitattributes
+              gitignore
+              git_rebase
+              # help
+              html
+              json
+              markdown
+              markdown_inline
+              nix
+              # python
+              regex
+              toml
+              vim
+              # yaml
+            ];
+          };
+
+          treesitter-refactor = {
+            enable = true;
+            highlightDefinitions = {
+              enable = true;
+              clearOnCursorMove = true;
+            };
+            smartRename = {
+              enable = true;
+            };
+            navigation = {
+              enable = true;
+            };
+          };
+
+          treesitter-context = {
+            enable = true;
+          };
+
+          vim-matchup = {
+            treesitter = {
+              enable = true;
+              include_match_words = true;
+            };
+            enable = true;
+          };
+
+          comment = {
+            enable = true;
+          };
+
+          neo-tree = {
+            enable = true;
+
+            closeIfLastWindow = true;
+            enableGitStatus = false;
+            filesystem.filteredItems = {
+              hideDotfiles = false;
+              # hideGitIgnored = true;
+              visible = true;
+            };
+          };
+
+          plantuml-syntax.enable = true;
+
+          indent-blankline = {
+            enable = true;
+
+            # useTreesitter = true;
+            settings = {
+              scope = {
+                enabled = true;
+                show_start = true;
+              };
+            };
+          };
+
+          lsp = {
+            enable = true;
+
+            keymaps = {
+              silent = true;
+
+              lspBuf = {
+                "gd" = "definition";
+                "gD" = "declaration";
+                "ca" = "code_action";
+                "ff" = "format";
+                "K" = "hover";
+              };
+            };
+
+            servers = {
+              nil_ls = {
+                enable = true;
+                settings = {
+                  formatting.command = ["alejandra" "--quiet"];
+                };
+              };
+              bashls.enable = true;
+              helm_ls.enable = true;
+              nushell.enable = true;
+              # sourcekit.enable = true;
+              terraformls.enable = true;
+              yamlls.enable = true;
+              jsonls.enable = true;
+              gopls.enable = true;
+              eslint.enable = true;
+              ruff.enable = true;
+              # dartls.enable = true;
+            };
+          };
+
+          lsp-format = {
+            enable = true;
+          };
+
+          # vim.lsp.set_log_level("debug")
+          # extraConfigLua = ''
+          #   require'lspconfig'.sourcekit.setup {
+          #     cmd = {"/usr/bin/sourcekit-lsp"}
+          #   }
+          # '';
+
+          lspkind = {
+            enable = true;
+            cmp = {
+              enable = true;
+            };
+          };
+
+          nvim-lightbulb = {
+            enable = true;
+            settings = {
+              autocmd.enabled = true;
+            };
+          };
+
+          inc-rename = {
+            enable = true;
+          };
+
+          lualine = {
+            enable = true;
+          };
+
+          trouble = {
+            enable = true;
+            settings = {
+              auto_close = true;
+            };
+          };
+
+          noice = {
+            enable = true;
+          };
         };
-      };
 
-      lsp-format = {
-        enable = true;
-      };
-
-      # vim.lsp.set_log_level("debug")
-      # extraConfigLua = ''
-      #   require'lspconfig'.sourcekit.setup {
-      #     cmd = {"/usr/bin/sourcekit-lsp"}
-      #   }
-      # '';
-
-      lspkind = {
-        enable = true;
-        cmp = {
-          enable = true;
-        };
-      };
-
-      nvim-lightbulb = {
-        enable = true;
         settings = {
-          autocmd.enabled = true;
+          messages = {
+            view = "mini";
+            viewError = "mini";
+            viewWarn = "mini";
+          };
+
+          lsp.override = {
+            "vim.lsp.util.convert_input_to_markdown_lines" = true;
+            "vim.lsp.util.stylize_markdown" = true;
+            "cmp.entry.get_documentation" = true;
+          };
+
+          presets = {
+            bottom_search = true;
+            command_palette = true;
+            long_message_to_split = true;
+            inc_rename = true;
+            lsp_doc_border = false;
+          };
         };
       };
 
-      inc-rename = {
-        enable = true;
-      };
+      extraPlugins = with pkgs.vimPlugins; [
+        editorconfig-nvim
+        ron-vim
+        telescope-ui-select-nvim
+        vim-fish
+        vim-nix
+        vim-prettier
+        vim-sensible
+        vim-shellcheck
+        vim-terraform
+        vim-ripgrep
+        vim-swift
+      ];
 
-      lualine = {
-        enable = true;
-      };
-
-      trouble = {
-        enable = true;
-        settings = {
-          auto_close = true;
-        };
-      };
-
-      noice = {
-        enable = true;
-      };
-    };
-
-    settings = {
-      messages = {
-        view = "mini";
-        viewError = "mini";
-        viewWarn = "mini";
-      };
-
-      lsp.override = {
-        "vim.lsp.util.convert_input_to_markdown_lines" = true;
-        "vim.lsp.util.stylize_markdown" = true;
-        "cmp.entry.get_documentation" = true;
-      };
-
-      presets = {
-        bottom_search = true;
-        command_palette = true;
-        long_message_to_split = true;
-        inc_rename = true;
-        lsp_doc_border = false;
-      };
+      extraPackages = with pkgs; [
+        shfmt
+        # yaml-language-server
+        nodePackages.bash-language-server
+        nil
+        # pyright
+        # python310Packages.python-lsp-server
+        # python310Packages.flake8
+        # python310Packages.autopep8
+      ];
     };
   };
-
-  extraPlugins = with pkgs.vimPlugins; [
-    editorconfig-nvim
-    ron-vim
-    telescope-ui-select-nvim
-    vim-fish
-    vim-nix
-    vim-prettier
-    vim-sensible
-    vim-shellcheck
-    vim-terraform
-    vim-ripgrep
-    vim-swift
-  ];
-
-  extraPackages = with pkgs; [
-    shfmt
-    # yaml-language-server
-    nodePackages.bash-language-server
-    nil
-    # pyright
-    # python310Packages.python-lsp-server
-    # python310Packages.flake8
-    # python310Packages.autopep8
-  ];
 }
