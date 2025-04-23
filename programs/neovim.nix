@@ -216,7 +216,7 @@ in {
       {
         mode = "n";
         key = "<C-l>";
-        action = "winnr('l') == winnr() ? ':vsp<CR>' : '<C-w>l'";
+        action = "winnr('l') == winnr() ? ':vsp<CR>wincmd -l' : '<C-w>l'";
         options = {
           expr = true;
           remap = false;
