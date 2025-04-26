@@ -15,8 +15,8 @@
     then "Users"
     else "home";
   homeDir = "/${prefix}/${user}";
-  keyFiles = builtins.attrNames (builtins.readDir ./authorized_keys);
-  keyContents = map (v: builtins.readFile (lib.path.append ./authorized_keys "${v}")) keyFiles;
+  # keyFiles = builtins.attrNames (builtins.readDir ./authorized_keys);
+  # keyContents = map (v: builtins.readFile (lib.path.append ./authorized_keys "${v}")) keyFiles;
   # keysJoined = builtins.concatStringsSep "\n" keyContents;
 in {
   imports =
@@ -30,7 +30,6 @@ in {
     shell = pkgs.fish;
     name = user;
     home = homeDir;
-    openssh.authorizedKeys.keys = keyContents;
   };
 
   programs.zsh.enable = true;
