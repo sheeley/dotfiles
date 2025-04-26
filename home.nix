@@ -90,6 +90,7 @@ in {
         #   src = ./files/rclone.conf;
         #   user = "${private.borgUser}";
         # };
+        ".ssh/authorized_keys".source = ./files/authorized_keys;
       };
 
       shellAliases = {
@@ -108,6 +109,8 @@ in {
         clone = "git clone";
         l = "a";
         la = "ls -la";
+        lc = "light_control";
+        u = "./update";
         vdot = "vim ~/dotfiles";
       };
     };
