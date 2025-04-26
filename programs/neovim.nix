@@ -1,11 +1,6 @@
 {
   pkgs,
-  # inputs,
   config,
-  # user,
-  # helpers,
-  # vimUtils,
-  # fetchFromGitHub,
   ...
 }: let
   vim-ripgrep = pkgs.vimUtils.buildVimPlugin {
@@ -68,54 +63,6 @@ in {
       # lazyredraw = true;
     };
 
-    plugins = {
-      hop = {enable = true;};
-      cmp-path = {enable = true;};
-
-      toggleterm = {
-        enable = true;
-        settings = {
-          open_mapping = "[[<c-/>]]";
-          start_in_insert = true;
-        };
-      };
-
-      nix = {
-        enable = true;
-      };
-      todo-comments = {
-        enable = true;
-      };
-
-      none-ls = {
-        enable = true;
-        sources = {
-          diagnostics = {
-            # shellcheck.enable = true;
-            # cppcheck.enable = true;
-            gitlint.enable = true;
-          };
-          #        code_actions = {
-          #          shellcheck.enable = true;
-          #        };
-          formatting = {
-            alejandra.enable = true;
-            black.enable = true;
-            # stylua.enable = true;
-            goimports.enable = true;
-            cbfmt.enable = true;
-            shfmt.enable = true;
-            # taplo.enable = true;
-            prettier.enable = true;
-            swiftformat = {
-              enable = true;
-              package = null;
-            };
-          };
-        };
-      };
-    };
-
     autoCmd = [
       {
         event = ["BufWritePre"];
@@ -131,10 +78,22 @@ in {
         command = "set norelativenumber";
         group = "numberToggle";
       }
-      # {
-      #   event = ["QuickFixCmdPost"];
-      #   command = "Trouble diagnostics open focus=false filter.buf=0";
-      # }
+      # automatically open / close Trouble
+      {
+        event = ["DiagnosticChanged"];
+        callback = {
+          __raw = ''
+            function()
+              local diagnostics = vim.diagnostic.get()
+              if #diagnostics > 0 then
+                vim.cmd("Trouble diagnostics")
+              else
+                vim.cmd("Trouble close")
+              end
+            end
+          '';
+        };
+      }
       # {
       #   event = ["VimResized"];
       #   command = "wincmd ";
@@ -144,6 +103,11 @@ in {
       #   command = "set filetype=nothing | filetype detect";
       # }
     ];
+    autoGroups = {
+      numberToggle = {
+        clear = true;
+      };
+    };
 
     filetype = {
       extension = {
@@ -154,38 +118,39 @@ in {
       };
     };
 
-    autoGroups = {
-      numberToggle = {
-        clear = true;
-      };
-    };
-
     keymaps = [
+      # back to normal
       {
         mode = "i";
         key = ";;";
         action = "<Esc>";
       }
-      {
-        mode = "v";
-        key = "<Space>";
-        action = "zf";
-        options = {
-          remap = false;
-        };
-      }
+
+      # Create folds in visual mode
+      # {
+      #   mode = "v";
+      #   key = "<Space>";
+      #   action = "zf";
+      #   options = {
+      #     remap = false;
+      #   };
+      # }
+
       # (un)indent with Tab
+
       {
-        mode = "v";
+        mode = "n";
         key = "<Tab>";
         action = "<C-t>";
       }
       {
-        mode = "v";
+        mode = "n";
         key = "<S-Tab>";
         action = "<C-d>";
       }
+
       # folding
+
       {
         mode = "n";
         key = "<Space>";
@@ -195,7 +160,9 @@ in {
           remap = false;
         };
       }
+
       # windows/splits
+
       {
         mode = "n";
         key = "<C-j>";
@@ -220,35 +187,138 @@ in {
           remap = false;
         };
       }
-      # automatically create a split if none doesn't exist, otherwise navigate
+
       {
         mode = "n";
         key = "<C-l>";
-        action = "winnr('l') == winnr() ? ':vsp<CR>wincmd -l' : '<C-w>l'";
+        # automatically create a split if none doesn't exist, otherwise navigate
+        action = "winnr('l') == winnr() ? ':vsp \| wincmd -l<CR>' : '<C-w>l'";
+        # action = "winnr('l') == winnr() ? ':vsp' : '<C-w>l'";
         options = {
           expr = true;
           remap = false;
         };
       }
+
+      # resizing windows
+
+      # {
+      #   mode = "n";
+      #   key = "<Alt-h>";
+      #   action = "resize -20";
+      #   options = {
+      #     remap = false;
+      #   };
+      # }
+      # {
+      #   mode = "n";
+      #   key = "<Alt-j>";
+      #   action = "vertical resize +20";
+      #   options = {
+      #     remap = false;
+      #   };
+      # }
+      # {
+      #   mode = "n";
+      #   key = "<Alt-k>";
+      #   action = "vertical resize -20";
+      #   options = {
+      #     remap = false;
+      #   };
+      # }
+      # {
+      #   mode = "n";
+      #   key = "<Alt-l>";
+      #   action = "resize +20";
+      #   options = {
+      #     remap = false;
+      #   };
+      # }
     ];
 
-    plugins.luasnip = {
-      enable = true;
-    };
-    extraConfigLuaPost = ''
-      require("luasnip.loaders.from_snipmate").lazy_load()
-    '';
+    # plugins.luasnip = {
+    #   enable = true;
+    # };
+    # extraConfigLuaPost = ''
+    #   require("luasnip.loaders.from_snipmate").lazy_load()
+    # '';
 
-    extraConfigLuaPre = ''
-      local has_words_before = function()
-        unpack = unpack or table.unpack
-        local line, col = unpack(vim.api.nvim_win_get_cursor(0))
-        return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
-      end
-      local luasnip = require("luasnip")
-    '';
+    # extraConfigLuaPre = ''
+    #   local has_words_before = function()
+    #     unpack = unpack or table.unpack
+    #     local line, col = unpack(vim.api.nvim_win_get_cursor(0))
+    #     return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
+    #   end
+    #   local luasnip = require("luasnip")
+    # '';
 
     plugins = {
+      trouble.enable = true; # improved diagnostic
+      comment.enable = true; # gcc comments
+      web-devicons.enable = true; # enables nerdfonts
+      nix.enable = true; # vim.nix
+      todo-comments.enable = true; # finds TO-DO etc in comments
+      lualine.enable = true; # status bar at bottom
+      inc-rename.enable = true; # show renames inline
+      # plantuml-syntax.enable = true; # who knows what this does
+      # conform-nvim.enable = true; # linter
+
+      # hop = {enable = true;}; # motion
+      leap = {
+        enable = true;
+      };
+      # flit = {
+      #   enable = true;
+      # };
+      # flash = {
+      #   enable = true;
+      # };
+
+      # autoclose.enable = true; # auto pair and close brackets
+
+      # ctrl + / to open a terminal
+      toggleterm = {
+        enable = true;
+        settings = {
+          open_mapping = "[[<c-/>]]";
+          start_in_insert = true;
+        };
+      };
+
+      # enable non-lsp languages to be represented as LSP
+      # none-ls = {
+      #   enable = true;
+      #   sources = {
+      #     diagnostics = {
+      #       # shellcheck.enable = true;
+      #       gitlint.enable = true;
+      #     };
+      #     #        code_actions = {
+      #     #          shellcheck.enable = true;
+      #     #        };
+      #     formatting = {
+      #       alejandra.enable = true;
+      #       black.enable = true;
+      #       # stylua.enable = true;
+      #       goimports.enable = true;
+      #       cbfmt.enable = true;
+      #       shfmt.enable = true;
+      #       # taplo.enable = true;
+      #       prettier = {
+      #         enable = true;
+      #         disableTsServerFormatter = true;
+      #       };
+      #
+      #       swiftformat = {
+      #         enable = true;
+      #         package = null;
+      #       };
+      #     };
+      #   };
+      # };
+
+      # completion
+      cmp-path.enable = true; # completion from path
       cmp = {
         enable = true;
         autoEnableSources = true;
@@ -275,11 +345,29 @@ in {
             #       end
             #     end
             #   '';
-            "<S-Tab>" = "cmp.mapping(cmp.mapping.select_prev_item(), {'i', 's'})";
-            "<Tab>" = "cmp.mapping(cmp.mapping.select_next_item(), {'i', 's'})";
+            "<Up>" = "cmp.mapping(cmp.mapping.select_prev_item(), {'i', 's'})";
+            "<Down>" = "cmp.mapping(cmp.mapping.select_next_item(), {'i', 's'})";
+            # "<S-Tab>" = "cmp.mapping(cmp.mapping.select_prev_item(), {'i', 's'})";
+            # "<Tab>" = "cmp.mapping(cmp.mapping.select_next_item(), {'i', 's'})";
             # modes = ["i" "s"];
             # };
           };
+          #   # mapping = {
+          #   #   "<C-d>" = "cmp.mapping.scroll_docs(-4)";
+          #   #   "<C-f>" = "cmp.mapping.scroll_docs(4)";
+          #   #   "<C-Space>" = "cmp.mapping.complete()";
+          #   #   "<C-e>" = "cmp.mapping.close()";
+          #   #   "<Tab>" = {
+          #   #     modes = ["i" "s"];
+          #   #     action = "cmp.mapping.select_next_item()";
+          #   #   };
+          #   #   "<S-Tab>" = {
+          #   #     modes = ["i" "s"];
+          #   #     action = "cmp.mapping.select_prev_item()";
+          #   #   };
+          #   # "<CR>" = "cmp.mapping.confirm({ select = true })";
+          # };
+
           snippet.expand = ''
             function(args)
               require('luasnip').lsp_expand(args.body)
@@ -295,261 +383,19 @@ in {
           sources = [
             {name = "nvim_lsp";}
             {name = "path";}
-            {name = "buffer";}
+            # turned this off because it's way too noisy
+            # {name = "buffer";}
           ];
         };
-        plugins.inc-rename = {
-          enable = true;
-        };
+      };
 
-        plugins.lualine = {
-          enable = true;
-        };
-
-        plugins.trouble = {
-          enable = true;
-          settings = {
-            auto_close = true;
-            auto_open = true;
-          };
-        };
-
-        plugins.noice = {
-          enable = true;
-
-          settings = {
-            messages = {
-              view = "mini";
-              viewError = "mini";
-              viewWarn = "mini";
-            };
-
-            lsp.override = {
-              "vim.lsp.util.convert_input_to_markdown_lines" = true;
-              "vim.lsp.util.stylize_markdown" = true;
-              "cmp.entry.get_documentation" = true;
-            };
-
-            presets = {
-              bottom_search = true;
-              command_palette = true;
-              long_message_to_split = true;
-              inc_rename = true;
-              lsp_doc_border = false;
-            };
-          };
-
-          # mapping = {
-          #   "<C-d>" = "cmp.mapping.scroll_docs(-4)";
-          #   "<C-f>" = "cmp.mapping.scroll_docs(4)";
-          #   "<C-Space>" = "cmp.mapping.complete()";
-          #   "<C-e>" = "cmp.mapping.close()";
-          #   "<Tab>" = {
-          #     modes = ["i" "s"];
-          #     action = "cmp.mapping.select_next_item()";
-          #   };
-          #   "<S-Tab>" = {
-          #     modes = ["i" "s"];
-          #     action = "cmp.mapping.select_prev_item()";
-          #   };
-          # "<CR>" = "cmp.mapping.confirm({ select = true })";
-          # };
-
-          web-devicons = {
-            enable = true;
-          };
-
-          telescope = {
-            enable = true;
-            enabledExtensions = ["ui-select"];
-            # extensionConfig = {
-            #   ui-select = {
-            #     __raw = ''
-            #       require("telescope.themes").get_dropdown {
-            #         -- even more opts
-            #       }
-            #     '';
-            #   };
-            # };
-          };
-
-          treesitter = {
-            enable = true;
-            settings = {
-              indent = {
-                enable = true;
-              };
-            };
-
-            grammarPackages = with config.programs.nixvim.plugins.treesitter.package.passthru.builtGrammars; [
-              arduino
-              bash
-              c
-              cpp
-              cuda
-              dart
-              devicetree
-              diff
-              dockerfile
-              gitattributes
-              gitignore
-              git_rebase
-              # help
-              html
-              json
-              markdown
-              markdown_inline
-              nix
-              # python
-              regex
-              toml
-              vim
-              # yaml
-            ];
-          };
-
-          treesitter-refactor = {
-            enable = true;
-            highlightDefinitions = {
-              enable = true;
-              clearOnCursorMove = true;
-            };
-            smartRename = {
-              enable = true;
-            };
-            navigation = {
-              enable = true;
-            };
-          };
-
-          treesitter-context = {
-            enable = true;
-          };
-
-          vim-matchup = {
-            treesitter = {
-              enable = true;
-              include_match_words = true;
-            };
-            enable = true;
-          };
-
-          comment = {
-            enable = true;
-          };
-
-          neo-tree = {
-            enable = true;
-
-            closeIfLastWindow = true;
-            enableGitStatus = false;
-            filesystem.filteredItems = {
-              hideDotfiles = false;
-              # hideGitIgnored = true;
-              visible = true;
-            };
-          };
-
-          plantuml-syntax.enable = true;
-
-          indent-blankline = {
-            enable = true;
-
-            # useTreesitter = true;
-            settings = {
-              scope = {
-                enabled = true;
-                show_start = true;
-              };
-            };
-          };
-
-          lsp = {
-            enable = true;
-
-            keymaps = {
-              silent = true;
-
-              lspBuf = {
-                "gd" = "definition";
-                "gD" = "declaration";
-                "ca" = "code_action";
-                "ff" = "format";
-                "K" = "hover";
-              };
-            };
-
-            servers = {
-              nil_ls = {
-                enable = true;
-                settings = {
-                  formatting.command = ["alejandra" "--quiet"];
-                };
-              };
-              bashls.enable = true;
-              helm_ls.enable = true;
-              nushell.enable = true;
-              # sourcekit.enable = true;
-              terraformls.enable = true;
-              yamlls.enable = true;
-              jsonls.enable = true;
-              gopls.enable = true;
-              eslint.enable = true;
-              ruff.enable = true;
-              # dartls.enable = true;
-            };
-          };
-
-          lsp-format = {
-            enable = true;
-          };
-
-          # vim.lsp.set_log_level("debug")
-          # extraConfigLua = ''
-          #   require'lspconfig'.sourcekit.setup {
-          #     cmd = {"/usr/bin/sourcekit-lsp"}
-          #   }
-          # '';
-
-          lspkind = {
-            enable = true;
-            cmp = {
-              enable = true;
-            };
-          };
-
-          nvim-lightbulb = {
-            enable = true;
-            settings = {
-              autocmd.enabled = true;
-            };
-          };
-
-          inc-rename = {
-            enable = true;
-          };
-
-          lualine = {
-            enable = true;
-          };
-
-          trouble = {
-            enable = true;
-            settings = {
-              auto_close = true;
-            };
-          };
-
-          noice = {
-            enable = true;
-          };
-        };
-
+      # notifications
+      noice = {
+        enable = true;
         settings = {
           messages = {
             view = "mini";
-            viewError = "mini";
-            viewWarn = "mini";
+            viewWarn = "split";
           };
 
           lsp.override = {
@@ -568,30 +414,197 @@ in {
         };
       };
 
-      extraPlugins = with pkgs.vimPlugins; [
-        editorconfig-nvim
-        ron-vim
-        telescope-ui-select-nvim
-        vim-fish
-        vim-nix
-        vim-prettier
-        vim-sensible
-        vim-shellcheck
-        vim-terraform
-        vim-ripgrep
-        vim-swift
-      ];
+      #
 
-      extraPackages = with pkgs; [
-        shfmt
-        # yaml-language-server
-        nodePackages.bash-language-server
-        nil
-        # pyright
-        # python310Packages.python-lsp-server
-        # python310Packages.flake8
-        # python310Packages.autopep8
-      ];
+      telescope = {
+        enable = true;
+        enabledExtensions = ["ui-select"];
+      };
+
+      treesitter = {
+        enable = true;
+        settings = {
+          indent = {
+            enable = true;
+          };
+        };
+
+        grammarPackages = with config.programs.nixvim.plugins.treesitter.package.passthru.builtGrammars; [
+          bash
+          csv
+          cuda
+          dart
+          diff
+          dockerfile
+          gitattributes
+          gitignore
+          git_rebase
+          go
+          hcl
+          html
+          json
+          markdown
+          markdown_inline
+          nix
+          python
+          regex
+          ron
+          ssh-config
+          toml
+          # vim
+          yaml
+        ];
+      };
+
+      # highlights definitions, current scope, intelligent rename
+      treesitter-refactor = {
+        enable = true;
+        highlightDefinitions = {
+          enable = true;
+          clearOnCursorMove = true;
+        };
+        smartRename = {
+          enable = true;
+        };
+        navigation = {
+          enable = true;
+        };
+      };
+
+      # show tree to current line in header
+      treesitter-context = {
+        enable = true;
+        settings = {
+          mode = "topline";
+        };
+      };
+
+      # match open/close brackets etc - visualize and act on
+      vim-matchup = {
+        treesitter = {
+          enable = true;
+          include_match_words = true;
+        };
+        enable = true;
+      };
+
+      # directory tree
+      neo-tree = {
+        enable = true;
+
+        closeIfLastWindow = true;
+        enableGitStatus = false;
+        filesystem.filteredItems = {
+          hideDotfiles = false;
+          # hideGitIgnored = true;
+          visible = true;
+        };
+      };
+
+      # pretty obvious <3
+      indent-blankline = {
+        enable = true;
+
+        # useTreesitter = true;
+        settings = {
+          scope = {
+            enabled = true;
+            show_start = true;
+          };
+        };
+      };
+
+      lsp = {
+        enable = true;
+
+        keymaps = {
+          silent = true;
+
+          lspBuf = {
+            "gd" = "definition";
+            "gD" = "declaration";
+            "ca" = "code_action";
+            "ff" = "format";
+            "K" = "hover";
+          };
+        };
+        inlayHints = true;
+
+        servers = {
+          nil_ls = {
+            enable = true;
+            settings = {
+              formatting.command = ["alejandra" "--quiet"];
+            };
+          };
+          bashls.enable = true;
+          diagnosticls.enable = true;
+          eslint.enable = true;
+          golangci_lint_ls.enable = true;
+          gopls.enable = true;
+          jsonls.enable = true;
+          helm_ls.enable = true;
+          nushell.enable = true;
+          ruff.enable = true; # python
+          # sqlls.enable = true;
+          # sourcekit.enable = true;
+          terraformls.enable = true;
+          ts_ls.enable = true;
+          # typos_lsp.enable = true; # TODO?
+          yamlls.enable = true;
+        };
+      };
+
+      # uses each lsp to format on save
+      lsp-format = {
+        enable = true;
+      };
+
+      # vim.lsp.set_log_level("debug")
+      # extraConfigLua = ''
+      #   require'lspconfig'.sourcekit.setup {
+      #     cmd = {"/usr/bin/sourcekit-lsp"}
+      #   }
+      # '';
+
+      # icons for types next to files/directories
+      lspkind = {
+        enable = true;
+        cmp = {
+          enable = true;
+        };
+      };
+
+      # shows icons in sidebar when there are issues
+      nvim-lightbulb = {
+        enable = true;
+        settings = {
+          autocmd.enabled = true;
+          status_text.enabled = true;
+        };
+      };
+
+      # also generate the matching element
+      nvim-autopairs = {
+        enable = true;
+        settings = {
+          check_ts = true;
+        };
+      };
     };
+
+    extraPlugins = with pkgs.vimPlugins; [
+      editorconfig-nvim
+      ron-vim
+      telescope-ui-select-nvim
+      vim-fish
+      vim-nix
+      vim-prettier
+      vim-sensible
+      vim-shellcheck
+      vim-terraform
+      vim-ripgrep
+      vim-swift
+    ];
   };
 }
