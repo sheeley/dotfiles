@@ -59,8 +59,7 @@ in {
       updatetime = 100;
       shortmess = "c";
       shell = "${pkgs.fish}/bin/fish";
-      # can't use this with noice
-      # lazyredraw = true;
+      # lazyredraw = true; # can't use this with noice
     };
 
     autoCmd = [
@@ -100,7 +99,7 @@ in {
       # }
       # {
       #   event = ["BufWritePost"];
-      #   command = "set filetype=nothing | filetype detect";
+      #   command = "set filetype=nothing \| filetype detect";
       # }
     ];
     autoGroups = {
@@ -192,65 +191,32 @@ in {
         mode = "n";
         key = "<C-l>";
         # automatically create a split if none doesn't exist, otherwise navigate
-        action = "winnr('l') == winnr() ? ':vsp \| wincmd -l<CR>' : '<C-w>l'";
+        action = "winnr('l') == winnr() ? ':vsp \| wincmd -l' : '<C-w>l'";
         # action = "winnr('l') == winnr() ? ':vsp' : '<C-w>l'";
         options = {
           expr = true;
           remap = false;
         };
       }
-
-      # resizing windows
-
-      # {
-      #   mode = "n";
-      #   key = "<Alt-h>";
-      #   action = "resize -20";
-      #   options = {
-      #     remap = false;
-      #   };
-      # }
-      # {
-      #   mode = "n";
-      #   key = "<Alt-j>";
-      #   action = "vertical resize +20";
-      #   options = {
-      #     remap = false;
-      #   };
-      # }
-      # {
-      #   mode = "n";
-      #   key = "<Alt-k>";
-      #   action = "vertical resize -20";
-      #   options = {
-      #     remap = false;
-      #   };
-      # }
-      # {
-      #   mode = "n";
-      #   key = "<Alt-l>";
-      #   action = "resize +20";
-      #   options = {
-      #     remap = false;
-      #   };
-      # }
     ];
 
-    # plugins.luasnip = {
-    #   enable = true;
-    # };
-    # extraConfigLuaPost = ''
-    #   require("luasnip.loaders.from_snipmate").lazy_load()
-    # '';
+    # luasnip - used for completions
+    plugins.luasnip = {
+      enable = true;
+    };
+    extraConfigLuaPost = ''
+      require("luasnip.loaders.from_snipmate").lazy_load()
+    '';
 
-    # extraConfigLuaPre = ''
-    #   local has_words_before = function()
-    #     unpack = unpack or table.unpack
-    #     local line, col = unpack(vim.api.nvim_win_get_cursor(0))
-    #     return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
-    #   end
-    #   local luasnip = require("luasnip")
-    # '';
+    extraConfigLuaPre = ''
+      local has_words_before = function()
+        unpack = unpack or table.unpack
+        local line, col = unpack(vim.api.nvim_win_get_cursor(0))
+        return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
+      end
+      local luasnip = require("luasnip")
+    '';
+    # end luasnip
 
     plugins = {
       trouble.enable = true; # improved diagnostic
@@ -261,7 +227,7 @@ in {
       lualine.enable = true; # status bar at bottom
       inc-rename.enable = true; # show renames inline
       # plantuml-syntax.enable = true; # who knows what this does
-      # conform-nvim.enable = true; # linter
+      # conform-nvim.enable = true; # formatter
 
       # hop = {enable = true;}; # motion
       leap = {
@@ -540,7 +506,7 @@ in {
           bashls.enable = true;
           diagnosticls.enable = true;
           eslint.enable = true;
-          golangci_lint_ls.enable = true;
+          # golangci_lint_ls.enable = true; # disabled - install doesn't work
           gopls.enable = true;
           jsonls.enable = true;
           helm_ls.enable = true;
