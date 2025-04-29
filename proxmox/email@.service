@@ -1,0 +1,9 @@
+[Unit]
+Description=Send Systemd Notifications to Email
+
+[Service]
+Type=oneshot
+ExecStart=/bin/mail -s "Service Failed %i" -r prox@mox sheeley@aigee.org
+
+[Install]
+WantedBy=multi-user.target

@@ -1,5 +1,6 @@
 [Unit]
 Description=Run Backup
+OnFailure=email@%i.service
 
 [Service]
 WorkingDirectory=/root

@@ -1,7 +1,5 @@
 #!/bin/bash
 set -euo pipefail
-whoami
-
 # Variables
 #   REPO="/local-2tb/backup"
 #   BACKUP_NAME="proxmox-backup-$(date +%Y-%m-%d_%H-%M-%S)"

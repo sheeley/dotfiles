@@ -1,7 +1,7 @@
 #! /usr/bin/env bash
 set -eux pipefail
 
-if [ $(id -u) -ne 0 ]; then
+if [ "$(id -u)" -ne 0 ]; then
 	echo Please run this script as root or using sudo!
 	exit
 fi
@@ -9,7 +9,7 @@ fi
 mkdir -p /etc/backup
 
 # link systemd files
-cp -f ./backup.* /etc/systemd/system/
+cp -f ./*.service ./*.timer /etc/systemd/system/
 cp -f ./borgmatic.yaml /etc/backup
 cp -f ./backup /bin/backup
 
