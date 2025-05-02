@@ -87,6 +87,8 @@
         autosquash = true;
         autostash = true;
       };
+      # git shows a dumb message if you rebase on a branch that cherry-picked from the current
+      advice.skippedCherryPicks = false;
     };
 
     userName = "Johnny Sheeley";

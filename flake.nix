@@ -21,6 +21,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    home-manager-diff = {
+      url = "github:pedorich-n/home-manager-diff";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     flake-utils = {
       url = "github:numtide/flake-utils";
     };
@@ -30,10 +35,12 @@
     self,
     nixpkgs,
     home-manager,
+    home-manager-diff,
     darwin,
     nixvim,
     flake-utils,
   } @ inputs: let
+    inherit (self) outputs;
     legacyDarwinPackages = nixpkgs.lib.genAttrs ["aarch64-darwin"] (
       system:
         import inputs.nixpkgs {
@@ -71,7 +78,7 @@
     private =
       if builtins.currentSystem == "aarch64-darwin"
       then legacyDarwinPackages.aarch64-darwin.callPackage ~/.nix-private/private.nix {}
-      else legacyDarwinPackages.aarch64-darwin.callPackage /home/sheeley/.nix-private/private.nix {};
+      else legacyNixPackages.x86_64-linux.callPackage /home/sheeley/.nix-private/private.nix {};
   in {
     darwinConfigurations."jmba" = darwin.lib.darwinSystem {
       system = "aarch64-darwin";
@@ -120,23 +127,6 @@
       };
     };
 
-    homeConfigurations."sheeley" = home-manager.lib.homeManagerConfiguration {
-      system = "x86_64-linux";
-      pkgs = legacyNixPackages.x86_64-linux;
-      modules =
-        [
-          ./environment.nix
-          ./home.nix
-        ]
-        ++ sharedModules;
-
-      specialArgs = {
-        inherit inputs;
-        user = "sheeley";
-        private = private;
-      };
-    };
-
     nixosConfigurations."tiny" = nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
       pkgs = legacyNixPackages.x86_64-linux;
@@ -151,6 +141,32 @@
         inherit inputs;
         user = "sheeley";
         private = private;
+        isMac = false;
+      };
+    };
+
+    # just one of these because home manager uses username.
+    # to customize, create a host-specific script like proxmox/setup
+    homeConfigurations."sheeley" = home-manager.lib.homeManagerConfiguration {
+      pkgs = legacyNixPackages.x86_64-linux;
+      modules = [
+        home-manager-diff.hmModules.default
+        {
+          programs.hmd = {
+            enable = true;
+            runOnSwitch = true; # enabled by default
+          };
+          services.home-manager.autoExpire.enable = true;
+        }
+        ./linux-home.nix
+      ];
+
+      extraSpecialArgs = {
+        inherit inputs outputs;
+        user = "sheeley";
+        private = private;
+        isMac = false;
+        nixvim = nixvim;
       };
     };
 

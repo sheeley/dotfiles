@@ -1,0 +1,26 @@
+#! /usr/bin/env bash
+set -eu
+
+OS=$(uname -a)
+IS_MAC=
+IS_NIX=
+IS_LINUX=
+NOT_NIX=true
+NOT_MAC=true
+if [[ "$OS" == *"NixOS"* ]]; then
+	IS_NIX=true
+	NOT_NIX=
+elif [[ "$OS" == *"Linux"* ]]; then
+	IS_LINUX=true
+elif [[ "$OS" == *"Darwin"* ]]; then
+	IS_MAC=true
+	NOT_MAC=
+fi
+
+OSC="nixosConfigurations"
+if [[ "$IS_MAC" ]]; then
+	OSC="darwinConfigurations"
+elif [[ "$NOT_NIX" ]]; then
+	OSC="homeConfigurations"
+fi
+echo "$OSC"

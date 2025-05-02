@@ -7,6 +7,7 @@ with pkgs; [
   alejandra # Code formatter for Nix expressions
   atool # Archiving utility; useful for extracting various archive types
   bat # Enhanced `cat` command with syntax highlighting and paging
+  borgmatic # Backup, bb!
   coreutils-prefixed # GNU Coreutils with commands prefixed (e.g., `gfind`, `gsed`)
   du-dust # Disk usage visualization tool
   duf # User-friendly disk usage/free space utility
@@ -60,4 +61,3 @@ with pkgs; [
 #   obsidian
 #   # dockutil
 # ])
-
