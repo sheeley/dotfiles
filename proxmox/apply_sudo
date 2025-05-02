@@ -11,7 +11,6 @@ mkdir -p /etc/backup
 # link systemd files
 cp -f ./*.service ./*.timer /etc/systemd/system/
 cp -f ./borgmatic.yaml /etc/backup
-cp -f ./backup /bin/backup
-
+cp -f ./backup ./send-notification /bin/
 # ensure they're running
 systemctl daemon-reload

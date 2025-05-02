@@ -1,0 +1,8 @@
+#! /usr/bin/env bash
+set -euo pipefail
+set -x
+
+set +e
+BODY=$(sudo journalctl -u "$1" _SYSTEMD_INVOCATION_ID="$(sudo systemctl show -p InvocationID --value "$1")")
+set -e
+echo "$BODY" | mail -s "Service Failed $1" sheeley@aigee.org
