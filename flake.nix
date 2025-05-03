@@ -159,7 +159,7 @@
           };
           services.home-manager.autoExpire.enable = true;
         }
-        ./linux-home.nix
+        ./home-manager.nix
       ];
 
       extraSpecialArgs = {
