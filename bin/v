@@ -45,7 +45,7 @@ if [ -f "$1" ]; then
 fi
 
 # if the file doesn't exist, check if there is a filename that contains the filename passed in
-MATCH=$(find . -name "*$1*")
+MATCH=$(fd --type file --glob "*$1*" .)
 LINES=$(echo "$MATCH" | wc -l)
 if [ "$LINES" -eq 0 ]; then
 	open_vim . .
