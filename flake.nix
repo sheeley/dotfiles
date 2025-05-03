@@ -73,6 +73,7 @@
         home-manager.darwinModules.home-manager
         ./darwin.nix
         ./homebrew.nix
+        ./macos-hm.nix
       ]
       ++ sharedModules;
     private =

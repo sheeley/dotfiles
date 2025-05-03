@@ -191,7 +191,7 @@ in {
         mode = "n";
         key = "<C-l>";
         # automatically create a split if none doesn't exist, otherwise navigate
-        action = "winnr('l') == winnr() ? ':vsp \| wincmd -l' : '<C-w>l'";
+        action = "winnr('l') == winnr() ? ':vsp \| wincmd -l<CR>' : '<C-w>l'";
         # action = "winnr('l') == winnr() ? ':vsp' : '<C-w>l'";
         options = {
           expr = true;
