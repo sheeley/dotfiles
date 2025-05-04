@@ -6,5 +6,5 @@ if [[ -f ./apply ]]; then
 fi
 
 if [[ -f ./apply_sudo ]]; then
-	sudo ./apply_sudo
+	sudo env "HOME=$HOME" "PATH=$PATH" ./apply_sudo
 fi

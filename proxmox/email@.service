@@ -1,0 +1,9 @@
+[Unit]
+Description=Send Systemd Notifications to Email
+
+[Service]
+Type=oneshot
+ExecStart=/bin/send-notification %i
+
+[Install]
+WantedBy=multi-user.target

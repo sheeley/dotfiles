@@ -1,0 +1,62 @@
+source_directories:
+  - /etc/pve
+  - /etc/vzdump.conf
+  - /local-2tb/
+  # - /root/.config/borgmatic/config.yaml
+  # - /etc/systemd/system/backup.service
+  # - /etc/systemd/system/backup.timer
+  # - /root/backup
+  #- /etc/qemu-server
+
+repositories:
+  - path: /local-2tb/backup
+  - path: ssh://@repo@.repo.borgbase.com/./repo
+    label: "proxmox on BorgBase"
+
+exclude_patterns:
+  - "*.pyc"
+  - ~/*/.cache
+
+# Stay in same file system (optional)
+# one_file_system: true
+
+compression: auto,zstd
+encryption_passphrase: "@passphrase@" 
+archive_name_format: "{hostname}-{now:%Y-%m-%d-%H%M%S}"
+
+# Number of times to retry a failing backup before giving up.
+retries: 5
+retry_wait: 5
+
+keep_daily: 7
+keep_weekly: 4
+keep_monthly: 12
+
+# Don't read whole repo each time
+skip_actions:
+  - check
+
+check_last: 3
+
+# Shell commands to execute before or after a backup
+commands:
+  - before: repository
+    run:
+      - echo "`date` - Starting backup"
+  
+  - after: repository
+    run:
+      - echo "`date` - Finished backup"
+  
+  - before: action
+    when:
+      - check
+    run:
+      - echo "`date` - Starting check"
+
+  - after: action
+    when:
+      - check
+    run:
+      - echo "`date` - Finished check"
+

@@ -1,0 +1,22 @@
+#! /usr/bin/env bash
+set -eu pipefail
+# set -x
+
+if [ "$(id -u)" -ne 0 ]; then
+	echo Please run this script as root or using sudo!
+	exit
+fi
+
+mkdir -p /etc/backup
+
+PRIVATE_VARS=$(nix-private-json)
+REPO=$(echo "$PRIVATE_VARS" | jq '.repo')
+PASSPHRASE=$(echo "$PRIVATE_VARS" | jq '.passphrase')
+
+sed -e "s/@passphrase@/$PASSPHRASE/g" -e "s/@repo@/$REPO/g" ./borgmatic.yaml >resolved.yaml
+
+cp -f ./*.service ./*.timer /etc/systemd/system/
+cp -f ./resolved.yaml /etc/backup/borgmatic.yaml
+cp -f ./backup ./send-notification /bin/
+
+systemctl daemon-reload

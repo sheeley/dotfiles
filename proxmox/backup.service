@@ -1,0 +1,13 @@
+[Unit]
+Description=Run Backup
+OnFailure=email@%i.service
+
+[Service]
+WorkingDirectory=/root
+ExecStart=/bin/backup
+User=root
+# Path=/home/sheeley/.nix-profile/bin/
+
+[Install]
+WantedBy=multi-user.target
+

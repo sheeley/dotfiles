@@ -1,0 +1,28 @@
+#!/bin/bash
+set -euo pipefail
+
+# REPO=$(nix-private-json | jq '.repo')
+# borg init -e repokey-blake2 "ssh://$REPO.repo.borgbase.com/./repo"
+
+# function that checks if it has been run today,
+DATE=$(date -u +%Y-%m-%d)
+FILE="/etc/backup/vm-backup-date"
+STORAGE="local-2tb"
+has_run_today() {
+	if [ ! -f "$FILE" ]; then
+		return 1
+	fi
+	RUN_DATE=$(cat "$FILE")
+	if [[ "$DATE" != "$RUN_DATE" ]]; then
+		return 1
+	fi
+	return 0
+}
+set +e
+if ! has_run_today; then
+	set -e
+	vzdump --all --mode snapshot --compress zstd --storage "$STORAGE" --prune-backups keep-daily=7,keep-weekly=4,keep-monthly=12,keep-yearly=3 # --quiet
+	echo "$DATE" >"$FILE"
+fi
+set -e
+/home/sheeley/.nix-profile/bin/borgmatic --verbosity 1 -c "/etc/backup/borgmatic.yaml"

@@ -1,0 +1,9 @@
+[Unit]
+Description=Run Backup
+
+[Timer]
+OnCalendar=*-*-* 02:00:00
+Unit=backup.service
+
+[Install]
+WantedBy=timers.target
