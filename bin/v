@@ -46,16 +46,20 @@ fi
 
 # if the file doesn't exist, check if there is a filename that contains the filename passed in
 MATCH=$(fd --type file --glob "*$1*" .)
-LINES=$(echo "$MATCH" | wc -l)
-if [ "$LINES" -eq 0 ]; then
-	open_vim . .
-elif [ "$LINES" -eq 1 ] && [ -f "$MATCH" ]; then
-	DIR=$(get_git_root "$MATCH")
-	open_vim "$DIR" "$MATCH"
-else
-	# Display matches and allow picking
-	echo "ambiguous. $MATCH"
-	exit
-	# DIR=$(get_git_root "$MATCH")
-	# open_vim "$DIR" "$MATCH"
+LINES=0
+if [[ "$MATCH" != "" ]]; then
+	LINES=$(echo "$MATCH" | wc -l)
 fi
+
+if [ "$LINES" -eq 0 ]; then
+	# open_vim . .
+	echo "not found"
+	exit 1
+fi
+
+if [ "$LINES" -gt 1 ]; then
+	MATCH=$(echo "$MATCH" | select-from)
+fi
+
+DIR=$(get_git_root "$MATCH")
+open_vim "$DIR" "$MATCH"
