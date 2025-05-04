@@ -16,6 +16,7 @@ repositories:
 
 exclude_patterns:
   - "*.pyc"
+  - "*/.venv/*"
   - "~/*/.cache"
   - "~/.cache/*"
   - "/var/cache/*"
@@ -62,14 +63,23 @@ checks:
   - name: repository
     frequency: 2 weeks
 
-before_backup:
-  - echo "`date` - Starting backup"
+commands:
+  - before: repository
+    run:
+      - echo "`date` - Starting backup"
+  
+  - after: repository
+    run:
+      - echo "`date` - Finished backup"
+  
+  - before: action
+    when:
+      - check
+    run:
+      - echo "`date` - Starting check"
 
-after_backup:
-  - echo "`date` - Finished backup"
-
-before_check:
-  - echo "`date` - starting checks"
-
-after_check:
-  - echo "`date` - finished checks"
+  - after: action
+    when:
+      - check
+    run:
+      - echo "`date` - Finished check"
