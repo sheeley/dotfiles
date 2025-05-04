@@ -8,3 +8,5 @@ fi
 if [[ -f ./apply_sudo ]]; then
 	sudo env "HOME=$HOME" "PATH=$PATH" ./apply_sudo
 fi
+
+ah
