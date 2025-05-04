@@ -75,7 +75,7 @@ in {
       #   src = ./files/rclone.conf;
       #   user = "${private.borgUser}";
       # };
-      ".ssh/authorized_keys".source = ./files/authorized_keys;
+      # ".ssh/authorized_keys".source = ./files/authorized_keys;
     };
 
     shellAliases = {
@@ -112,6 +112,11 @@ in {
         	mkdir -p "$DIR"
         	chown -R ${user} "$DIR"
         done
+      '';
+
+      authorizedKeys = lib.hm.dag.entryAfter ["writeBoundary"] ''
+        cp -f ${homeDir}/dotfiles/files/authorized_keys ~/.ssh/
+        chmod 640 ~/.ssh/authorized_keys
       '';
     };
   };

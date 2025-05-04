@@ -24,6 +24,7 @@ in {
         ./home-manager.nix
         {
           inherit config lib user inputs private pkgs;
+          isMac = pkgs.system == "x86_64-darwin";
         }
       )
     ];
