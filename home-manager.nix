@@ -5,7 +5,7 @@
   user,
   inputs,
   private,
-  isMac ? true,
+  isMac,
   ...
 }: let
   prefix =

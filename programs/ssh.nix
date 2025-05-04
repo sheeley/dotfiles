@@ -1,5 +1,10 @@
 {...}: {
   # services.ssh-agent.enable = true;
+  programs.keychain = {
+    enable = true;
+    keys = ["id_ed25519"];
+  };
+
   programs.ssh = {
     enable = true;
     addKeysToAgent = "yes";
