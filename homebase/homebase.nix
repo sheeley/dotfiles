@@ -1,6 +1,6 @@
 {
   # pkgs,
-  config,
+  # config,
   lib,
   private,
   storagePath,
@@ -30,17 +30,7 @@ in {
         BORG_EXIT_CODES = "modern";
       };
 
-      # Supposed to be better, but I couldn't get it to replace all of the vars
-      # file.".config/borgmatic/config.yaml".source = pkgs.replaceVars ../files/borgmatic/config.yaml {
-      #   secret = "${private.borgSecret}";
-      #   user = "${private.borgUser}";
-      #   storagePath = "${storagePath}";
-      # };
-
-      file.".config/borgmatic/config.yaml".source = pkgs.substituteAll {
-        name = "config.yaml";
-        src = ../files/borgmatic/config.yaml;
-
+      file.".config/borgmatic/config.yaml".source = pkgs.replaceVars ./borgmatic.yaml {
         secret = "${private.borgSecret}";
         user = "${private.borgUser}";
         storagePath = "${storagePath}";
