@@ -1,5 +1,6 @@
 #!/bin/bash
 set -euo pipefail
+# set -x
 
 # REPO=$(nix-private-json | jq '.repo')
 # borg init -e repokey-blake2 "ssh://$REPO.repo.borgbase.com/./repo"

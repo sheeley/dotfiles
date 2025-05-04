@@ -10,8 +10,8 @@ fi
 mkdir -p /etc/backup
 
 PRIVATE_VARS=$(nix-private-json)
-REPO=$(echo "$PRIVATE_VARS" | jq '.repo')
-PASSPHRASE=$(echo "$PRIVATE_VARS" | jq '.passphrase')
+REPO=$(echo "$PRIVATE_VARS" | jq -r '.repo')
+PASSPHRASE=$(echo "$PRIVATE_VARS" | jq -r '.passphrase')
 
 sed -e "s/@passphrase@/$PASSPHRASE/g" -e "s/@repo@/$REPO/g" ./borgmatic.yaml >resolved.yaml
 
