@@ -24,11 +24,7 @@
       and source {$HOME}/.iterm2_shell_integration.fish
 
       if   not set -q ZELLIJ && test -n "$SSH_CONNECTION"
-        if test "$ZELLIJ_AUTO_ATTACH" = "true"
-          zellij attach -c
-        else
-          zellij
-        end
+        zellij attach --create sheeley
 
         if test "$ZELLIJ_AUTO_EXIT" = "true"
           kill $fish_pid
