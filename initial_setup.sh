@@ -34,6 +34,13 @@ confirm() {
 	fi
 }
 
+exists() {
+	if command -v "$1" &>/dev/null; then
+		return 0
+	fi
+	return 1
+}
+
 set_hostname() {
 	echo -n "New hostname: "
 	read -r NEW_HOST
@@ -63,67 +70,66 @@ if [[ "sheeley" != $(whoami) ]]; then
 fi
 
 if [[ "$NOT_NIX" ]]; then
-	if ! command -v nix &>/dev/null; then
-		echo "installing nix"
-		curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install
+	if ! exists nix; then
+		if [[ ! -f /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh ]]; then
+			echo "installing nix"
+			curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install --no-confirm
+		fi
 		# shellcheck disable=SC1091
 		. /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
-
-		# create /run
-		if [[ "$IS_MAC" && ! -f /run ]]; then
-			echo "creating /run"
-			set +x
-			printf 'run\tprivate/var/run\n' | sudo tee -a /etc/synthetic.conf
-			/System/Library/Filesystems/apfs.fs/Contents/Resources/apfs.util -t
-			set -x
-		fi
 	fi
 fi
+# create /run
+if [[ "$IS_MAC" && ! -d /run ]]; then
+	echo "creating /run"
+	printf 'run\tprivate/var/run\n' | sudo tee -a /etc/synthetic.conf
+	sudo /System/Library/Filesystems/apfs.fs/Contents/Resources/apfs.util -t
+fi
 
+PREFIX="nixpkgs"
 if [[ "$NOT_MAC" ]]; then
-	PREFIX="nixos"
 	if [[ "$NOT_NIX" ]]; then
-		PREFIX="nixpkgs"
 		nix-channel --add https://nixos.org/channels/nixpkgs-unstable
 		nix-channel --update
+	else
+		PREFIX="nixos"
 	fi
 	# git to clone the repo, ripgrep to run ./apply
-	if ! command -v git &>/dev/null; then
+	if ! exists git; then
 		nix-env -iA "$PREFIX.git"
 	fi
 
-	if ! command -v rg &>/dev/null; then
+	if ! exists rg; then
 		nix-env -iA "$PREFIX.ripgrep"
 	fi
+# else
+# TODO: asdas
+# if ! exists rg; then
+# 		sudo nix-env -iA "$PREFIX.ripgrep"
+# 	fi
 fi
 
 HOST=$(hostname)
 if [[ "$IS_MAC" ]]; then
-	# nix-darwin can't install brew.
-	if ! command -v brew &>/dev/null; then
-		echo "brew is required - if you don't have it and don't want it installed this way, install it your way now."
-		if confirm "Install brew "; then
-			echo "installing brew"
-			bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-			eval "\$(/opt/homebrew/bin/brew shellenv)"
+	# nix-darwin doesn't install brew.
+	if ! exists brew; then
+		if [[ ! -f /opt/homebrew/bin/brew ]]; then
+			echo "brew is required - if you don't have it and don't want it installed this way, install it your way now."
+			if confirm "Install brew "; then
+				echo "installing brew"
+				bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+			fi
+		fi
+		eval "$(/opt/homebrew/bin/brew shellenv)"
+		if ! exists op; then
 			brew install --cask 1password 1password/tap/1password-cli
 		fi
 	fi
 
-	if ! xcode-select -p; then
+	if ! xcode-select -p &>/dev/null; then
 		echo "installing xcode"
 		xcode-select --install
 		confirm "Hit enter when install finished" || exit 1
-	fi
-
-	if command -v scutil &>/dev/null; then
-		HOST=$(scutil --get HostName)
-	fi
-
-	if confirm "Change from current hostname: $HOST?"; then
-		while true; do
-			set_hostname && break
-		done
 	fi
 fi
 
@@ -157,7 +163,7 @@ if [ ! -f ~/.gh_done ]; then
 	echo 'Input SSH Key: https://github.com/settings/keys'
 	echo -e "$RESET"
 	if confirm "Copy public key to clipboard and open browser ^?"; then
-		if command -v pbcopy &>/dev/null; then
+		if exists pbcopy; then
 			pbcopy <~/.ssh/id_ed25519.pub
 		fi
 		open https://github.com/settings/keys
@@ -165,7 +171,7 @@ if [ ! -f ~/.gh_done ]; then
 	touch ~/.gh_done
 fi
 
-if command -v op &>/dev/null; then
+if exists op; then
 	HOMEBREW_GITHUB_API_TOKEN=$(op read 'op://Personal/Homebrew Github Token/password')
 fi
 set +u
@@ -175,7 +181,6 @@ if [ "$HOMEBREW_GITHUB_API_TOKEN" == "" ]; then
 		HOMEBREW_GITHUB_API_TOKEN=$(cat ~/.gh_token)
 	fi
 	if [ "$HOMEBREW_GITHUB_API_TOKEN" == "" ]; then
-
 		echo 'Generate a token at https://github.com/settings/tokens/new?scopes=gist,public_repo,workflow&description=Homebrew'
 		if confirm "open a browser to go to github to create a token for homebrew?"; then
 			set -x
@@ -191,7 +196,6 @@ fi
 set -u
 
 if [ -d ~/dotfiles ]; then
-	echo "pulling latest dotfiles"
 	(
 		cd ~/dotfiles
 		git pull
@@ -211,41 +215,21 @@ if [ ! -f ~/.nix-private/private.nix ]; then
 		sed -i "s/GH_TOKEN_HERE/$HOMEBREW_GITHUB_API_TOKEN/g" ~/.nix-private/private.nix
 		sed -i "s/EMAIL_HERE/$EMAIL/g" ~/.nix-private/private.nix
 	fi
-	echo "BLAH" >~/.gh_token
 fi
 
 if [[ "$IS_MAC" ]]; then
-	confirm "Log in to App Store then hit enter"
-fi
-
-if [[ "$IS_NIX" && ! -d "$HOME/dotfiles/$(hostname)" ]]; then
-	if confirm "Change from current hostname: $HOST?"; then
-		while true; do
-			set_hostname && break
-		done
-	fi
-	if confirm "Make a new directory for this host?"; then
-		echo "mkdir $(hostname)"
-		echo "cp /etc/nixos/*.nix ./$(hostname)/"
-		echo ""
-		echo "ensure configuration.nix has:"
-		echo "networking.hostName = \"$(hostname)\";"
-		echo ""
-		if confirm "apply changes and reboot?"; then
-			sudo nixos-rebuild switch
-			sudo reboot
-		else
-			echo "sudo nixos-rebuild switch"
-			echo "sudo reboot"
-			exit 1
-		fi
+	# TODO: mas account https://github.com/mas-cli/mas/issues/417
+	if [[ ! -f ~/.mas-signed-in ]]; then
+		confirm "Are you logged into the App Store - no will quit"
+		touch ~/.mas-signed-in
 	fi
 fi
 
-echo ""
-if confirm "Customize private.nix"; then
+set +e
+if grep -q UNALTERED flake.nix && confirm "Customize private.nix"; then
 	$EDITOR --wait ~/.nix-private/private.nix
 fi
+set -e
 
 (
 	cd ~/dotfiles || exit
@@ -254,11 +238,10 @@ fi
 
 if [[ "$IS_MAC" ]]; then
 	if [[ "$SHELL" != "/run/current-system/sw/bin/fish" ]]; then
-		echo "Shell isn't fish - may want to chsh!"
-		# if cat /etc/shells | grep /run/current-system/sw/bin/fish; then
-		# 	chsh -s /run/current-system/sw/bin/fish
-		# else
-		# 	echo "couldn't set shell to fish"
-		# fi
+		if grep -q /run/current-system/sw/bin/fish /etc/shells; then
+			chsh -s /run/current-system/sw/bin/fish
+		else
+			echo "fish not in /etc/shells"
+		fi
 	fi
 fi

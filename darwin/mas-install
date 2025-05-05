@@ -1,0 +1,26 @@
+#! /usr/bin/env bash
+set -euo pipefail
+set -x
+
+IDS=(
+	1569813296 # "1Password Safari"
+	1586435171 # "Actions"
+	937984704  # "Amphetamine"
+	1056643111 # "Clocker"
+	913158085  # "Expressions"
+	775737590  # "iA Writer"
+	1622835804 # "Kagi"
+	441258766  # "Magnet"
+	429449079  # "Patterns"
+	1554235898 # "Peek"
+	1611378436 # "Pure Paste"
+	1529448980 # "Reeder"
+	1626843895 # "Remove Web Limits"
+	693112260  # "Sim Daltonism"
+	425424353  # "The Unarchiver"
+	734258109  # "Watchdog"
+	497799835  # "Xcode"
+	1611554653 # "Logger for Shortcuts"
+)
+
+mas install "${IDS[@]}"

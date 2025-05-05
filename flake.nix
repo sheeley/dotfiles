@@ -71,9 +71,9 @@
     sharedDarwinModules =
       [
         home-manager.darwinModules.home-manager
-        ./darwin.nix
+        ./darwin/general.nix
         ./homebrew.nix
-        ./macos-hm.nix
+        ./darwin/hm.nix
       ]
       ++ sharedModules;
     private =

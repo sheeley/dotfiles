@@ -1,4 +1,5 @@
 {...}: {
+  # MAGIC UNALTERED STRING - REMOVE THIS LINE
   email = "EMAIL_HERE";
   githubSecret = "GH_TOKEN_HERE";
   personal = false;
@@ -11,4 +12,6 @@
   # borgUser = "";
 
   # tailscaleKey = "";
+
+  
 }

@@ -31,9 +31,7 @@ if command -v scutil &>/dev/null; then
 	rg --pcre2 'TODO:(?!.*# ignore)' || true # ignore
 fi
 
-HN=$(hostname_wrapper)
-
-# minimally, yell if nix version out of date - mac only
+# minimally, yell if nix version out of date - linux/mac only
 if [[ "$NOT_NIX" ]]; then
 	upgrade_nix
 fi
@@ -47,13 +45,45 @@ set -e
 OSC=$(get-osc)
 VALID_HOSTNAMES=$(get-flake-configurations)
 
+# HOST=$(scutil --get HostName)
+# if ! grep -q "darwinConfigurations.\"$HOST\"" ~/dotfiles/flake.nix && confirm "Change from current hostname: $HOST?"; then
+# 	while true; do
+# 		set_hostname && break
+# 	done
+# fi
+
+HN=$(hostname_wrapper)
+if grep -q "$HN" home-manager-only; then
+	home-manager --flake . --impure switch --show-trace -b backup
+	exit 0
+fi
+
 # is this a valid host, or the special case of sheeley (using home-manager on linux)
 if [[ ! "${VALID_HOSTNAMES[*]}" =~ $HN ]]; then
 	echo "invalid hostname: '$HN'"
-	if true || confirm "apply home manager configuration?"; then
-		# HN="sheeley"
-		home-manager --flake . --impure switch --show-trace -b backup
-		exit 0
+	if [[ "$IS_NIX" && ! -d "$HOME/dotfiles/$(hostname)" ]]; then
+		if confirm "Change from current hostname: $HOST?"; then
+			while true; do
+				set_hostname && break
+			done
+		fi
+		if confirm "Make a new directory for this host?"; then
+			echo "mkdir $(hostname)"
+			echo "cp /etc/nixos/*.nix ./$(hostname)/"
+			echo ""
+			echo "ensure configuration.nix has:"
+			echo "networking.hostName = \"$(hostname)\";"
+			echo ""
+			if confirm "apply changes and reboot?"; then
+				sudo nixos-rebuild switch
+				sudo reboot
+			else
+				echo "sudo nixos-rebuild switch"
+				echo "sudo reboot"
+				exit 1
+			fi
+		fi
+
 	elif confirm "override hostname?"; then
 		while true; do
 			read -r FAUX_HOST
