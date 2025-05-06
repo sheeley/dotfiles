@@ -7,6 +7,12 @@
   private,
   ...
 }: let
+  isMac = pkgs.system == "aarch64-darwin";
+  prefix =
+    if isMac
+    then "Users"
+    else "home";
+  homeDir = "/${prefix}/${user}";
 in {
   home-manager = {
     backupFileExtension = "bak";
@@ -18,13 +24,13 @@ in {
   };
 
   home-manager.users.${user} = {lib, ...}: {
+    home.homeDirectory = homeDir;
     imports = [
       (
         import
         ./home-manager.nix
         {
-          inherit config lib user inputs private pkgs;
-          isMac = pkgs.system == "x86_64-darwin";
+          inherit config lib user inputs private pkgs isMac;
         }
       )
     ];
