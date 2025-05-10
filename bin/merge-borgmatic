@@ -1,0 +1,14 @@
+#! /usr/bin/env bash
+set -eu pipefail
+# set -x
+
+PRIVATE_VARS=$(nix-private-json)
+REPO=$(echo "$PRIVATE_VARS" | jq -r '.repo')
+PASSPHRASE=$(echo "$PRIVATE_VARS" | jq -r '.passphrase')
+
+cp ../files/shared-borgmatic.yaml ./merged.yaml
+cat borgmatic.yaml >>merged.yaml
+sed -e "s/@passphrase@/$PASSPHRASE/g" -e "s/@repo@/$REPO/g" ./merged.yaml >resolved.yaml
+
+mkdir -p ~/.config/borgmatic
+cp -f ./resolved.yaml ~/.config/borgmatic/config.yaml

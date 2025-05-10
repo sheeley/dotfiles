@@ -7,7 +7,7 @@ if [ "$(id -u)" -ne 0 ]; then
 	exit
 fi
 
-mkdir -p /etc/backup
+mkdir -p /etc/backup /var/log/borgmatic
 
 cp -f ./*.service ./*.timer /etc/systemd/system/
 cp -f ./resolved.yaml /etc/backup/borgmatic.yaml
