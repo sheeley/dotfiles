@@ -18,6 +18,7 @@ in {
   LESS = "-R";
   N_PREFIX = "$HOME/.n";
   STARSHIP_LOG = "error";
+  MANPAGER = "nvim +Man!";
 
   # go settings
   GOPATH = "${homeDirectory}/go";
