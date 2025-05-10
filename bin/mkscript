@@ -6,7 +6,7 @@ let supportedTypes = ls ($scriptDir | path join script.* | into glob) | each {|e
 def main [
 	scriptName: string, # name of script to create
 	--local = false # create in current directory
-	--shell: string = bash # shell to use 
+	--shell: string = bash # shell to use - ls ~/dotfiles/templates/scripts/
 	] {
 	if ($supportedTypes not-has $shell) {
 		"Valid shells: " | print
