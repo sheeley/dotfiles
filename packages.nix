@@ -23,7 +23,7 @@ with pkgs; [
   gitui # Terminal-based Git user interface
   go # best language ever
   gron # Convert JSON into a grep-able format and back
-  iotop # io top
+  #   iotop # io top
   jid # Interactive JSON query tool
   jq # Lightweight JSON processor
   kubectl # Kubernetes command-line tool for managing clusters
