@@ -23,6 +23,7 @@ exclude_patterns:
   - "**/.Trash/"
   - "**/.Trashes/"
   - "**/.build/*"
+  - "**/.git/*"
 
 exclude_if_present: 
   - .nobackup
@@ -30,8 +31,8 @@ one_file_system: true
 
 compression: auto,zstd
 encryption_passphrase: "@passphrase@" 
-extra_borg_options:
-  create: --list --filter AME
+# extra_borg_options:
+#   create: --list --filter AME
 
 keep_daily: 7
 keep_weekly: 4

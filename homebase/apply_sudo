@@ -7,3 +7,6 @@ sudo -u _assetcache defaults write /Library/Preferences/com.apple.AssetCache.pli
 sudo -u _assetcache defaults write /Library/Preferences/com.apple.AssetCache.plist KeepAwake -bool YES
 sudo AssetCacheManagerUtil reloadSettings
 # fi
+#
+sudo mkdir -p /var/log/borgmatic/
+sudo chown sheeley /var/log/borgmatic/

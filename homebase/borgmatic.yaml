@@ -1,15 +1,14 @@
----
 source_directories:
   - ~/projects
   - ~/Documents
-  - "@storagePath@/Music"
-  - "@storagePath@/Movies"
-  - "@storagePath@/Pictures"
-  - "@storagePath@/TV"
-  - "@storagePath@/Videos"
+  - "/Volumes/Slash/Music"
+  - "/Volumes/Slash/Movies"
+  - "/Volumes/Slash/Pictures"
+  - "/Volumes/Slash/TV"
+  - "/Volumes/Slash/Videos"
 
 repositories:
-  - path: "@storagePath@/borgbackup"
+  - path: "/Volumes/Slash/borgbackup"
     label: local
   - path: "ssh://@repo@@@repo@.repo.borgbase.com/./repo"
     label: remote
