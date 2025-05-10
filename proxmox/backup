@@ -22,7 +22,7 @@ has_run_today() {
 set +e
 if ! has_run_today; then
 	set -e
-	vzdump --all --mode snapshot --compress zstd --storage "$STORAGE" --prune-backups keep-daily=7,keep-weekly=4,keep-monthly=12,keep-yearly=3 # --quiet
+	vzdump --all --mode snapshot --compress 0 --storage "$STORAGE" --prune-backups keep-daily=7,keep-weekly=4,keep-monthly=12,keep-yearly=3 # --quiet
 	echo "$DATE" >"$FILE"
 fi
 set -e

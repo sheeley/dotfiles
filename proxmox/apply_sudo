@@ -9,12 +9,6 @@ fi
 
 mkdir -p /etc/backup
 
-PRIVATE_VARS=$(nix-private-json)
-REPO=$(echo "$PRIVATE_VARS" | jq -r '.repo')
-PASSPHRASE=$(echo "$PRIVATE_VARS" | jq -r '.passphrase')
-
-sed -e "s/@passphrase@/$PASSPHRASE/g" -e "s/@repo@/$REPO/g" ./borgmatic.yaml >resolved.yaml
-
 cp -f ./*.service ./*.timer /etc/systemd/system/
 cp -f ./resolved.yaml /etc/backup/borgmatic.yaml
 cp -f ./backup ./send-notification /bin/
