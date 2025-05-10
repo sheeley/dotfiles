@@ -1,0 +1,78 @@
+---
+exclude_patterns:
+  - "*.pyc"
+  - "*/.venv/*"
+  - "~/*/.cache"
+  - "~/.cache/*"
+  - "/var/cache/*"
+  - "/var/tmp/*"
+  - "*.nzb"
+  - "*.url"
+  - "*.webloc"
+  - "Thumbs.db"
+  - ".fseventsd*"
+  - "**/Apple Music/*"
+  - "**/.*.swp"
+  - "**/.DS_Store"
+  - "**/.VolumeIcon.icns"
+  - "**/.DocumentRevisions-V100/"
+  - "**/.MobileBackups/"
+  - "**/.MobileBackups.trash/"
+  - "**/.Spotlight-V100/"
+  - "**/.TemporaryItems/"
+  - "**/.Trash/"
+  - "**/.Trashes/"
+  - "**/.build/*"
+
+exclude_if_present: 
+  - .nobackup
+one_file_system: true
+
+compression: auto,zstd
+encryption_passphrase: "@passphrase@" 
+extra_borg_options:
+  create: --list --filter AME
+
+keep_daily: 7
+keep_weekly: 4
+keep_monthly: 12
+keep_yearly: 10
+
+check_last: 3
+# check_repositories:
+#   - "@storagePath@/borgbackup"
+checks:
+  - name: data
+    frequency: 1 month
+  - name: repository
+    frequency: 2 weeks
+
+commands:
+  - before: repository
+    run:
+      - echo "`date` - Starting backup"
+  
+  - after: repository
+    run:
+      - echo "`date` - Finished backup"
+  
+  - before: action
+    when:
+      - check
+    run:
+      - echo "`date` - Starting check"
+
+  - after: action
+    when:
+      - check
+    run:
+      - echo "`date` - Finished check"
+
+archive_name_format: "{hostname}-{now:%Y-%m-%d-%H%M%S}"
+
+log_file: /var/log/borgmatic/logfile.txt
+statistics: true
+
+# Number of times to retry a failing backup before giving up.
+retries: 5
+retry_wait: 5

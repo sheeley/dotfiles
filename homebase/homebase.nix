@@ -21,19 +21,12 @@ in {
     home = {
       packages = with pkgs; [
         borgmatic
-        # utm
       ];
 
       sessionVariables = {
         BORG_RELOCATED_REPO_ACCESS_IS_OK = "yes";
         BORG_REPO = "${storagePath}/borgbackup";
         BORG_EXIT_CODES = "modern";
-      };
-
-      file.".config/borgmatic/config.yaml".source = pkgs.replaceVars ./borgmatic.yaml {
-        secret = "${private.borgSecret}";
-        user = "${private.borgUser}";
-        storagePath = "${storagePath}";
       };
 
       file.".smtp.json".text = ''
@@ -78,6 +71,4 @@ in {
       UserName = "${user}";
     };
   };
-
-  system.activationScripts.postUserActivation.text = builtins.readFile ./content-cache.bash;
 }
