@@ -8,18 +8,22 @@ with pkgs; [
   atool # Archiving utility; useful for extracting various archive types
   bat # Enhanced `cat` command with syntax highlighting and paging
   borgmatic # Backup, bb!
+  bottom # btm ~ better top, htop, cpu, mem, etc
   coreutils-prefixed # GNU Coreutils with commands prefixed (e.g., `gfind`, `gsed`)
   du-dust # Disk usage visualization tool
+  dua # disk usage, interactively
   duf # User-friendly disk usage/free space utility
   entr # Automatically run commands when files change
   eza # Modern, enhanced `ls` command with Git integration
   fd # Fast, user-friendly alternative to `find`
+  fend # better CLI calculator
   findutils # Basic utilities for searching files (e.g., `find`, `xargs`)
   fzf # Command-line fuzzy finder for interactive filtering
   git # Version control system
   gitui # Terminal-based Git user interface
   go # best language ever
   gron # Convert JSON into a grep-able format and back
+  iotop # io top
   jid # Interactive JSON query tool
   jq # Lightweight JSON processor
   kubectl # Kubernetes command-line tool for managing clusters
@@ -29,12 +33,12 @@ with pkgs; [
   lz4 # Fast compression/decompression utility
   moreutils # Collection of additional Unix utilities (e.g., `ts`, `sponge`)
   ncdu # Disk usage analyzer with an interactive interface
-  # nerdfonts # Patched fonts for terminal icons and ligatures
   nerd-fonts.fira-mono
   nerd-fonts.fira-code
   nix-diff # Tool for showing differences between Nix derivations
   nix-tree # Visualize Nix dependency trees
   nvd # Nix/NixOS package version diff tool
+  procs # better ps
   pv # Monitor data flow through a pipe
   rclone # Cloud storage synchronization and file management
   rename # Rename multiple files based on patterns
@@ -51,6 +55,7 @@ with pkgs; [
   tre-command # Modern `tree` command alternative
   ugrep # Ultra-fast grep alternative with additional features
   uv # Disk usage analyzer
+  viddy # better watch file change
   wget # Command-line utility for retrieving files via HTTP/HTTPS
   yq-go # YAML processor (like `jq`, but for YAML)
 ]
@@ -61,3 +66,4 @@ with pkgs; [
 #   obsidian
 #   # dockutil
 # ])
+
