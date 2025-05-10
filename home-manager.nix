@@ -97,6 +97,7 @@ in {
       lc = "light_control";
       u = "./update";
       vdot = "vim ~/dotfiles";
+      vprivate = "vim ~/.nix-private/private.nix";
     };
 
     activation = {
