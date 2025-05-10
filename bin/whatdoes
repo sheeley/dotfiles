@@ -1,0 +1,7 @@
+#! /usr/bin/env nu --stdin
+
+def main [
+	query: string # the capability being searched for
+] {
+	rg $query ~/dotfiles/packages.nix
+}
