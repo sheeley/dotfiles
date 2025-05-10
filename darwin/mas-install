@@ -1,6 +1,7 @@
 #! /usr/bin/env bash
 set -euo pipefail
 set -x
+# TODO: mas account https://github.com/mas-cli/mas/issues/417
 
 IDS=(
 	1569813296 # "1Password Safari"

@@ -1,0 +1,5 @@
+#! /usr/bin/env bash
+set -euo pipefail
+# set -x
+
+command -v "$1" &>/dev/null

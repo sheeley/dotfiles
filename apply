@@ -27,9 +27,16 @@ if [[ "$1" == "--offline" ]]; then
 fi
 set -u
 
-if command -v scutil &>/dev/null; then
-	rg --pcre2 'TODO:(?!.*# ignore)' || true # ignore
+PREFIX="nixpkgs"
+if [[ "$NOT_MAC" ]]; then
+	if [[ "$IS_NIX" ]]; then
+		PREFIX="nixos"
+	fi
 fi
+if ! exists rg; then
+	nix-env -iA "$PREFIX.ripgrep"
+fi
+rg --pcre2 'TODO:(?!.*# ignore)' || true # ignore
 
 # minimally, yell if nix version out of date - linux/mac only
 if [[ "$NOT_NIX" ]]; then

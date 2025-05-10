@@ -98,15 +98,6 @@ if [[ "$NOT_MAC" ]]; then
 	if ! exists git; then
 		nix-env -iA "$PREFIX.git"
 	fi
-
-	if ! exists rg; then
-		nix-env -iA "$PREFIX.ripgrep"
-	fi
-# else
-# TODO: asdas
-# if ! exists rg; then
-# 		sudo nix-env -iA "$PREFIX.ripgrep"
-# 	fi
 fi
 
 HOST=$(hostname)
@@ -214,14 +205,6 @@ if [ ! -f ~/.nix-private/private.nix ]; then
 	else
 		sed -i "s/GH_TOKEN_HERE/$HOMEBREW_GITHUB_API_TOKEN/g" ~/.nix-private/private.nix
 		sed -i "s/EMAIL_HERE/$EMAIL/g" ~/.nix-private/private.nix
-	fi
-fi
-
-if [[ "$IS_MAC" ]]; then
-	# TODO: mas account https://github.com/mas-cli/mas/issues/417
-	if [[ ! -f ~/.mas-signed-in ]]; then
-		confirm "Are you logged into the App Store - no will quit"
-		touch ~/.mas-signed-in
 	fi
 fi
 
