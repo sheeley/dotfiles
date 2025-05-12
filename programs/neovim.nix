@@ -512,6 +512,12 @@ in {
             enable = true;
             settings = {
               formatting.command = ["alejandra" "--quiet"];
+              nix = {
+                flake = {
+                  # ensure vim downloads flake deps automatically if needed
+                  autoArchive = true;
+                };
+              };
             };
           };
           bashls.enable = true;
