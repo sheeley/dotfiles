@@ -1,18 +1,13 @@
-#!/usr/bin/env bash
+#!/usr/bin/env nu
 # Purpose: Search packages.nix and bin scripts for descriptions and usage information
 
-if [ $# -ne 1 ]; then
-  echo "Usage: whatdoes <query>"
-  exit 1
-fi
-
-query="$1"
-
-# Search in packages.nix
-rg "$query" /Users/sheeley/dotfiles/packages.nix || true
-
-# Also search in bin scripts for Purpose comments - show only file names
-echo "" # Add a blank line between results
-for file in $(rg -l "# Purpose:.*$query" /Users/sheeley/dotfiles/bin || true); do
-  basename "$file"
-done
+def main [
+	query: string # the capability being searched for
+] {
+	# Search in packages.nix
+	try { rg $query /Users/sheeley/dotfiles/packages.nix }
+	
+	# Also search in bin scripts
+	cd /Users/sheeley/dotfiles/bin/
+	rg $query --max-count 1 .
+}
