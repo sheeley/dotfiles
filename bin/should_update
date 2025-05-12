@@ -1,4 +1,5 @@
 #! /usr/bin/env bash
+# Purpose: Check if software updates are needed based on version comparison
 set -euo pipefail
 
 # Check if a file name was provided

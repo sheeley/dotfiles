@@ -1,8 +1,13 @@
 #! /usr/bin/env bash
+# Purpose: Rename the master branch to main and update the remote repository
+# Used to adopt more inclusive terminology in git repositories
+# Rename the master branch to main and update the remote repository
 set -euo pipefail # x
 
+# Ensure working directory is clean
 git update-index --refresh
 git diff-index --quiet HEAD --
 
+# Rename the branch locally and push to remote
 git branch -m master main
 git push -u origin main

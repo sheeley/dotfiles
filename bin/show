@@ -1,4 +1,5 @@
 #! /usr/bin/env bash
+# Purpose: Display file or text content with formatting
 set -euo pipefail
 # set -x
 

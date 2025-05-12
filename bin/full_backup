@@ -1,17 +1,29 @@
 #! /usr/bin/env bash
+# Purpose: Run a full system backup using BorgBackup/Borgmatic
+# This script verifies the backup repository exists, runs the backup with
+# caffeinate to prevent sleep, and logs the process
+# Used to: Create complete system backups while providing detailed logging
+#          and preventing the system from sleeping during the backup process
 set -euo pipefail # x
 
-# ensure volume is mounted before doing anything
+# Ensure backup volume is mounted before doing anything
 [ ! -d "$BORG_REPO" ] && echo "'$BORG_REPO' doesn't exist" && exit 1
 
+# Set up logging
 LOG_FILE="/tmp/borg.log"
 rm -f "$LOG_FILE"
 echo "for details, tail -f $LOG_FILE"
+
+# Run borgmatic with caffeinate to prevent system sleep during backup
 caffeinate -i borgmatic --log-file-verbosity 2 --log-file "$LOG_FILE" --stats
+
+# Optional: Sync backup to remote storage
 # caffeinate -i rclone sync -v /Volumes/money/borgbackup/ borgbase:repo --progress
 
+# Optional: Unmount the backup disk after completion
 # did=$(diskutil list -plist | scout paths -f plist "#AllDisksAndPartitions#" -v "value contains 'money'" | head -n 1 | awk -F'[^0-9]+' '{ print $2 }')
 # diskutil unmountDisk "/dev/disk$did"
 
+# Display total execution time
 echo "Total time:"
 gdate -u -d @${SECONDS} +"%T"

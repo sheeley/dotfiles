@@ -1,4 +1,5 @@
 #! /usr/bin/env bash
+# Purpose: Find symbolic links in the filesystem
 set -euo pipefail # x
 
 find . -type l -ls

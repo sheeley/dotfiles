@@ -1,7 +1,18 @@
-#! /usr/bin/env nu --stdin
+#!/usr/bin/env bash
+# Purpose: Search packages.nix and bin scripts for descriptions and usage information
 
-def main [
-	query: string # the capability being searched for
-] {
-	rg $query ~/dotfiles/packages.nix
-}
+if [ $# -ne 1 ]; then
+  echo "Usage: whatdoes <query>"
+  exit 1
+fi
+
+query="$1"
+
+# Search in packages.nix
+rg "$query" /Users/sheeley/dotfiles/packages.nix || true
+
+# Also search in bin scripts for Purpose comments - show only file names
+echo "" # Add a blank line between results
+for file in $(rg -l "# Purpose:.*$query" /Users/sheeley/dotfiles/bin || true); do
+  basename "$file"
+done

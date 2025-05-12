@@ -1,4 +1,5 @@
 #! /usr/bin/env -S nu --stdin
+# Purpose: Interactive selection utility for command line
 
 def main [
 # positional: string, # foo documentation

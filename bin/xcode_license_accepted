@@ -1,4 +1,5 @@
 #! /usr/bin/env bash
+# Purpose: Check if the Xcode license agreement has been accepted
 set -euo pipefail
 
 XCODE_VERSION=$(xcodebuild -version | grep '^Xcode\s' | sed -E 's/^Xcode[[:space:]]+([0-9\.]+)/\1/')

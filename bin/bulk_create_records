@@ -1,4 +1,6 @@
 #! /usr/bin/env nu
+# Purpose: Create multiple database or file records in a batch operation
+# Used to efficiently populate systems with data without manual entry
 
 def "parse frontmatter" []: string -> any {
     let text = $in | open | lines --skip-empty

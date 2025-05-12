@@ -1,4 +1,5 @@
 #!/usr/bin/env xcrun swift
+# Purpose: Toggle audio input muting on macOS
 import Foundation
 import os
 

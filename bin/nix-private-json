@@ -1,4 +1,5 @@
 #! /usr/bin/env bash
+# Purpose: Access private JSON data for Nix configurations
 set -euo pipefail
 # set -x
 

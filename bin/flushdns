@@ -1,4 +1,6 @@
 #! /usr/bin/env bash
+# Purpose: Flush DNS cache on macOS to resolve DNS-related issues
+# Used to clear cached DNS entries when troubleshooting network connectivity problems
 set -euo pipefail # x
 
 sudo dscacheutil -flushcache

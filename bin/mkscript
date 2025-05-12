@@ -1,6 +1,13 @@
 #! /usr/bin/env nu
+# Purpose: Create new executable scripts from templates
+# This Nushell script creates a new script file based on predefined templates,
+# makes it executable, and opens it in the default editor
+# Used to: Quickly create new scripts with proper permissions and boilerplate
+#          code, ensuring consistent script structure across the system
 
+# Get the directory containing script templates
 let scriptDir = $"($env.HOME)/dotfiles/templates/scripts/"
+# Get list of supported shell types from template filenames
 let supportedTypes = ls ($scriptDir | path join script.* | into glob) | each {|e| $e.name | path parse} | get extension
 
 def main [
@@ -8,27 +15,34 @@ def main [
 	--local = false # create in current directory
 	--shell: string = bash # shell to use - ls ~/dotfiles/templates/scripts/
 	] {
+	# Validate that the requested shell type is supported
 	if ($supportedTypes not-has $shell) {
 		"Valid shells: " | print
 		$supportedTypes | print 
 		exit 1
 	}
 
+	# Determine where to create the script (bin directory or current directory)
 	let scriptDir = $"($env.HOME)/dotfiles/bin/"
 	if $local {
 		let scriptDir = (pwd)
 	}
 
+	# Build the full path to the new script
 	let file = $"($scriptDir)/($scriptName)"
 
+	# Check if the script already exists
 	if ($file | path exists) {
 		echo "script exists"
 		exit 1
 	}
 
+	# Create the script from the template
  	open $"($env.HOME)/dotfiles/templates/scripts/script.($shell)" | save $file
+	# Make the script executable
 	chmod +x $file
 
+	# Open the new script in the editor if in a terminal
 	if $env.TERM != "" {
 		^$env.EDITOR $file
 	}

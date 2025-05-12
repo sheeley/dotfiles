@@ -1,4 +1,6 @@
 #! /usr/bin/env bash
+# Purpose: Recursively format all XML files in a directory to improve readability
+# Used to standardize XML formatting across multiple files for better version control and readability
 set -euo pipefail
 
 # Check if a directory was provided as an argument

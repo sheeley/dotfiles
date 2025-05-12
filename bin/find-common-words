@@ -1,4 +1,6 @@
 #! /usr/bin/env bash
+# Purpose: Find and count the most common words in markdown files
+# Used to analyze writing patterns or identify frequently used terms across documentation
 set -euo pipefail
 
 find . -type f -name "*.md" -exec cat {} + | tr '[:space:]' '[\n*]' | tr -d '[:punct:]' | tr '[:upper:]' '[:lower:]' | grep -v '^$' | sort | uniq -c | sort -nr | head -n 100

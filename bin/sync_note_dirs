@@ -1,4 +1,5 @@
 #!/usr/bin/env xcrun swift
+# Purpose: Synchronize note directories between locations
 import Foundation
 
 struct syncConfig: Codable {

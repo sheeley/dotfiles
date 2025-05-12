@@ -1,4 +1,5 @@
 #! /usr/bin/env bash
+# Purpose: Display meetings scheduled for tomorrow from calendar
 set -euo pipefail # x
 
 meeting-notes --create tomorrow --sub-directory meetings

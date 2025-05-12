@@ -1,4 +1,9 @@
 #! /usr/bin/env bash
+# Purpose: Display the total size of a directory in human-readable format
+# This script is a simple wrapper around the 'du' command with human-readable sizes
+# Used to: Quickly check the disk usage of a directory without remembering
+#          the specific du command-line options
 set -euo pipefail # x
 
+# Display the size of the specified directory in human-readable format
 du -hs "$1"

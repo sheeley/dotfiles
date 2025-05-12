@@ -1,4 +1,9 @@
 #! /usr/bin/env bash
+# Purpose: Extract specific files from the latest BorgBackup archive
+# This script finds the most recent backup with prefix 'johnny' and extracts
+# specific files or directories passed as arguments
+# Used to: Selectively restore files from a BorgBackup archive without restoring
+#          the entire backup, saving time and disk space
 set -euo pipefail # x
 
 # WARNING: This always extracts to the current directory
@@ -9,6 +14,10 @@ set -euo pipefail # x
 
 # Extract the "src" directory
 # borg extract /path/to/repo::my-files home/USERNAME/src
+
+# Get the latest archive with prefix 'johnny'
 LATEST=$(borg list --prefix johnny --last 1 --format='{archive}')
 # CURRENT_DIR="$(pwd | cut -c 2-)"
+
+# Extract the specified files/directories (passed as arguments) from the latest archive
 borg extract "::$LATEST" "$@"

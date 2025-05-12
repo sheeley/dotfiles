@@ -1,4 +1,5 @@
 #! /usr/bin/env bash
+# Purpose: Reset the position of macOS Spotlight search window
 set -euo pipefail
 
 defaults delete com.apple.Spotlight lastWindowPosition

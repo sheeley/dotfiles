@@ -1,4 +1,9 @@
 #! /usr/bin/env bash
+# Purpose: Clean up local git branches that have been merged
+# This script removes all local branches that have been fully merged into the current branch,
+# excluding the current branch, master branch, and dev branch
+# Used to: Keep git repositories tidy by removing unnecessary branches that are no longer needed
 set -euo pipefail # x
 
+# Find all merged branches, exclude current (*), master, and dev branches, then delete them
 git branch --merged | grep -v "\*" | grep -v master | grep -v dev | xargs -n 1 git branch -d

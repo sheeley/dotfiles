@@ -1,4 +1,5 @@
 #! /usr/bin/env bash
+# Purpose: Provide consistent hostname information across systems
 set -euo pipefail # x
 
 HN=$(hostname)

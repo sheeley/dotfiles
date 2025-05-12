@@ -1,4 +1,6 @@
 #! /usr/bin/env bash
+# Purpose: Extract a specific number of characters from a file
+# Used to read a precise number of bytes from a file for debugging or text processing
 set -euo pipefail # x
 FILE=$1
 POSITION=$2

@@ -1,4 +1,5 @@
 #! /usr/bin/env bash
+# Purpose: Extract semantic version numbers from text input
 set -euo pipefail # x
 
 INPUT=""

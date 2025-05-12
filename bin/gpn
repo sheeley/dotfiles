@@ -1,4 +1,10 @@
 #! /usr/bin/env bash
+# Purpose: Push a new branch to the remote repository and set upstream tracking
+# This script automatically pushes the current branch to the remote and sets up tracking,
+# eliminating the need to type the full git push command with branch name
+# Used to: Quickly publish new local branches to the remote repository with proper tracking,
+#          saving time and avoiding errors when setting up new branches
 set -euo pipefail # x
 
+# Push current branch to origin and set up tracking in one command
 git push --set-upstream origin "$(git rev-parse --abbrev-ref HEAD)"

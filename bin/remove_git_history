@@ -1,4 +1,6 @@
 #! /usr/bin/env bash
+# Purpose: Completely remove git history while preserving current state
+# Used to clean a repository of sensitive information or reduce size by starting fresh
 set -euo pipefail # x
 
 if confirm "Remove entire git history?"; then

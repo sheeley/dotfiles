@@ -1,4 +1,5 @@
 #! /usr/bin/env bash
+# Purpose: Identify files and directories consuming disk space
 set -euo pipefail # x
 
 sudo /Applications/Space\ Gremlin\ Pro.app/Contents/MacOS/Space\ Gremlin\ Pro

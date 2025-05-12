@@ -1,4 +1,5 @@
 #! /usr/bin/env bash
+# Purpose: Create password-protected encrypted zip archives
 set -euo pipefail # x
 NAME="$1"
 # name=${PWD##*/}

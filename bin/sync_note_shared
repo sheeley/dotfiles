@@ -1,4 +1,5 @@
 #! /usr/bin/env bash
+# Purpose: Synchronize shared notes between users or devices
 set -euo pipefail # x
 
 cp -R "$NOTES_DIR/shared/" "$WORK_NOTES_DIR/shared/"

@@ -1,4 +1,5 @@
 #! /usr/bin/env bash
+# Purpose: Opt out of telemetry or tracking services
 set -euo pipefail # x
 
 y='\e[1;33m' # Yellow and Bold

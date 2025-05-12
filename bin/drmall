@@ -1,4 +1,6 @@
 #! /usr/bin/env bash
+# Purpose: Stop and remove all Docker containers
+# Used to clean up all Docker containers at once when needing a fresh environment
 set -euo pipefail # x
 
 drm "$(docker ps -a -q)"

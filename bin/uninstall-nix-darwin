@@ -1,4 +1,5 @@
 #! /usr/bin/env bash
+# Purpose: Remove Nix Darwin installation from the system
 set -euo pipefail
 set -x
 nix --extra-experimental-features "nix-command flakes" run nix-darwin#darwin-uninstaller

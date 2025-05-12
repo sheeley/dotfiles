@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# Purpose: Process and analyze financial transactions from Tiller
 
 from csv import DictReader
 from decimal import Decimal

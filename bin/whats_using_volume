@@ -1,4 +1,5 @@
 #! /usr/bin/env bash
+# Purpose: Identify processes and files using disk space on a volume
 set -euo pipefail # x
 
 # usage: whats_using_volume /Volumes/money

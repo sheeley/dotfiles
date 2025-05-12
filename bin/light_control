@@ -1,4 +1,5 @@
 #! /usr/bin/env nu
+# Purpose: Control Elgato Key Light devices via HTTP API
 
 let host = "172.20.1.196"
 # keylight.sheeley.house"

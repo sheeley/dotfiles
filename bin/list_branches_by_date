@@ -1,4 +1,6 @@
 #! /usr/bin/env bash
+# Purpose: List git branches sorted by commit date with colorized output
+# Used to see branches in chronological order to identify recent work or stale branches
 set -euo pipefail # x
 
 git for-each-ref --sort=committerdate refs/heads/ --format='%(color: red)%(committerdate:short) %(color: cyan)%(refname:short)'

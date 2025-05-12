@@ -1,4 +1,5 @@
 #! /usr/bin/env bash
+# Purpose: Generate email filtering rules for sieve mail filter
 set -euo pipefail # x
 
 (

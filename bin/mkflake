@@ -1,4 +1,5 @@
 #! /usr/bin/env nu
+# Purpose: Create a new Nix flake configuration file
 
 let envrc_contents = "use flake ."
 let flake_contents = r#'

@@ -1,4 +1,5 @@
 #! /usr/bin/env bash
+# Purpose: Upgrade Nix package manager and packages
 set -euo pipefail # x
 
 OS=$(uname -a)

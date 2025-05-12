@@ -1,4 +1,5 @@
 #! /usr/bin/env bash
+# Purpose: Perform system maintenance and cleanup tasks
 set -euo pipefail # x
 
 # >/tmp/housekeeping.log

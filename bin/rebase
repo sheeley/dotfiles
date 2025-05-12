@@ -1,4 +1,10 @@
 #! /usr/bin/env bash
+# Purpose: Update current branch with latest changes from main
+# This script fetches the latest changes from the remote repository and
+# rebases the current branch on top of the main branch
+# Used to: Keep feature branches up-to-date with the latest changes in main,
+#          avoiding merge conflicts later and ensuring compatibility with recent changes
 set -euo pipefail # x
 
+# Fetch latest changes and rebase current branch on top of main
 git fetch && git rebase origin/main

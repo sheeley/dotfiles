@@ -1,4 +1,5 @@
 #! /usr/bin/env bash
+# Purpose: Save the current state of an application or system
 set -euo pipefail # x
 
 check_status() {

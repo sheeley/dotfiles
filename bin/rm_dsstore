@@ -1,4 +1,6 @@
 #! /usr/bin/env bash
+# Purpose: Recursively remove all .DS_Store files from the current directory and subdirectories
+# Used to clean up macOS metadata files before sharing or committing directories
 set -euo pipefail # x
 
 # do not put -delete before the filter or bad things will happen

@@ -1,4 +1,5 @@
 #! /usr/bin/env bash
+# Purpose: List available Nix flake configurations
 set -euo pipefail
 
 # TODO: is there a cleaner way of doing this?

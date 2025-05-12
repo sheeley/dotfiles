@@ -1,4 +1,6 @@
 #! /usr/bin/env bash
+# Purpose: Remove all Docker images from the system
+# Used to reclaim disk space by purging all Docker images when needing a clean slate
 set -euo pipefail # x
 
 docker rmi "$(docker images -a -q)"

@@ -1,4 +1,5 @@
 #! /usr/bin/env bash
+# Purpose: Compare semantic versions to determine which is greater
 set -euo pipefail # x
 
 # Function to compare semantic versions

@@ -1,4 +1,5 @@
 #! /usr/bin/env bash
+# Purpose: Retrieve Open Sound Control (OSC) data
 set -eu
 
 OS=$(uname -a)

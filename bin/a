@@ -1,12 +1,19 @@
 #! /usr/bin/env bash
+# Purpose: Dotfiles application script
+# This script runs local apply scripts and then calls the host-specific apply script (ah)
+# Used to: Apply dotfiles configuration in the current directory, with proper permissions
+#          handling for both regular and sudo operations
 set -euo pipefail
 
+# Run local apply script if it exists
 if [[ -f ./apply ]]; then
 	./apply
 fi
 
+# Run local apply_sudo script with preserved environment if it exists
 if [[ -f ./apply_sudo ]]; then
 	sudo env "HOME=$HOME" "PATH=$PATH" ./apply_sudo
 fi
 
+# Call host-specific apply script
 ah

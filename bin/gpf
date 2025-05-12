@@ -1,4 +1,10 @@
 #! /usr/bin/env bash
+# Purpose: Safely force push git changes to remote
+# This script uses git's force-with-lease option which is safer than a regular force push
+# as it prevents overwriting others' work that you haven't seen yet
+# Used to: Update remote branches after rebasing or amending commits locally,
+#          while still maintaining safety checks to prevent data loss
 set -euo pipefail # x
 
+# Push changes with force-with-lease for safety
 git push --force-with-lease

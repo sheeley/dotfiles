@@ -1,8 +1,15 @@
 #! /usr/bin/env bash
+# Purpose: Host-specific dotfiles application script
+# This script detects the current hostname and runs the appropriate host-specific
+# configuration if a directory matching the hostname exists
+# Used to: Apply host-specific configuration during dotfiles setup, allowing for
+#          machine-specific customizations in a unified dotfiles repository
 set -euo pipefail
 # set -x
 
+# Get current hostname
 HOST=$(hostname)
+# If a directory matching the hostname exists, enter it and run the apply script
 if [[ -d "./$HOST" ]]; then
 	(
 		cd "$HOST"

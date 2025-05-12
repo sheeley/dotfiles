@@ -1,4 +1,9 @@
 #! /usr/bin/env bash
+# Purpose: Check the status of all git repositories in the current directory
+# This script iterates through subdirectories, identifies git repositories,
+# and reports their status with visual indicators
+# Used to: Quickly assess the state of multiple git repositories at once,
+#          showing which ones have uncommitted changes or are behind remote
 set -euo pipefail
 
 # Colors for output
@@ -8,9 +13,9 @@ RED="\033[0;31m"
 RESET="\033[0m"
 
 # Symbols
-CHECKMARK="${GREEN}✔${RESET}"
-PENCIL="${YELLOW}✎${RESET}"
-DOWN_ARROW="${RED}↓${RESET}"
+CHECKMARK="${GREEN}✔${RESET}"  # Clean repository
+PENCIL="${YELLOW}✎${RESET}"    # Uncommitted changes
+DOWN_ARROW="${RED}↓${RESET}"   # Behind remote
 
 # Iterate through each child of the current directory
 for dir in */; do
@@ -26,6 +31,7 @@ for dir in */; do
 	(
 		cd "$dir"
 		set +e
+		# Try to fetch updates from remote
 		if ! git fetch >/dev/null 2>&1; then
 			echo -e "$output ${RED}couldn't fetch${RESET}"
 			exit
@@ -41,17 +47,20 @@ for dir in */; do
 
 		# Determine the status symbol
 		if [[ -z "$STATUS_OUTPUT" && -z "$BEHIND_COUNT" ]]; then
+			# Repository is clean and up-to-date
 			output="$output $CHECKMARK"
 		else
+			# Repository has uncommitted changes
 			if [[ -n "$STATUS_OUTPUT" ]]; then
 				output="$output $PENCIL"
 			fi
+			# Repository is behind remote
 			if [[ -n "$BEHIND_COUNT" ]]; then
 				output="$output $DOWN_ARROW"
 			fi
 		fi
 
 		echo -e "$output"
-	) & # run each check in parallel.
+	) & # run each check in parallel for efficiency
 	wait
 done

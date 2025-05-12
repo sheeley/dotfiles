@@ -1,4 +1,6 @@
 #! /usr/bin/env bash
+# Purpose: Amend the current git commit with all tracked changes and force push
+# Used to update the most recent commit without creating a new commit message
 set -euo pipefail # x
 
 git add -u .

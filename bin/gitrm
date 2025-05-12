@@ -1,5 +1,12 @@
 #! /usr/bin/env bash
+# Purpose: Remove deleted files from git tracking
+# This script automatically removes files that have been deleted from the filesystem
+# but are still tracked by git, then shows the current git status
+# Used to: Quickly clean up git tracking after deleting files manually,
+#          saving time compared to removing each file individually with git rm
 set -euo pipefail # x
 
+# Remove all files that have been deleted from the filesystem but are still tracked by git
 git rm "$(git ls-files --deleted)"
+# Show current git status after removal
 git status

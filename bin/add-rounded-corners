@@ -1,4 +1,6 @@
 #! /usr/bin/env bash
+# Purpose: Add rounded corners to images
+# Used to improve the visual appearance of images for UI elements or documentation
 set -eux
 #
 # def main [

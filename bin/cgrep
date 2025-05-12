@@ -1,4 +1,10 @@
 #! /usr/bin/env bash
+# Purpose: Enhanced grep with context lines
+# This script is a simple wrapper around grep that always shows 10 lines of context
+# around each match, making it easier to understand the context of search results
+# Used to: Search for patterns in files while automatically showing sufficient
+#          surrounding context for better comprehension of the matches
 set -euo pipefail # x
 
+# Run grep with 10 lines of context before and after each match
 grep -C 10 "$@"

@@ -1,4 +1,5 @@
 #! /usr/bin/env bash
+# Purpose: Display current time in UTC format
 set -euo pipefail # x
 
 date -u

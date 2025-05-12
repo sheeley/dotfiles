@@ -1,4 +1,5 @@
 #! /usr/bin/env bash
+# Purpose: Convert text to speech using macOS say command
 set -euo pipefail # x
 
 say -r 5 "$@"

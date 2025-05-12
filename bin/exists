@@ -1,5 +1,11 @@
 #! /usr/bin/env bash
+# Purpose: Check if a command exists in the system
+# This script tests whether a specified command is available in the PATH
+# and returns a success/failure exit code accordingly
+# Used to: Verify command availability in scripts before attempting to use them,
+#          enabling graceful fallbacks or error handling when commands are missing
 set -euo pipefail
 # set -x
 
+# Check if the specified command exists in PATH
 command -v "$1" &>/dev/null

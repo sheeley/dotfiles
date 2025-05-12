@@ -1,12 +1,22 @@
 #! /usr/bin/env bash
+# Purpose: Find empty or placeholder markdown notes in notes directories
+# This script searches for markdown files containing empty code blocks
+# (indicated by ```*```) which are likely placeholder notes
+# Used to: Identify and clean up empty notes in both personal and work
+#          notes directories, helping to maintain a tidy notes system
 set -o pipefail # x
 set -u
 
+# Function to find markdown files with empty code blocks
 find_files() {
+	# Use ripgrep to find markdown files with empty code blocks
+	# Excludes shared directory and matches multiline patterns
 	rg -g '*.md' -g '!shared/' --files-with-matches --multiline -e '```\W+(#.*\n)?\*\W+```' -0 "$1"
 }
 
+# Search in personal notes directory
 find_files "$NOTES_DIR"
+# Also search in work notes directory if it exists
 if [[ -n "$WORK_NOTES_DIR" ]]; then
 	find_files "$WORK_NOTES_DIR"
 fi

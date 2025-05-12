@@ -1,4 +1,6 @@
 #! /usr/bin/env bash
+# Purpose: Stop and remove Docker containers in one command
+# Used to clean up Docker containers while ensuring volumes are also removed
 set -euo pipefail # x
 
 docker stop "$@"
