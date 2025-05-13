@@ -1,5 +1,6 @@
 #! /usr/bin/env bash
 set -euo pipefail
+set -x
 
 # FYI: proxmox/debian don't install sudo by default
 # apt-get install sudo
@@ -11,17 +12,19 @@ export PATH=$PATH:~/bin:~/.nix-profile/bin/
 OS=$(uname -a)
 IS_MAC=
 IS_NIX=
-IS_LINUX=
+# IS_LINUX=
 NOT_NIX=true
-NOT_MAC=true
+# NOT_MAC=true
+NIX_PLANNER=linux
 if [[ "$OS" == *"NixOS"* ]]; then
 	IS_NIX=true
 	NOT_NIX=
-elif [[ "$OS" == *"Linux"* ]]; then
-	IS_LINUX=true
+# elif [[ "$OS" == *"Linux"* ]]; then
+# 	IS_LINUX=true
 elif [[ "$OS" == *"Darwin"* ]]; then
 	IS_MAC=true
-	NOT_MAC=
+	# NOT_MAC=
+	NIX_PLANNER=macos
 fi
 
 YELLOW="\033[1;33m"
@@ -73,7 +76,7 @@ if [[ "$NOT_NIX" ]]; then
 	if ! exists nix; then
 		if [[ ! -f /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh ]]; then
 			echo "installing nix"
-			curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install --no-confirm
+			curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install "$NIX_PLANNER" --no-confirm
 		fi
 		# shellcheck disable=SC1091
 		. /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
@@ -86,21 +89,24 @@ if [[ "$IS_MAC" && ! -d /run ]]; then
 	sudo /System/Library/Filesystems/apfs.fs/Contents/Resources/apfs.util -t
 fi
 
-PREFIX="nixpkgs"
-if [[ "$NOT_MAC" ]]; then
-	if [[ "$NOT_NIX" ]]; then
-		nix-channel --add https://nixos.org/channels/nixpkgs-unstable
-		nix-channel --update
-	else
-		PREFIX="nixos"
-	fi
-	# git to clone the repo, ripgrep to run ./apply
-	if ! exists git; then
-		nix-env -iA "$PREFIX.git"
-	fi
+if ! (nix-channel --list | grep -q nixpkgs); then
+	nix-channel --add https://nixos.org/channels/nixpkgs-unstable
+	nix-channel --update
 fi
 
-HOST=$(hostname)
+PREFIX="nixpkgs"
+# if [[ "$NOT_MAC" ]]; then
+# 	PREFIX="nixos"
+# fi
+# git to clone the repo, ripgrep to run ./apply
+if ! exists git; then
+	nix-env -iA "$PREFIX.git"
+fi
+if ! exists rg; then
+	nix-env -iA "$PREFIX.git"
+fi
+
+# HOST=$(hostname)
 if [[ "$IS_MAC" ]]; then
 	# nix-darwin doesn't install brew.
 	if ! exists brew; then
@@ -112,9 +118,6 @@ if [[ "$IS_MAC" ]]; then
 			fi
 		fi
 		eval "$(/opt/homebrew/bin/brew shellenv)"
-		if ! exists op; then
-			brew install --cask 1password 1password/tap/1password-cli
-		fi
 	fi
 
 	if ! xcode-select -p &>/dev/null; then
@@ -162,29 +165,34 @@ if [ ! -f ~/.gh_done ]; then
 	touch ~/.gh_done
 fi
 
-if exists op; then
-	HOMEBREW_GITHUB_API_TOKEN=$(op read 'op://Personal/Homebrew Github Token/password')
-fi
-set +u
-if [ "$HOMEBREW_GITHUB_API_TOKEN" == "" ]; then
-	if [ -f ~/.gh_token ]; then
-		# store token for repeat runs
-		HOMEBREW_GITHUB_API_TOKEN=$(cat ~/.gh_token)
+if [[ ! -f ~/.nix-private/private.nix ]]; then
+	if ! exists op; then
+		brew install --cask 1password 1password/tap/1password-cli
 	fi
+	if exists op; then
+		HOMEBREW_GITHUB_API_TOKEN=$(op read 'op://Personal/Homebrew Github Token/password')
+	fi
+	set +u
 	if [ "$HOMEBREW_GITHUB_API_TOKEN" == "" ]; then
-		echo 'Generate a token at https://github.com/settings/tokens/new?scopes=gist,public_repo,workflow&description=Homebrew'
-		if confirm "open a browser to go to github to create a token for homebrew?"; then
-			set -x
-			open 'https://github.com/settings/tokens/new?scopes=gist,public_repo,workflow&description=Homebrew'
-			set +x
+		if [ -f ~/.gh_token ]; then
+			# store token for repeat runs
+			HOMEBREW_GITHUB_API_TOKEN=$(cat ~/.gh_token)
 		fi
-		echo "Enter Github token"
-		read -r HOMEBREW_GITHUB_API_TOKEN
-		export HOMEBREW_GITHUB_API_TOKEN
-		echo "$HOMEBREW_GITHUB_API_TOKEN" >~/.gh_token
+		if [ "$HOMEBREW_GITHUB_API_TOKEN" == "" ]; then
+			echo 'Generate a token at https://github.com/settings/tokens/new?scopes=gist,public_repo,workflow&description=Homebrew'
+			if confirm "open a browser to go to github to create a token for homebrew?"; then
+				set -x
+				open 'https://github.com/settings/tokens/new?scopes=gist,public_repo,workflow&description=Homebrew'
+				set +x
+			fi
+			echo "Enter Github token"
+			read -r HOMEBREW_GITHUB_API_TOKEN
+			export HOMEBREW_GITHUB_API_TOKEN
+			echo "$HOMEBREW_GITHUB_API_TOKEN" >~/.gh_token
+		fi
 	fi
+	set -u
 fi
-set -u
 
 if [ -d ~/dotfiles ]; then
 	(
@@ -209,7 +217,7 @@ if [ ! -f ~/.nix-private/private.nix ]; then
 fi
 
 set +e
-if grep -q UNALTERED flake.nix && confirm "Customize private.nix"; then
+if grep -q UNALTERED ~/.nix-private/private.nix && confirm "Customize private.nix"; then
 	$EDITOR --wait ~/.nix-private/private.nix
 fi
 set -e
@@ -219,6 +227,7 @@ set -e
 	./apply
 )
 
+set -x
 if [[ "$IS_MAC" ]]; then
 	if [[ "$SHELL" != "/run/current-system/sw/bin/fish" ]]; then
 		if grep -q /run/current-system/sw/bin/fish /etc/shells; then

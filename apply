@@ -6,20 +6,20 @@ PATH="$PATH:./bin"
 OS=$(uname -a)
 IS_MAC=
 IS_NIX=
-IS_LINUX=
+# IS_LINUX=
 NOT_NIX=true
-NOT_MAC=true
+# NOT_MAC=true
 if [[ "$OS" == *"NixOS"* ]]; then
 	IS_NIX=true
 	NOT_NIX=
-elif [[ "$OS" == *"Linux"* ]]; then
-	IS_LINUX=true
+# elif [[ "$OS" == *"Linux"* ]]; then
+# 	IS_LINUX=true
 elif [[ "$OS" == *"Darwin"* ]]; then
 	IS_MAC=true
-	NOT_MAC=
+	# NOT_MAC=
 fi
-YELLOW="\033[1;33m"
-RESET="\033[0m"
+# YELLOW="\033[1;33m"
+# RESET="\033[0m"
 
 OFFLINE=""
 if [[ "$1" == "--offline" ]]; then
@@ -27,14 +27,8 @@ if [[ "$1" == "--offline" ]]; then
 fi
 set -u
 
-PREFIX="nixpkgs"
-if [[ "$NOT_MAC" ]]; then
-	if [[ "$IS_NIX" ]]; then
-		PREFIX="nixos"
-	fi
-fi
 if ! exists rg; then
-	nix-env -iA "$PREFIX.ripgrep"
+	nix-env -iA nixpkgs.ripgrep
 fi
 rg --pcre2 'TODO:(?!.*# ignore)' || true # ignore
 
