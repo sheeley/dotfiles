@@ -53,7 +53,11 @@ in {
 
     # this sometimes doesn't work with fish
     # https://github.com/LnL7/nix-darwin/issues/122
-    sessionPath = pkgs.callPackage ./environment_path.nix {user = user;};
+    sessionPath = pkgs.callPackage ./environment_path.nix {
+      user = user;
+
+      homeDirectory = homeDir;
+    };
 
     packages = pkgs.callPackage ./packages.nix {
       lib = lib;

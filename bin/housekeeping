@@ -64,7 +64,7 @@ if [[ "$HOST" != "homebase" ]]; then
 	exit
 fi
 
-full_backup || send-email --subject "Backup Error" --attachment /tmp/housekeeping.txt
+full_backup || send-email --subject "Backup Error" --attachment /tmp/housekeeping.err.txt
 date
 echo "--- -----END----- ---"
 printf "\n\n\n"

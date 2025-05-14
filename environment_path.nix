@@ -1,20 +1,24 @@
-{user, ...}: [
+{
+  homeDirectory,
+  user,
+  ...
+}: [
   "/bin"
   "/usr/bin"
   "/usr/sbin"
   "/etc/profiles/per-user/${user}/bin"
 
-  "$HOME/bin"
-  "$HOME/dotfiles/bin"
+  "${homeDirectory}/bin"
+  "${homeDirectory}/dotfiles/bin"
 
-  "$HOME/projects/sheeley/infrastructure/bin"
-  "$HOME/projects/sheeley/infrastructure/scripts"
-  "$HOME/go/bin"
-  "$HOME/.cargo/bin"
-  "$HOME/non-nix-bin"
+  "${homeDirectory}/projects/sheeley/infrastructure/bin"
+  "${homeDirectory}/projects/sheeley/infrastructure/scripts"
+  "${homeDirectory}/go/bin"
+  "${homeDirectory}/.cargo/bin"
+  "${homeDirectory}/non-nix-bin"
 
-  "$HOME/.npm-packages/bin"
-  "$HOME/.n/bin"
+  "${homeDirectory}/.npm-packages/bin"
+  "${homeDirectory}/.n/bin"
 
   "/opt/homebrew/bin"
   "/Applications/Xcode.app/Contents/Developer/usr/bin"

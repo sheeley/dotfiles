@@ -45,13 +45,11 @@ in {
     housekeeping
     ";
 
-    path = import ../environment_path.nix {user = user;};
+    path = import ../environment_path.nix {inherit user homeDirectory;};
 
     environment =
       import ../environment_variables.nix {
-        homeDirectory = homeDirectory;
-        lib = lib;
-        private = private;
+        inherit homeDirectory lib private;
       }
       // {
         BORG_REPO = "${storagePath}/borgbackup";
@@ -62,7 +60,7 @@ in {
       Label = "org.aigee.housekeeping";
       ProcessType = "Background";
       StandardOutPath = "/tmp/housekeeping.txt";
-      StandardErrorPath = "/tmp/housekeeping.txt";
+      StandardErrorPath = "/tmp/housekeeping.err.txt";
       StartCalendarInterval = [
         {
           Hour = 1;
