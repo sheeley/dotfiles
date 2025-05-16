@@ -18,6 +18,7 @@ with pkgs; [
   fd # Fast, user-friendly alternative to `find`
   fend # better CLI calculator
   findutils # Basic utilities for searching files (e.g., `find`, `xargs`)
+  fx # cli json viewer
   fzf # Command-line fuzzy finder for interactive filtering
   git # Version control system
   gitui # Terminal-based Git user interface
@@ -59,9 +60,6 @@ with pkgs; [
   wget # Command-line utility for retrieving files via HTTP/HTTPS
   yq-go # YAML processor (like `jq`, but for YAML)
 ]
-# ++ ((lib.optionals (lib.hasAttr "homebase" private)) [
-#   borgmatic
-# ])
 # ++ ((lib.optionals (pkgs.system == "aarch64-darwin")) [
 #   obsidian
 #   # dockutil
