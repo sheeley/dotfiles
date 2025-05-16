@@ -39,11 +39,12 @@ in {
     };
   };
 
+  # https://github.com/nix-darwin/nix-darwin/issues/1255
   # automatically run borgmatic and other housekeeping work
-  launchd.agents.housekeeping = {
+  launchd.daemons.housekeeping = {
     script = "
-    housekeeping
-    ";
+      housekeeping
+      ";
 
     path = import ../environment_path.nix {inherit user homeDirectory;};
 
@@ -51,6 +52,7 @@ in {
       import ../environment_variables.nix {
         inherit homeDirectory lib private;
       }
+      # // merges dictionaries. Ugh.
       // {
         BORG_REPO = "${storagePath}/borgbackup";
         HOME = homeDirectory;
@@ -61,12 +63,12 @@ in {
       ProcessType = "Background";
       StandardOutPath = "/tmp/housekeeping.txt";
       StandardErrorPath = "/tmp/housekeeping.err.txt";
+      UserName = "${user}";
       StartCalendarInterval = [
         {
           Hour = 1;
         }
       ];
-      UserName = "${user}";
     };
   };
 }
