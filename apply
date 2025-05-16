@@ -30,7 +30,7 @@ set -u
 if ! exists rg; then
 	nix-env -iA nixpkgs.ripgrep
 fi
-rg --pcre2 'TODO:(?!.*# ignore)' || true # ignore
+todos
 
 # minimally, yell if nix version out of date - linux/mac only
 if [[ "$NOT_NIX" ]]; then

@@ -1,0 +1,5 @@
+#! /usr/bin/env bash
+set -euo pipefail
+# set -x
+
+rg --pcre2 'TODO:(?!.*# ignore)' || true # ignore
