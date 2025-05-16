@@ -20,12 +20,18 @@ open_vim() {
 	DIR="$1"
 	FILE="$2"
 	MOVE_CURSOR="-c wincmd l"
+	NEOTREE="-c Neotree $DIR"
 	if [[ "" = "$FILE" || "." = "$FILE" ]]; then
 		FILE="$DIR"
 		MOVE_CURSOR=""
 	fi
-	# echo "$1 $2"
-	vim -c "Neotree $DIR" "$MOVE_CURSOR" "$FILE"
+
+	WIDTH=$(tput cols)
+	if [[ "$WIDTH" -lt 100 ]]; then
+		vim "$FILE"
+	fi
+
+	vim "$NEOTREE" "$MOVE_CURSOR" "$FILE"
 }
 
 # check if file(s) were passed in - if not just open the directory the command was run in
