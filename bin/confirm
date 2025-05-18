@@ -1,13 +1,17 @@
 #! /usr/bin/env bash
 # Purpose: Interactive confirmation prompt for shell scripts
 # Used to get user confirmation before executing potentially destructive operations
-set -euo pipefail # x
+set -euo pipefail
+# set -x
 
 y='\e[1;33m' # Yellow and Bold
 r='\e[0m'    # Reset
-printf "$y%s$r (y/N)" "$1"
-read -r INPUT
+printf "$y%s$r (y/N)" "$1" >/dev/tty
+read -r INPUT </dev/tty
 if [ "$INPUT" == "y" ] || [ "$INPUT" == "yes" ]; then
+	if [ ! -t 0 ]; then
+		cat
+	fi
 	exit 0
 fi
 exit 1
