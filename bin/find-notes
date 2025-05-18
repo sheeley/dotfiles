@@ -1,0 +1,7 @@
+#! /usr/bin/env nu 
+
+def main [
+text: string # content to search for
+] {
+	rg --ignore-case $text $env.NOTES_DIR
+}
