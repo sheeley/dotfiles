@@ -1,0 +1,14 @@
+#! /usr/bin/env nu --stdin
+
+def main [
+	fileNameMatch: string # to search for
+] {
+	let matches =	(fd $fileNameMatch) 
+	if ($matches | is-empty ) {
+		print "no matches"
+		exit 1
+	}
+	let files = $matches| into string | split row "\n" 
+	let selected = $files | input list --multi "Select files to delete (a toggles all)" 
+	rm --interactive-once ...$files
+}
