@@ -5,28 +5,30 @@
 # Used to: Quickly create new scripts with proper permissions and boilerplate
 #          code, ensuring consistent script structure across the system
 
-# Get the directory containing script templates
-let scriptDir = $"($env.HOME)/dotfiles/templates/scripts/"
-# Get list of supported shell types from template filenames
-let supportedTypes = ls ($scriptDir | path join script.* | into glob) | each {|e| $e.name | path parse} | get extension
 
 def main [
-	scriptName: string, # name of script to create
+	scriptName: string = "", # name of script to create
 	--local = false # create in current directory
-	--shell: string = bash # shell to use - ls ~/dotfiles/templates/scripts/
+	--shell = "" # shell to use
 	] {
-	# Validate that the requested shell type is supported
-	if ($supportedTypes not-has $shell) {
-		"Valid shells: " | print
-		$supportedTypes | print 
-		exit 1
+	# Get the directory containing script templates
+	let templateDir = $"($env.HOME)/dotfiles/templates/scripts"
+	# Get list of supported shell types from template filenames
+	let supportedTypes = ls ($templateDir | path join script.* | into glob) | each {|e| $e.name | path parse} | get extension
+
+ 	mut shell = $shell
+	while ($shell | is-empty) {
+		$shell = ($supportedTypes | input list --fuzzy)
 	}
 
-	# Determine where to create the script (bin directory or current directory)
-	let scriptDir = $"($env.HOME)/dotfiles/bin/"
-	if $local {
-		let scriptDir = (pwd)
+	mut scriptName = $scriptName
+	while ($scriptName | is-empty) {
+		$scriptName = (input "script name? ")
 	}
+
+	let scriptDir = $"($env.HOME)/dotfiles/bin"
+	# Determine where to create the script (bin directory or current directory)
+	let targetDir = if $local { (pwd) } else { $scriptDir }
 
 	# Build the full path to the new script
 	let file = $"($scriptDir)/($scriptName)"
@@ -38,7 +40,8 @@ def main [
 	}
 
 	# Create the script from the template
- 	open $"($env.HOME)/dotfiles/templates/scripts/script.($shell)" | save $file
+ 	let sourcePath =  $"($templateDir)/script.($shell)"
+ 	open $sourcePath | save $file
 	# Make the script executable
 	chmod +x $file
 
