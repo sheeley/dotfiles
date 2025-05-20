@@ -29,6 +29,7 @@ open_vim() {
 	WIDTH=$(tput cols)
 	if [[ "$WIDTH" -lt 100 ]]; then
 		vim "$FILE"
+		exit
 	fi
 
 	vim "$NEOTREE" "$MOVE_CURSOR" "$FILE"
