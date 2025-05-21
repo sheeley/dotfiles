@@ -29,11 +29,21 @@ in {
     viAlias = true;
     vimAlias = true;
 
-    colorschemes.tokyonight = {
-      settings = {
-        style = "night";
+    colorscheme = "catppuccin";
+    colorschemes = {
+      tokyonight = {
+        settings = {
+          style = "night";
+        };
+        enable = true;
       };
-      enable = true;
+
+      catppuccin = {
+        enable = true;
+        settings = {
+          flavour = "macchiato";
+        };
+      };
     };
 
     globals = {
