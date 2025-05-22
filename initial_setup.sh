@@ -82,12 +82,15 @@ if [[ "$NOT_NIX" ]]; then
 		. /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
 	fi
 fi
-# create /run
-if [[ "$IS_MAC" && ! -d /run ]]; then
-	echo "creating /run"
-	printf 'run\tprivate/var/run\n' | sudo tee -a /etc/synthetic.conf
-	sudo /System/Library/Filesystems/apfs.fs/Contents/Resources/apfs.util -t
-fi
+# create /run - I think nix-darwin does this automatically now.
+# if [[ "$IS_MAC" && ! -d /run ]]; then
+# 	echo "creating /run"
+# 	printf 'run\tprivate/var/run\n' | sudo tee -a /etc/synthetic.conf
+#  	# 
+#  	set +e
+# 	sudo /System/Library/Filesystems/apfs.fs/Contents/Resources/apfs.util -t
+#  	set -e
+# fi
 
 if ! (nix-channel --list | grep -q nixpkgs); then
 	nix-channel --add https://nixos.org/channels/nixpkgs-unstable
@@ -150,24 +153,10 @@ else
 	EMAIL=$(cut -d' ' -f3 <~/.ssh/id_ed25519.pub)
 fi
 
-if [ ! -f ~/.gh_done ]; then
-	# store key in github
-	echo -e "$YELLOW"
-	cat ~/.ssh/id_ed25519.pub
-	echo 'Input SSH Key: https://github.com/settings/keys'
-	echo -e "$RESET"
-	if confirm "Copy public key to clipboard and open browser ^?"; then
-		if exists pbcopy; then
-			pbcopy <~/.ssh/id_ed25519.pub
-		fi
-		open https://github.com/settings/keys
-	fi
-	touch ~/.gh_done
-fi
-
 if [[ ! -f ~/.nix-private/private.nix ]]; then
 	if ! exists op; then
 		brew install --cask 1password 1password/tap/1password-cli
+  		confirm "Log in to 1password, go to settings -> developer -> enable CLI integration. Continue?"
 	fi
 	if exists op; then
 		HOMEBREW_GITHUB_API_TOKEN=$(op read 'op://Personal/Homebrew Github Token/password')
@@ -194,12 +183,28 @@ if [[ ! -f ~/.nix-private/private.nix ]]; then
 	set -u
 fi
 
-if [ -d ~/dotfiles ]; then
-	(
-		cd ~/dotfiles
-		git pull
-	)
-else
+if [ ! -f ~/.gh_done ]; then
+	# store key in github
+	echo -e "$YELLOW"
+	cat ~/.ssh/id_ed25519.pub
+	echo 'Input SSH Key: https://github.com/settings/keys'
+	echo -e "$RESET"
+	if confirm "Copy public key to clipboard and open browser ^?"; then
+		if exists pbcopy; then
+			pbcopy <~/.ssh/id_ed25519.pub
+		fi
+		open https://github.com/settings/keys
+	fi
+	touch ~/.gh_done
+fi
+
+if [ ! -d ~/dotfiles ]; 
+# then
+# 	(
+# 		cd ~/dotfiles
+# 		git pull
+# 	)
+# else
 	git clone git@github.com:sheeley/dotfiles.git ~/dotfiles
 fi
 
@@ -218,7 +223,10 @@ fi
 
 set +e
 if grep -q UNALTERED ~/.nix-private/private.nix && confirm "Customize private.nix"; then
-	$EDITOR --wait ~/.nix-private/private.nix
+	if exists vim; then
+ 		# TODO: check for $EDITOR and fall back
+		vim --wait ~/.nix-private/private.nix
+  	fi
 fi
 set -e
 
