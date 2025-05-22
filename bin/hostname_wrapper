@@ -1,9 +1,8 @@
 #! /usr/bin/env bash
 # Purpose: Provide consistent hostname information across systems
-set -euo pipefail # x
 
-HN=$(hostname)
 if command -v scutil &>/dev/null; then
-	HN=$(scutil --get HostName)
+	scutil --get HostName 2>/dev/null
+	exit 0
 fi
-echo "$HN"
+hostname
