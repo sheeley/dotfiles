@@ -1,6 +1,6 @@
 #! /usr/bin/env bash
 set -euo pipefail
-set -x
+# set -x
 
 # FYI: proxmox/debian don't install sudo by default
 # apt-get install sudo
@@ -223,10 +223,16 @@ fi
 
 set +e
 if grep -q UNALTERED ~/.nix-private/private.nix && confirm "Customize private.nix"; then
-	if exists vim; then
- 		# TODO: check for $EDITOR and fall back
-		vim --wait ~/.nix-private/private.nix
-  	fi
+	set +u
+ 	if [[ -z "$EDITOR" ]]; then
+		if exists vim; then
+			EDITOR=vim
+	  	elif exists nano; then
+	   		EDITOR=nano
+	  	fi
+   	fi
+    	set -u
+   	$EDITOR --wait ~/.nix-private/private.nix
 fi
 set -e
 
