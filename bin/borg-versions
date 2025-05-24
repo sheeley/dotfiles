@@ -36,7 +36,9 @@ def main [
 	let unique_files = ($all_files 
 		| uniq 
 		| each { |file|
-			if ($file | str starts-with $home_dir) {
+			if ($file | str starts-with $"/Users/") {
+				$file | str replace $"/Users/([^/]+)" "~"
+			} else if ($file | str starts-with $home_dir) {
 				$file | str replace $home_dir "~"
 			} else {
 				$file
@@ -63,29 +65,21 @@ def main [
 	
 	print $"\nGetting versions for ($selected_file_display)..."
 	
-	# Get all archives that contain this specific file
-	let file_versions = try {
-		borgmatic list --repository $repo --find $selected_file_full --short
-		| lines 
-		| where ($it | str trim) != ""
-		| each { |file| $file | str trim }
-		| where $it == $selected_file_full
-	} catch {
-		[]
-	}
-	
-	# Now get the archives for this file
+	# Get all archives that contain this specific file - suppress verbose output
 	let archives_with_file = try {
 		borgmatic list --repository $repo --short --last 20
 		| lines 
 		| where ($it | str trim) != ""
 		| each { |archive|
 			let archive_name = ($archive | str trim)
+			# Check if this archive contains the file (suppress output)
 			let has_file = try {
-				borgmatic list --repository $repo --archive $archive_name --find $selected_file_full --short
-				| lines
-				| where ($it | str trim) != ""
-				| length
+				let result = (borgmatic list --repository $repo --archive $archive_name --path $selected_file_full --short 2>/dev/null | complete)
+				if ($result.exit_code == 0 and ($result.stdout | str trim) != "") {
+					1
+				} else {
+					0
+				}
 			} catch { 0 }
 			
 			if ($has_file > 0) {
