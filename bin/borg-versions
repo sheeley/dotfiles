@@ -36,13 +36,7 @@ def main [
 	let unique_files = ($all_files 
 		| uniq 
 		| each { |file|
-			if ($file | str starts-with $"/Users/") {
-				$file | str replace $"/Users/([^/]+)" "~"
-			} else if ($file | str starts-with $home_dir) {
-				$file | str replace $home_dir "~"
-			} else {
-				$file
-			}
+			$file | str replace $home_dir "~"
 		}
 		| sort)
 	
