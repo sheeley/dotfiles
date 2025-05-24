@@ -18,32 +18,22 @@ def main [
 	print "Searching for files..."
 	
 	# Search filenames using borgmatic list --find with --short to get just paths
-	let matches = try {
+	let all_files = try {
 		borgmatic list --repository $repo --find $search_term --short
 		| lines 
 		| where ($it | str trim) != ""
-		| each { |line|
-			# Parse the output format: archive_name path/to/file
-			let parts = ($line | str trim | split row " ")
-			if ($parts | length) >= 2 {
-				let archive = ($parts | get 0)
-				let file = ($parts | slice 1.. | str join " ")
-				{archive: $archive, file: $file, match_type: "filename"}
-			}
-		}
-		| where ($it != null)
+		| each { |file| $file | str trim }
 	} catch {
 		[]
 	}
 	
-	if ($matches | is-empty) {
+	if ($all_files | is-empty) {
 		print $"No matches found for '($search_term)'"
 		return
 	}
 	
 	# Get unique filenames and replace home directory with ~
-	let unique_files = ($matches 
-		| get file 
+	let unique_files = ($all_files 
 		| uniq 
 		| each { |file|
 			if ($file | str starts-with $home_dir) {
@@ -71,24 +61,58 @@ def main [
 		$selected_file_display
 	}
 	
-	# Get all versions of the selected file
-	let file_versions = ($matches 
-		| where file == $selected_file_full
-		| sort-by archive -r)
+	print $"\nGetting versions for ($selected_file_display)..."
 	
-	print $"\nFound ($file_versions | length) versions of ($selected_file_display)"
+	# Get all archives that contain this specific file
+	let file_versions = try {
+		borgmatic list --repository $repo --find $selected_file_full --short
+		| lines 
+		| where ($it | str trim) != ""
+		| each { |file| $file | str trim }
+		| where $it == $selected_file_full
+	} catch {
+		[]
+	}
+	
+	# Now get the archives for this file
+	let archives_with_file = try {
+		borgmatic list --repository $repo --short --last 20
+		| lines 
+		| where ($it | str trim) != ""
+		| each { |archive|
+			let archive_name = ($archive | str trim)
+			let has_file = try {
+				borgmatic list --repository $repo --archive $archive_name --find $selected_file_full --short
+				| lines
+				| where ($it | str trim) != ""
+				| length
+			} catch { 0 }
+			
+			if ($has_file > 0) {
+				$archive_name
+			}
+		}
+		| where ($it != null)
+		| sort -r
+	} catch {
+		[]
+	}
+	
+	if ($archives_with_file | is-empty) {
+		print $"No versions found for ($selected_file_display)"
+		return
+	}
+	
+	print $"\nFound ($archives_with_file | length) versions of ($selected_file_display)"
 	
 	# Second selection: choose which version
-	let selected_version = ($file_versions | each { |match| 
-		$"($match.archive)"
-	} | input list --fuzzy $"Select version to preview/restore:")
+	let selected_archive = ($archives_with_file | input list --fuzzy $"Select version to preview/restore:")
 	
-	if ($selected_version | is-empty) {
+	if ($selected_archive | is-empty) {
 		print "No version selected"
 		return
 	}
 	
-	let selected_archive = $selected_version
 	let selected_file = $selected_file_full
 	
 	print $"\nSelected: ($selected_file_display) from ($selected_archive)"
