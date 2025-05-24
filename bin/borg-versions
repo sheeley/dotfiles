@@ -6,6 +6,7 @@ def main [
 	--content = false # search file contents instead of filenames
 ] {
 	let repo = if ($all_repos) { "" } else { "local" }
+	let home_dir = ($env.HOME)
 	
 	print $"Searching for: ($search_term)"
 	print $"Search type: (if ($content) { "content" } else { "filename" })"
@@ -40,24 +41,57 @@ def main [
 		return
 	}
 	
-	print $"\nFound ($matches | length) matches:"
+	# Get unique filenames and replace home directory with ~
+	let unique_files = ($matches 
+		| get file 
+		| uniq 
+		| each { |file|
+			if ($file | str starts-with $home_dir) {
+				$file | str replace $home_dir "~"
+			} else {
+				$file
+			}
+		}
+		| sort)
 	
-	# Interactive selection
-	let selected = ($matches | each { |match| 
-		$"($match.archive) :: ($match.file) (($match.match_type))"
-	} | input list --fuzzy $"Select file to preview/restore:")
+	print $"\nFound ($unique_files | length) unique files:"
 	
-	if ($selected | is-empty) {
-		print "No selection made"
+	# First selection: choose which file
+	let selected_file_display = ($unique_files | input list --fuzzy $"Select file to see versions:")
+	
+	if ($selected_file_display | is-empty) {
+		print "No file selected"
 		return
 	}
 	
-	# Parse selection
-	let parts = ($selected | split column " :: ")
-	let selected_archive = ($parts | get column1 | get 0)
-	let selected_file = ($parts | get column2 | get 0 | str replace " \\(.*\\)$" "")
+	# Convert back to full path for matching
+	let selected_file_full = if ($selected_file_display | str starts-with "~") {
+		$selected_file_display | str replace "~" $home_dir
+	} else {
+		$selected_file_display
+	}
 	
-	print $"\nSelected: ($selected_file) from ($selected_archive)"
+	# Get all versions of the selected file
+	let file_versions = ($matches 
+		| where file == $selected_file_full
+		| sort-by archive -r)
+	
+	print $"\nFound ($file_versions | length) versions of ($selected_file_display):"
+	
+	# Second selection: choose which version
+	let selected_version = ($file_versions | each { |match| 
+		$"($match.archive)"
+	} | input list --fuzzy $"Select version to preview/restore:")
+	
+	if ($selected_version | is-empty) {
+		print "No version selected"
+		return
+	}
+	
+	let selected_archive = $selected_version
+	let selected_file = $selected_file_full
+	
+	print $"\nSelected: ($selected_file_display) from ($selected_archive)"
 	
 	# Preview file
 	print "\n--- File Preview ---"
