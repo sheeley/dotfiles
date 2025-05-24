@@ -9,64 +9,31 @@ def main [
 	
 	print $"Searching for: ($search_term)"
 	print $"Search type: (if ($content) { "content" } else { "filename" })"
-	print "Getting list of recent archives..."
 	
-	# Get list of archives
-	let archives = (borgmatic list --repository $repo --short --last 10 
-		| lines 
-		| where ($it | str trim) != "" 
-		| sort -r)
-	
-	if ($archives | is-empty) {
-		print "No archives found"
-		return
+	if ($content) {
+		print "Content search not yet implemented - searching filenames instead"
 	}
 	
-	print $"Found ($archives | length) archives to search"
+	print "Searching for files..."
 	
-	# Find files in archives
-	let matches = ($archives | each { |archive|
-		print $"Searching archive: ($archive)"
-		
-		if ($content) {
-			# Search file contents - this is more complex and slower
-			try {
-				let files = (borgmatic list --repository $repo --archive $archive 
-					| lines 
-					| where ($it | str contains $search_term) == false  # Skip if filename matches search term
-					| where ($it | str trim) != "")
-				
-				# For content search, we'd need to extract and grep each file
-				# This is a simplified version - in practice you might want to limit file types
-				$files | each { |file|
-					try {
-						let content = (borgmatic extract --repository $repo --archive $archive --destination /tmp --path $file 
-							| complete)
-						if ($content.exit_code == 0) {
-							let grep_result = (grep -l $search_term $"/tmp/($file)" | complete)
-							if ($grep_result.exit_code == 0) {
-								{archive: $archive, file: $file, match_type: "content"}
-							}
-						}
-					} catch {
-						null
-					}
-				} | where ($it != null)
-			} catch {
-				[]
-			}
-		} else {
-			# Search filenames
-			try {
-				borgmatic list --repository $repo --archive $archive --find $search_term 
-				| lines 
-				| where ($it | str trim) != ""
-				| each { |file| {archive: $archive, file: $file, match_type: "filename"} }
-			} catch {
-				[]
+	# Search filenames using borgmatic list --find
+	let matches = try {
+		borgmatic list --repository $repo --find $search_term 
+		| lines 
+		| where ($it | str trim) != ""
+		| each { |line|
+			# Parse the output format: archive_name path/to/file
+			let parts = ($line | split row " " | where ($it | str trim) != "")
+			if ($parts | length) >= 2 {
+				let archive = ($parts | get 0)
+				let file = ($parts | range 1.. | str join " ")
+				{archive: $archive, file: $file, match_type: "filename"}
 			}
 		}
-	} | flatten)
+		| where ($it != null)
+	} catch {
+		[]
+	}
 	
 	if ($matches | is-empty) {
 		print $"No matches found for '($search_term)'"
