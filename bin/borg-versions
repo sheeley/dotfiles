@@ -17,9 +17,9 @@ def main [
 	
 	print "Searching for files..."
 	
-	# Search filenames using borgmatic list --find
+	# Search filenames using borgmatic list --find with --short to get just paths
 	let matches = try {
-		borgmatic list --repository $repo --find $search_term 
+		borgmatic list --repository $repo --find $search_term --short
 		| lines 
 		| where ($it | str trim) != ""
 		| each { |line|
