@@ -1,11 +1,143 @@
 #! /usr/bin/env nu --stdin
 
 def main [
-	filepath: string # file to search for
+	search_term: string # filename or content to search for
 	--all_repos = false # search all, not just local
+	--content = false # search file contents instead of filenames
 ] {
 	let repo = if ($all_repos) { "" } else { "local" }
-	let versions = (borgmatic list --repository $repo --last 5 --find $filepath --verbosity 2)
-	$versions | print
-	# input list --fuzzy | print
+	
+	print $"Searching for: ($search_term)"
+	print $"Search type: (if ($content) { "content" } else { "filename" })"
+	print "Getting list of recent archives..."
+	
+	# Get list of archives
+	let archives = (borgmatic list --repository $repo --short --last 10 
+		| lines 
+		| where ($it | str trim) != "" 
+		| sort -r)
+	
+	if ($archives | is-empty) {
+		print "No archives found"
+		return
+	}
+	
+	print $"Found ($archives | length) archives to search"
+	
+	# Find files in archives
+	let matches = ($archives | each { |archive|
+		print $"Searching archive: ($archive)"
+		
+		if ($content) {
+			# Search file contents - this is more complex and slower
+			try {
+				let files = (borgmatic list --repository $repo --archive $archive 
+					| lines 
+					| where ($it | str contains $search_term) == false  # Skip if filename matches search term
+					| where ($it | str trim) != "")
+				
+				# For content search, we'd need to extract and grep each file
+				# This is a simplified version - in practice you might want to limit file types
+				$files | each { |file|
+					try {
+						let content = (borgmatic extract --repository $repo --archive $archive --destination /tmp --path $file 
+							| complete)
+						if ($content.exit_code == 0) {
+							let grep_result = (grep -l $search_term $"/tmp/($file)" | complete)
+							if ($grep_result.exit_code == 0) {
+								{archive: $archive, file: $file, match_type: "content"}
+							}
+						}
+					} catch {
+						null
+					}
+				} | where ($it != null)
+			} catch {
+				[]
+			}
+		} else {
+			# Search filenames
+			try {
+				borgmatic list --repository $repo --archive $archive --find $search_term 
+				| lines 
+				| where ($it | str trim) != ""
+				| each { |file| {archive: $archive, file: $file, match_type: "filename"} }
+			} catch {
+				[]
+			}
+		}
+	} | flatten)
+	
+	if ($matches | is-empty) {
+		print $"No matches found for '($search_term)'"
+		return
+	}
+	
+	print $"\nFound ($matches | length) matches:"
+	
+	# Interactive selection
+	let selected = ($matches | each { |match| 
+		$"($match.archive) :: ($match.file) (($match.match_type))"
+	} | input list --fuzzy $"Select file to preview/restore:")
+	
+	if ($selected | is-empty) {
+		print "No selection made"
+		return
+	}
+	
+	# Parse selection
+	let parts = ($selected | split column " :: ")
+	let selected_archive = ($parts | get column1 | get 0)
+	let selected_file = ($parts | get column2 | get 0 | str replace " \\(.*\\)$" "")
+	
+	print $"\nSelected: ($selected_file) from ($selected_archive)"
+	
+	# Preview file
+	print "\n--- File Preview ---"
+	try {
+		let preview = (borgmatic extract --repository $repo --archive $selected_archive --destination /tmp --path $selected_file --dry-run
+			| complete)
+		
+		if ($preview.exit_code == 0) {
+			# Actually extract to temp location for preview
+			borgmatic extract --repository $repo --archive $selected_archive --destination /tmp --path $selected_file
+			let temp_file = $"/tmp/($selected_file)"
+			
+			if ($temp_file | path exists) {
+				# Show preview (first 50 lines)
+				cat $temp_file | lines | first 50 | each { |line| print $line }
+				
+				if ((cat $temp_file | lines | length) > 50) {
+					print "\n... (file truncated, showing first 50 lines)"
+				}
+				
+				# Ask if user wants to restore
+				print $"\nRestore this file? Current file will be backed up with .bak extension"
+				let restore = (["yes", "no"] | input list "Restore file?")
+				
+				if ($restore == "yes") {
+					# Backup current file if it exists
+					if ($selected_file | path exists) {
+						cp $selected_file $"($selected_file).bak"
+						print $"Backed up current file to ($selected_file).bak"
+					}
+					
+					# Restore file
+					cp $temp_file $selected_file
+					print $"Restored ($selected_file) from archive ($selected_archive)"
+				} else {
+					print "File not restored"
+				}
+				
+				# Clean up temp file
+				rm $temp_file
+			} else {
+				print "Could not extract file for preview"
+			}
+		} else {
+			print $"Error extracting file: ($preview.stderr)"
+		}
+	} catch { |e|
+		print $"Error during preview: ($e)"
+	}
 }
