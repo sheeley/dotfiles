@@ -1,0 +1,11 @@
+#! /usr/bin/env nu --stdin
+
+def main [
+	filepath: string # file to search for
+	--all_repos = false # search all, not just local
+] {
+	let repo = if ($all_repos) { "" } else { "local" }
+	let versions = (borgmatic list --repository $repo --last 5 --find $filepath --verbosity 2)
+	$versions | print
+	# input list --fuzzy | print
+}
