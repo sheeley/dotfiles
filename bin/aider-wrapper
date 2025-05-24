@@ -1,0 +1,5 @@
+#! /usr/bin/env bash
+set -euo pipefail
+# set -x
+#
+aider --model claude-sonnet-4-20250514 --anthropic-api-key "$(get-secret "Claude API Token")" --no-analytics

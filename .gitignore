@@ -3,3 +3,4 @@ last-*.txt
 *.updated
 resolved.yaml
 merged.yaml
+.aider*

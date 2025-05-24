@@ -10,6 +10,7 @@
 
   "${homeDirectory}/bin"
   "${homeDirectory}/dotfiles/bin"
+  "${homeDirectory}/.local/bin"
 
   "${homeDirectory}/projects/sheeley/infrastructure/bin"
   "${homeDirectory}/projects/sheeley/infrastructure/scripts"
