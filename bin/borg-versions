@@ -24,7 +24,7 @@ def main [
 		| where ($it | str trim) != ""
 		| each { |line|
 			# Parse the output format: archive_name path/to/file
-			let parts = ($line | split row " " | where ($it | str trim) != "")
+			let parts = ($line | str trim | split row " ")
 			if ($parts | length) >= 2 {
 				let archive = ($parts | get 0)
 				let file = ($parts | slice 1.. | str join " ")
@@ -54,7 +54,7 @@ def main [
 		}
 		| sort)
 	
-	print $"\nFound ($unique_files | length) unique files:"
+	print $"\nFound ($unique_files | length) unique files"
 	
 	# First selection: choose which file
 	let selected_file_display = ($unique_files | input list --fuzzy $"Select file to see versions:")
@@ -76,7 +76,7 @@ def main [
 		| where file == $selected_file_full
 		| sort-by archive -r)
 	
-	print $"\nFound ($file_versions | length) versions of ($selected_file_display):"
+	print $"\nFound ($file_versions | length) versions of ($selected_file_display)"
 	
 	# Second selection: choose which version
 	let selected_version = ($file_versions | each { |match| 
@@ -96,47 +96,54 @@ def main [
 	# Preview file
 	print "\n--- File Preview ---"
 	try {
-		let preview = (borgmatic extract --repository $repo --archive $selected_archive --destination /tmp --path $selected_file --dry-run
-			| complete)
+		# Create a unique temp directory to avoid conflicts
+		let temp_dir = $"/tmp/borg-restore-(date now | format date '%Y%m%d-%H%M%S')"
+		mkdir $temp_dir
 		
-		if ($preview.exit_code == 0) {
-			# Actually extract to temp location for preview
-			borgmatic extract --repository $repo --archive $selected_archive --destination /tmp --path $selected_file
-			let temp_file = $"/tmp/($selected_file)"
+		# Extract file to temp location
+		borgmatic extract --repository $repo --archive $selected_archive --destination $temp_dir --path $selected_file
+		let temp_file = $"($temp_dir)/($selected_file)"
+		
+		if ($temp_file | path exists) {
+			# Show preview (first 50 lines)
+			let file_lines = (cat $temp_file | lines)
+			let preview_lines = ($file_lines | first 50)
 			
-			if ($temp_file | path exists) {
-				# Show preview (first 50 lines)
-				cat $temp_file | lines | first 50 | each { |line| print $line }
-				
-				if ((cat $temp_file | lines | length) > 50) {
-					print "\n... (file truncated, showing first 50 lines)"
-				}
-				
-				# Ask if user wants to restore
-				print $"\nRestore this file? Current file will be backed up with .bak extension"
-				let restore = (["yes", "no"] | input list "Restore file?")
-				
-				if ($restore == "yes") {
-					# Backup current file if it exists
-					if ($selected_file | path exists) {
-						cp $selected_file $"($selected_file).bak"
-						print $"Backed up current file to ($selected_file).bak"
-					}
-					
-					# Restore file
-					cp $temp_file $selected_file
-					print $"Restored ($selected_file) from archive ($selected_archive)"
-				} else {
-					print "File not restored"
-				}
-				
-				# Clean up temp file
-				rm $temp_file
-			} else {
-				print "Could not extract file for preview"
+			$preview_lines | each { |line| print $line }
+			
+			if (($file_lines | length) > 50) {
+				print $"\n... (file truncated, showing first 50 of ($file_lines | length) lines)"
 			}
+			
+			# Ask if user wants to restore
+			print $"\nRestore this file? Current file will be backed up with .bak extension"
+			let restore = (["yes", "no"] | input list "Restore file?")
+			
+			if ($restore == "yes") {
+				# Backup current file if it exists
+				if ($selected_file | path exists) {
+					cp $selected_file $"($selected_file).bak"
+					print $"Backed up current file to ($selected_file).bak"
+				}
+				
+				# Create directory if it doesn't exist
+				let parent_dir = ($selected_file | path dirname)
+				if not ($parent_dir | path exists) {
+					mkdir $parent_dir
+				}
+				
+				# Restore file
+				cp $temp_file $selected_file
+				print $"Restored ($selected_file) from archive ($selected_archive)"
+			} else {
+				print "File not restored"
+			}
+			
+			# Clean up temp directory
+			rm -rf $temp_dir
 		} else {
-			print $"Error extracting file: ($preview.stderr)"
+			print "Could not extract file for preview"
+			rm -rf $temp_dir
 		}
 	} catch { |e|
 		print $"Error during preview: ($e)"
