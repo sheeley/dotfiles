@@ -26,7 +26,7 @@ def main [
 			let parts = ($line | split row " " | where ($it | str trim) != "")
 			if ($parts | length) >= 2 {
 				let archive = ($parts | get 0)
-				let file = ($parts | range 1.. | str join " ")
+				let file = ($parts | slice 1.. | str join " ")
 				{archive: $archive, file: $file, match_type: "filename"}
 			}
 		}
