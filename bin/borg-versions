@@ -13,13 +13,12 @@ Interactive file search, preview, and restore tool for Borg backups via borgmati
 
 import argparse
 import asyncio
-import hashlib
 import os
 import shutil
 import subprocess
 import tempfile
 from pathlib import Path
-from typing import Dict, List, Tuple
+from typing import Dict, List, Tuple, Optional
 
 from fuzzywuzzy import fuzz
 from textual.app import App, ComposeResult
@@ -79,20 +78,8 @@ class FileSearchApp(App):
         height: 3;
     }
     
-    .loading-overlay {
-        background: $surface;
-        color: $warning;
-        text-align: center;
-        height: 1fr;
-        content-align: center middle;
-    }
-    
     .fuzzy-search {
         margin: 1 0;
-    }
-    
-    .duplicate {
-        color: $text-muted;
     }
     """
     
@@ -117,13 +104,10 @@ class FileSearchApp(App):
         self.selected_file_display = ""
         self.selected_file_full = ""
         self.archives_with_file: List[str] = []
-        self.unique_archives_with_file: List[Tuple[str, bool]] = []  # (archive, is_duplicate)
         
         # Cache for various operations
         self.file_archives_cache: Dict[str, List[str]] = {}
-        self.archives_list_cache: List[str] = []
         self.file_content_cache: Dict[Tuple[str, str], str] = {}  # (archive, file) -> content
-        self.file_hash_cache: Dict[Tuple[str, str], str] = {}  # (archive, file) -> hash
         
         # Activity indicator state
         self.activity_tasks: Dict[str, asyncio.Task] = {}
@@ -133,6 +117,7 @@ class FileSearchApp(App):
         
         # Track if initial search is complete
         self.initial_search_complete = False
+        self.search_task: Optional[asyncio.Task] = None
     
     def compose(self) -> ComposeResult:
         """Create the UI layout."""
@@ -162,6 +147,42 @@ class FileSearchApp(App):
             yield Label("Ready", id="status")
         
         yield Footer()
+    
+    def on_mount(self) -> None:
+        """Initialize the application by starting the search process immediately."""
+        # Show immediate activity indicators
+        self.show_initial_activity()
+        
+        # Start the search process in the background
+        self.search_task = asyncio.create_task(self.search_files())
+    
+    def show_initial_activity(self) -> None:
+        """Show activity indicators immediately when the app starts."""
+        # Show activity in files list
+        files_listview = self.query_one("#files-listview", ListView)
+        files_listview.clear()
+        files_listview.append(ListItem(Label("⠋ Searching for files...", classes="activity")))
+        
+        # Show activity in archives list
+        archives_listview = self.query_one("#archives-listview", ListView)
+        archives_listview.clear()
+        archives_listview.append(ListItem(Label("⠋ Waiting for file search...", classes="activity")))
+        
+        # Show activity in status
+        status = self.query_one("#status", Label)
+        status.update("⠋ Starting search...")
+        status.add_class("activity")
+        
+        # Set preview to show what we're doing
+        preview_text = self.query_one("#preview-text", TextArea)
+        preview_label = self.query_one("#preview-label", Label)
+        preview_label.update("Search Progress")
+        preview_text.text = f"Searching for files matching: {self.search_term}\nRepository: {self.repo or 'all repositories'}\nSearch type: {'content' if self.content_search else 'filename'}\n\nThis may take a moment..."
+        
+        # Start animated activity indicators
+        asyncio.create_task(self.start_activity_indicator("files-listview", f"Searching for files matching '{self.search_term}'"))
+        asyncio.create_task(self.start_activity_indicator("archives-listview", "Waiting for file search to complete"))
+        asyncio.create_task(self.start_activity_indicator("status", f"Searching for '{self.search_term}' in Borg archives"))
     
     async def start_activity_indicator(self, widget_id: str, base_message: str) -> None:
         """Start an animated activity indicator for a specific widget."""
@@ -218,22 +239,6 @@ class FileSearchApp(App):
             status.update(message)
             status.remove_class("activity")
     
-    async def on_mount(self) -> None:
-        """Initialize the application by starting the search process."""
-        # Start activity indicators immediately after UI is rendered
-        await self.start_activity_indicator("files-listview", f"Searching for files matching '{self.search_term}'...")
-        await self.start_activity_indicator("archives-listview", "Waiting for file search to complete...")
-        await self.start_activity_indicator("status", f"Searching for '{self.search_term}' in Borg archives...")
-        
-        # Set preview to show what we're doing
-        preview_text = self.query_one("#preview-text", TextArea)
-        preview_label = self.query_one("#preview-label", Label)
-        preview_label.update("Search Progress")
-        preview_text.text = f"Searching for files matching: {self.search_term}\nRepository: {self.repo or 'all repositories'}\nSearch type: {'content' if self.content_search else 'filename'}\n\nThis may take a moment..."
-        
-        # Start the search process
-        await self.search_files()
-    
     async def on_input_changed(self, event: Input.Changed) -> None:
         """Handle fuzzy search input changes."""
         if event.input.id == "fuzzy-input":
@@ -242,6 +247,9 @@ class FileSearchApp(App):
     
     async def apply_fuzzy_filter(self) -> None:
         """Apply fuzzy search filter to the files list."""
+        if not self.initial_search_complete:
+            return
+            
         if not self.fuzzy_filter.strip():
             self.filtered_files = self.found_files.copy()
         else:
@@ -271,12 +279,8 @@ class FileSearchApp(App):
             await self.update_status(f"✅ Found {len(self.found_files)} unique files")
     
     async def search_files(self) -> None:
-        """Search for files matching the search term and cache archive associations."""
+        """Search for files matching the search term."""
         try:
-            # First, get the list of archives for caching
-            await self.start_activity_indicator("status", "Getting list of archives...")
-            await self.cache_archives_list()
-            
             # Run borgmatic search
             await self.start_activity_indicator("files-listview", f"Searching for files matching '{self.search_term}'...")
             await self.start_activity_indicator("status", f"Searching for files matching '{self.search_term}'...")
@@ -334,15 +338,16 @@ class FileSearchApp(App):
             await self.update_files_list()
             await self.update_status(f"✅ Found {len(unique_files)} unique files", "files-listview")
             
-            # Now cache archive associations for all found files
-            await self.cache_file_archive_associations()
-            
             # Mark initial search as complete
             self.initial_search_complete = True
             
             # Update final status
             await self.update_status(f"✅ Found {len(unique_files)} unique files")
             await self.stop_activity_indicator("archives-listview")
+            
+            # Clear archives list
+            archives_listview = self.query_one("#archives-listview", ListView)
+            archives_listview.clear()
             
             # Clear preview
             preview_text = self.query_one("#preview-text", TextArea)
@@ -354,51 +359,6 @@ class FileSearchApp(App):
             await self.update_status(f"❌ Error during search: {str(e)}", "files-listview")
             await self.update_status(f"❌ Error during search: {str(e)}")
             await self.stop_activity_indicator("archives-listview")
-    
-    async def cache_file_archive_associations(self) -> None:
-        """Cache which archives contain each found file."""
-        if not self.archives_list_cache:
-            return
-        
-        total_files = len(self.found_files)
-        
-        for i, (display_path, full_path) in enumerate(self.found_files):
-            await self.start_activity_indicator(
-                "archives-listview", 
-                f"Caching file locations {i+1}/{total_files}: {display_path[:40]}..."
-            )
-            await self.start_activity_indicator(
-                "status", 
-                f"Caching file locations {i+1}/{total_files}: {display_path[:40]}..."
-            )
-            
-            # Check which archives contain this file
-            archives_with_file = []
-            for archive in self.archives_list_cache:
-                if await self.archive_contains_file(archive, full_path):
-                    archives_with_file.append(archive)
-            
-            archives_with_file.sort(reverse=True)  # Most recent first
-            self.file_archives_cache[full_path] = archives_with_file
-    
-    async def cache_archives_list(self) -> None:
-        """Cache the list of recent archives for faster lookups."""
-        if self.archives_list_cache:
-            return  # Already cached
-        
-        try:
-            cmd = ["borgmatic", "list", "--repository", self.repo, "--short", "--last", "20"]
-            result = subprocess.run(cmd, capture_output=True, text=True, check=False)
-            
-            if result.returncode == 0:
-                archives = []
-                for line in result.stdout.splitlines():
-                    line = line.strip()
-                    if line and "local:" not in line and "Listing archive" not in line:
-                        archives.append(line)
-                self.archives_list_cache = archives
-        except Exception:
-            pass  # Cache miss is not critical
     
     def format_display_path(self, file_path: str) -> str:
         """Format file path for display, replacing home directory with ~."""
@@ -437,10 +397,8 @@ class FileSearchApp(App):
         elif event.list_view.id == "archives-listview" and event.item:
             # Update preview when archive is highlighted
             archive_name = event.item.children[0].renderable
-            if not archive_name.startswith("⠋") and not archive_name.startswith("No versions"):  # Skip if it's an activity indicator or no versions
-                # Extract just the archive name if it has duplicate indicator
-                clean_archive_name = archive_name.replace(" (duplicate)", "")
-                await self.show_preview(clean_archive_name)
+            if not archive_name.startswith("⠋") and not archive_name.startswith("No versions"):
+                await self.show_preview(archive_name)
     
     async def handle_file_highlight(self, selected_label: str) -> None:
         """Handle file highlighting and immediately show archives."""
@@ -460,114 +418,42 @@ class FileSearchApp(App):
         if self.selected_file_display.startswith("~"):
             self.selected_file_full = self.selected_file_display.replace("~", self.home_dir, 1)
         
-        # Show archives immediately from cache
+        # Show archives immediately from cache or search
         if self.selected_file_full in self.file_archives_cache:
             self.archives_with_file = self.file_archives_cache[self.selected_file_full]
-            await self.deduplicate_archives()
             await self.update_archives_list()
             
             # Show preview of the first (most recent) archive automatically
-            if self.unique_archives_with_file:
-                first_archive = self.unique_archives_with_file[0][0]
-                await self.show_preview(first_archive)
+            if self.archives_with_file:
+                await self.show_preview(self.archives_with_file[0])
         else:
-            # Fallback to searching if not cached
+            # Search for archives containing this file
             await self.find_archives_with_file()
     
     async def handle_file_selection(self, selected_label: str) -> None:
         """Handle file selection (same as highlight for now)."""
         await self.handle_file_highlight(selected_label)
     
-    async def deduplicate_archives(self) -> None:
-        """Deduplicate archives by comparing file hashes."""
-        if not self.archives_with_file:
-            self.unique_archives_with_file = []
-            return
-        
-        unique_archives = []
-        seen_hashes = set()
-        
-        for archive in self.archives_with_file:
-            file_hash = await self.get_file_hash(archive, self.selected_file_full)
-            
-            if file_hash and file_hash in seen_hashes:
-                # This is a duplicate
-                unique_archives.append((archive, True))
-            else:
-                # This is unique
-                unique_archives.append((archive, False))
-                if file_hash:
-                    seen_hashes.add(file_hash)
-        
-        self.unique_archives_with_file = unique_archives
-    
-    async def get_file_hash(self, archive: str, file_path: str) -> str:
-        """Get the hash of a file in an archive."""
-        cache_key = (archive, file_path)
-        if cache_key in self.file_hash_cache:
-            return self.file_hash_cache[cache_key]
-        
-        try:
-            with tempfile.TemporaryDirectory(prefix="borg-hash-") as temp_dir:
-                # Extract file
-                cmd = [
-                    "borgmatic", "extract",
-                    "--repository", self.repo,
-                    "--archive", archive,
-                    "--destination", temp_dir,
-                    "--path", file_path
-                ]
-                
-                result = subprocess.run(cmd, capture_output=True, text=True, check=False)
-                
-                if result.returncode == 0:
-                    temp_file = Path(temp_dir) / file_path.lstrip("/")
-                    if temp_file.exists():
-                        # Calculate hash
-                        hash_md5 = hashlib.md5()
-                        with open(temp_file, "rb") as f:
-                            for chunk in iter(lambda: f.read(4096), b""):
-                                hash_md5.update(chunk)
-                        file_hash = hash_md5.hexdigest()
-                        
-                        # Cache the hash
-                        self.file_hash_cache[cache_key] = file_hash
-                        return file_hash
-        except Exception:
-            pass
-        
-        return ""
-    
     async def find_archives_with_file(self) -> None:
         """Find all archives that contain the selected file."""
-        # Check cache first
-        if self.selected_file_full in self.file_archives_cache:
-            self.archives_with_file = self.file_archives_cache[self.selected_file_full]
-            await self.deduplicate_archives()
-            await self.update_archives_list()
-            return
-        
         await self.start_activity_indicator("archives-listview", f"Finding versions of {self.selected_file_display}...")
         await self.start_activity_indicator("status", f"Finding versions of {self.selected_file_display}...")
         
         try:
-            # Use cached archives list if available
-            archives = self.archives_list_cache
-            if not archives:
-                # Fallback to fetching archives
-                cmd = ["borgmatic", "list", "--repository", self.repo, "--short", "--last", "20"]
-                result = subprocess.run(cmd, capture_output=True, text=True, check=False)
-                
-                if result.returncode != 0:
-                    await self.update_status(f"❌ Error getting archives: {result.stderr}", "archives-listview")
-                    await self.update_status(f"❌ Error getting archives: {result.stderr}")
-                    return
-                
-                archives = []
-                for line in result.stdout.splitlines():
-                    line = line.strip()
-                    if line and "local:" not in line and "Listing archive" not in line:
-                        archives.append(line)
+            # Get list of recent archives
+            cmd = ["borgmatic", "list", "--repository", self.repo, "--short", "--last", "20"]
+            result = subprocess.run(cmd, capture_output=True, text=True, check=False)
+            
+            if result.returncode != 0:
+                await self.update_status(f"❌ Error getting archives: {result.stderr}", "archives-listview")
+                await self.update_status(f"❌ Error getting archives: {result.stderr}")
+                return
+            
+            archives = []
+            for line in result.stdout.splitlines():
+                line = line.strip()
+                if line and "local:" not in line and "Listing archive" not in line:
+                    archives.append(line)
             
             # Check which archives contain the file
             archives_with_file = []
@@ -593,14 +479,19 @@ class FileSearchApp(App):
             if not archives_with_file:
                 await self.update_status(f"❌ No versions found for {self.selected_file_display}", "archives-listview")
                 await self.update_status(f"❌ No versions found for {self.selected_file_display}")
+                archives_listview = self.query_one("#archives-listview", ListView)
+                archives_listview.clear()
+                archives_listview.append(ListItem(Label("No versions found")))
                 return
             
-            # Deduplicate archives
-            await self.deduplicate_archives()
             await self.update_archives_list()
             await self.update_status(
                 f"✅ Found {len(archives_with_file)} versions of {self.selected_file_display}"
             )
+            
+            # Show preview of the first (most recent) archive automatically
+            if archives_with_file:
+                await self.show_preview(archives_with_file[0])
             
         except Exception as e:
             await self.update_status(f"❌ Error finding archives: {str(e)}", "archives-listview")
@@ -627,25 +518,19 @@ class FileSearchApp(App):
         archives_listview = self.query_one("#archives-listview", ListView)
         archives_listview.clear()
         
-        if not self.unique_archives_with_file:
+        if not self.archives_with_file:
             archives_listview.append(ListItem(Label("No versions found")))
         else:
-            for archive, is_duplicate in self.unique_archives_with_file:
-                if is_duplicate:
-                    label = Label(f"{archive} (duplicate)", classes="duplicate")
-                else:
-                    label = Label(archive)
-                archives_listview.append(ListItem(label))
+            for archive in self.archives_with_file:
+                archives_listview.append(ListItem(Label(archive)))
     
     async def handle_archive_selection(self, selected_archive: str) -> None:
         """Handle archive selection and show preview."""
-        # Skip if it's an activity indicator
+        # Skip if it's an activity indicator or no versions message
         if selected_archive.startswith("⠋") or selected_archive.startswith("No versions"):
             return
         
-        # Extract just the archive name if it has duplicate indicator
-        clean_archive_name = selected_archive.replace(" (duplicate)", "")
-        await self.show_preview(clean_archive_name)
+        await self.show_preview(selected_archive)
     
     async def show_preview(self, archive: str) -> None:
         """Extract and show preview of the file from the selected archive."""
@@ -720,11 +605,9 @@ class FileSearchApp(App):
         
         if archives_listview.highlighted_child:
             selected_archive = archives_listview.highlighted_child.children[0].renderable
-            # Skip if it's an activity indicator
+            # Skip if it's an activity indicator or no versions message
             if not selected_archive.startswith("⠋") and not selected_archive.startswith("No versions"):
-                # Extract just the archive name if it has duplicate indicator
-                clean_archive_name = selected_archive.replace(" (duplicate)", "")
-                await self.restore_file(clean_archive_name)
+                await self.restore_file(selected_archive)
     
     async def restore_file(self, archive: str) -> None:
         """Restore the selected file from the specified archive."""
