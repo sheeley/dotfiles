@@ -123,6 +123,9 @@ class FileSearchApp(App):
         
         # Fuzzy search state
         self.fuzzy_filter = ""
+        
+        # Track if initial search is complete
+        self.initial_search_complete = False
     
     def compose(self) -> ComposeResult:
         """Create the UI layout."""
@@ -209,7 +212,19 @@ class FileSearchApp(App):
             status.remove_class("activity")
     
     async def on_mount(self) -> None:
-        """Initialize the application by searching for files."""
+        """Initialize the application by starting the search process."""
+        # Start activity indicators immediately after UI is rendered
+        await self.start_activity_indicator("files-listview", f"Searching for files matching '{self.search_term}'...")
+        await self.start_activity_indicator("archives-listview", "Waiting for file search to complete...")
+        await self.start_activity_indicator("status", f"Searching for '{self.search_term}' in Borg archives...")
+        
+        # Set preview to show what we're doing
+        preview_text = self.query_one("#preview-text", TextArea)
+        preview_label = self.query_one("#preview-label", Label)
+        preview_label.update("Search Progress")
+        preview_text.text = f"Searching for files matching: {self.search_term}\nRepository: {self.repo or 'all repositories'}\nSearch type: {'content' if self.content_search else 'filename'}\n\nThis may take a moment..."
+        
+        # Start the search process
         await self.search_files()
     
     async def on_input_changed(self, event: Input.Changed) -> None:
@@ -249,12 +264,16 @@ class FileSearchApp(App):
             await self.update_status(f"✅ Found {len(self.found_files)} unique files")
     
     async def search_files(self) -> None:
-        """Search for files matching the search term."""
-        await self.start_activity_indicator("files-listview", "Searching for files...")
-        await self.start_activity_indicator("status", "Searching for files...")
-        
+        """Search for files matching the search term and cache archive associations."""
         try:
+            # First, get the list of archives for caching
+            await self.start_activity_indicator("status", "Getting list of archives...")
+            await self.cache_archives_list()
+            
             # Run borgmatic search
+            await self.start_activity_indicator("files-listview", f"Searching for files matching '{self.search_term}'...")
+            await self.start_activity_indicator("status", f"Searching for files matching '{self.search_term}'...")
+            
             cmd = [
                 "borgmatic", "list", 
                 "--repository", self.repo,
@@ -272,6 +291,7 @@ class FileSearchApp(App):
             if result.returncode != 0:
                 await self.update_status(f"❌ Error searching: {result.stderr}", "files-listview")
                 await self.update_status(f"❌ Error searching: {result.stderr}")
+                await self.stop_activity_indicator("archives-listview")
                 return
             
             # Parse results and filter out verbose output
@@ -287,6 +307,7 @@ class FileSearchApp(App):
             if not all_files:
                 await self.update_status(f"❌ No matches found for '{self.search_term}'", "files-listview")
                 await self.update_status(f"❌ No matches found for '{self.search_term}'")
+                await self.stop_activity_indicator("archives-listview")
                 return
             
             # Get unique files and replace home directory with ~
@@ -302,17 +323,56 @@ class FileSearchApp(App):
             self.found_files = unique_files
             self.filtered_files = unique_files.copy()
             
-            # Cache archives list for later use
-            await self.cache_archives_list()
-            
-            # Update UI
+            # Update files list
             await self.update_files_list()
             await self.update_status(f"✅ Found {len(unique_files)} unique files", "files-listview")
+            
+            # Now cache archive associations for all found files
+            await self.cache_file_archive_associations()
+            
+            # Mark initial search as complete
+            self.initial_search_complete = True
+            
+            # Update final status
             await self.update_status(f"✅ Found {len(unique_files)} unique files")
+            await self.stop_activity_indicator("archives-listview")
+            
+            # Clear preview
+            preview_text = self.query_one("#preview-text", TextArea)
+            preview_label = self.query_one("#preview-label", Label)
+            preview_label.update("Preview")
+            preview_text.text = "Select a file to see its versions and preview content"
             
         except Exception as e:
             await self.update_status(f"❌ Error during search: {str(e)}", "files-listview")
             await self.update_status(f"❌ Error during search: {str(e)}")
+            await self.stop_activity_indicator("archives-listview")
+    
+    async def cache_file_archive_associations(self) -> None:
+        """Cache which archives contain each found file."""
+        if not self.archives_list_cache:
+            return
+        
+        total_files = len(self.found_files)
+        
+        for i, (display_path, full_path) in enumerate(self.found_files):
+            await self.start_activity_indicator(
+                "archives-listview", 
+                f"Caching file locations {i+1}/{total_files}: {display_path[:40]}..."
+            )
+            await self.start_activity_indicator(
+                "status", 
+                f"Caching file locations {i+1}/{total_files}: {display_path[:40]}..."
+            )
+            
+            # Check which archives contain this file
+            archives_with_file = []
+            for archive in self.archives_list_cache:
+                if await self.archive_contains_file(archive, full_path):
+                    archives_with_file.append(archive)
+            
+            archives_with_file.sort(reverse=True)  # Most recent first
+            self.file_archives_cache[full_path] = archives_with_file
     
     async def cache_archives_list(self) -> None:
         """Cache the list of recent archives for faster lookups."""
@@ -362,14 +422,19 @@ class FileSearchApp(App):
     
     async def on_list_view_highlighted(self, event: ListView.Highlighted) -> None:
         """Handle highlighting in list views."""
-        if event.list_view.id == "archives-listview" and event.item:
+        if event.list_view.id == "files-listview" and event.item and self.initial_search_complete:
+            # Immediately show archives when file is highlighted
+            file_label = event.item.children[0].renderable
+            if not file_label.startswith("⠋"):  # Skip if it's an activity indicator
+                await self.handle_file_highlight(file_label)
+        elif event.list_view.id == "archives-listview" and event.item:
             # Update preview when archive is highlighted
             archive_name = event.item.children[0].renderable
             if not archive_name.startswith("⠋"):  # Skip if it's an activity indicator
                 await self.show_preview(archive_name)
     
-    async def handle_file_selection(self, selected_label: str) -> None:
-        """Handle file selection and find archives containing it."""
+    async def handle_file_highlight(self, selected_label: str) -> None:
+        """Handle file highlighting and immediately show archives."""
         # Skip if it's an activity indicator
         if selected_label.startswith("⠋"):
             return
@@ -386,7 +451,17 @@ class FileSearchApp(App):
         if self.selected_file_display.startswith("~"):
             self.selected_file_full = self.selected_file_display.replace("~", self.home_dir, 1)
         
-        await self.find_archives_with_file()
+        # Show archives immediately from cache
+        if self.selected_file_full in self.file_archives_cache:
+            self.archives_with_file = self.file_archives_cache[self.selected_file_full]
+            await self.update_archives_list()
+        else:
+            # Fallback to searching if not cached
+            await self.find_archives_with_file()
+    
+    async def handle_file_selection(self, selected_label: str) -> None:
+        """Handle file selection (same as highlight for now)."""
+        await self.handle_file_highlight(selected_label)
     
     async def find_archives_with_file(self) -> None:
         """Find all archives that contain the selected file."""
@@ -394,9 +469,6 @@ class FileSearchApp(App):
         if self.selected_file_full in self.file_archives_cache:
             self.archives_with_file = self.file_archives_cache[self.selected_file_full]
             await self.update_archives_list()
-            await self.update_status(
-                f"✅ Found {len(self.archives_with_file)} versions of {self.selected_file_display} (cached)"
-            )
             return
         
         await self.start_activity_indicator("archives-listview", f"Finding versions of {self.selected_file_display}...")
@@ -449,10 +521,6 @@ class FileSearchApp(App):
             
             await self.update_archives_list()
             await self.update_status(
-                f"✅ Found {len(archives_with_file)} versions of {self.selected_file_display}", 
-                "archives-listview"
-            )
-            await self.update_status(
                 f"✅ Found {len(archives_with_file)} versions of {self.selected_file_display}"
             )
             
@@ -481,8 +549,11 @@ class FileSearchApp(App):
         archives_listview = self.query_one("#archives-listview", ListView)
         archives_listview.clear()
         
-        for archive in self.archives_with_file:
-            archives_listview.append(ListItem(Label(archive)))
+        if not self.archives_with_file:
+            archives_listview.append(ListItem(Label("No versions found")))
+        else:
+            for archive in self.archives_with_file:
+                archives_listview.append(ListItem(Label(archive)))
     
     async def handle_archive_selection(self, selected_archive: str) -> None:
         """Handle archive selection and show preview."""
