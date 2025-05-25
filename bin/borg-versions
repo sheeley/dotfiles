@@ -19,7 +19,7 @@ def main [
 	
 	# Search filenames using borgmatic list --find with --short to get just paths
 	let all_files = try {
-		^borgmatic list --repository $repo --find $search_term --short 2>/dev/null
+		^borgmatic list --repository $repo --find $search_term --short err>/dev/null
 		| lines 
 		| where ($it | str trim) != ""
 		| where ($it | str contains "local:") == false
@@ -64,7 +64,7 @@ def main [
 	
 	# Get all archives that contain this specific file - suppress verbose output
 	let archives_with_file = try {
-		^borgmatic list --repository $repo --short --last 20 2>/dev/null
+		^borgmatic list --repository $repo --short --last 20 err>/dev/null
 		| lines 
 		| where ($it | str trim) != ""
 		| where ($it | str contains "local:") == false
@@ -73,7 +73,7 @@ def main [
 			let archive_name = ($archive | str trim)
 			# Check if this archive contains the file (suppress output)
 			let has_file = try {
-				let result = (^borgmatic list --repository $repo --archive $archive_name --path $selected_file_full --short 2>/dev/null | complete)
+				let result = (^borgmatic list --repository $repo --archive $archive_name --path $selected_file_full --short err>/dev/null | complete)
 				if ($result.exit_code == 0 and ($result.stdout | str trim) != "") {
 					1
 				} else {
@@ -118,7 +118,7 @@ def main [
 		mkdir $temp_dir
 		
 		# Extract file to temp location
-		^borgmatic extract --repository $repo --archive $selected_archive --destination $temp_dir --path $selected_file 2>/dev/null
+		^borgmatic extract --repository $repo --archive $selected_archive --destination $temp_dir --path $selected_file err>/dev/null
 		let temp_file = $"($temp_dir)/($selected_file)"
 		
 		if ($temp_file | path exists) {
