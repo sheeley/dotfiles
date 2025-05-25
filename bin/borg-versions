@@ -1,77 +1,38 @@
 #!/usr/bin/env bash
 
-# Borgmatic File Recovery Commands
-# ================================
-# 
-# This script documents the essential borgmatic commands for finding and restoring files from backups.
-# Use these commands directly in your terminal for file recovery operations.
+# Essential Borgmatic Commands for File Recovery
 
 cat << 'EOF'
 
-BORGMATIC FILE RECOVERY COMMANDS
-================================
+FIND FILES IN ARCHIVES
+======================
+borgmatic list --find FILENAME --short
+borgmatic list --find FILENAME --short --repository local
 
-1. FIND FILES ACROSS ALL ARCHIVES
-   borgmatic list --find FILENAME --short
-   borgmatic list --find FILENAME --short --repository local
+Examples:
+borgmatic list --find "config.yaml" --short
+borgmatic list --find "*.py" --short
 
-   Examples:
-   borgmatic list --find "config.yaml" --short
-   borgmatic list --find "*.py" --short
+LIST ARCHIVES
+=============
+borgmatic list --short
+borgmatic list --short --last 10
 
-2. LIST ALL ARCHIVES
-   borgmatic list --short
-   borgmatic list --short --last 10
+LIST FILES IN SPECIFIC ARCHIVE
+===============================
+borgmatic list --archive ARCHIVE_NAME --short
+borgmatic list --archive ARCHIVE_NAME --path PATH --short
 
-   Examples:
-   borgmatic list --short --last 20
-   borgmatic list --short --repository local
+Examples:
+borgmatic list --archive "hostname-2024-01-15T10:30:00" --short
+borgmatic list --archive "hostname-2024-01-15T10:30:00" --path "/home/user" --short
 
-3. LIST FILES IN A SPECIFIC ARCHIVE
-   borgmatic list --archive ARCHIVE_NAME --short
-   borgmatic list --archive ARCHIVE_NAME --path PATH --short
+EXTRACT FILE FROM ARCHIVE
+=========================
+borgmatic extract --archive ARCHIVE_NAME --destination /tmp/restore --path FULL_FILE_PATH
 
-   Examples:
-   borgmatic list --archive "hostname-2024-01-15T10:30:00" --short
-   borgmatic list --archive "hostname-2024-01-15T10:30:00" --path "/home/user" --short
-
-4. EXTRACT/RESTORE A FILE
-   borgmatic extract --archive ARCHIVE_NAME --destination /tmp/restore --path FULL_FILE_PATH
-   
-   Examples:
-   borgmatic extract --archive "hostname-2024-01-15T10:30:00" --destination /tmp/restore --path "/home/user/config.yaml"
-   borgmatic extract --archive "hostname-2024-01-15T10:30:00" --destination . --path "/home/user/important.txt"
-
-5. PREVIEW A FILE (extract to temp location)
-   borgmatic extract --archive ARCHIVE_NAME --destination /tmp/preview --path FULL_FILE_PATH
-   cat /tmp/preview/FULL_FILE_PATH
-
-TYPICAL WORKFLOW:
-================
-
-1. Find files matching your search:
-   borgmatic list --find "myfile.txt" --short
-
-2. List recent archives to see available versions:
-   borgmatic list --short --last 10
-
-3. Check if a specific archive contains your file:
-   borgmatic list --archive "archive-name" --path "/full/path/to/myfile.txt" --short
-
-4. Extract the file to a safe location:
-   borgmatic extract --archive "archive-name" --destination /tmp/restore --path "/full/path/to/myfile.txt"
-
-5. Review the restored file:
-   cat /tmp/restore/full/path/to/myfile.txt
-
-6. Copy it back to original location if needed:
-   cp /tmp/restore/full/path/to/myfile.txt /full/path/to/myfile.txt
-
-NOTES:
-======
-- Always extract to a temporary location first to review before overwriting
-- Use --repository local to limit search to local repository only
-- File paths in archives are absolute paths from the backup root
-- Use quotes around filenames with spaces or special characters
+Examples:
+borgmatic extract --archive "hostname-2024-01-15T10:30:00" --destination /tmp/restore --path "/home/user/config.yaml"
+borgmatic extract --archive "hostname-2024-01-15T10:30:00" --destination . --path "/home/user/important.txt"
 
 EOF
