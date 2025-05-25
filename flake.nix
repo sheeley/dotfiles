@@ -87,7 +87,7 @@
       modules =
         sharedDarwinModules
         ++ [
-          ./personal.nix
+          ./darwin/personal.nix
         ];
 
       specialArgs = {
@@ -103,7 +103,7 @@
       modules =
         sharedDarwinModules
         ++ [
-          ./personal.nix
+          ./darwin/personal.nix
           ./homebase/homebase.nix
           ./programs/podman.nix
         ];
