@@ -178,7 +178,7 @@ class FileSearchApp(App):
         if filter_text.strip():
             self.update_status(f"Showing {len(self.filtered_files)} of {len(self.found_files)} files (filtered)")
         else:
-            self.update_status(f"Found {len(self.found_files)} unique files")
+            self.update_status(f"Found {len(self.found_files)} files")
     
     async def search_files(self) -> None:
         """Search for files matching the search term."""
@@ -197,7 +197,7 @@ class FileSearchApp(App):
                 self.show_error("files-listview", f"Error: {result.stderr}")
                 return
             
-            # Parse and deduplicate results
+            # Parse results
             all_files = []
             for line in result.stdout.splitlines():
                 line = line.strip()
@@ -212,21 +212,27 @@ class FileSearchApp(App):
                 self.show_error("files-listview", "No matches found")
                 return
             
-            # Create unique files list
-            unique_files = []
-            seen = set()
+            # Create files list (without deduplication for now)
+            files_list = []
             for file_path in all_files:
-                if file_path not in seen:
-                    seen.add(file_path)
-                    display_path = self.format_display_path(file_path)
-                    unique_files.append((display_path, file_path))
+                display_path = self.format_display_path(file_path)
+                files_list.append((display_path, file_path))
             
-            unique_files.sort(key=lambda x: x[0])
-            self.found_files = unique_files
-            self.filtered_files = unique_files.copy()
+            # # Create unique files list
+            # unique_files = []
+            # seen = set()
+            # for file_path in all_files:
+            #     if file_path not in seen:
+            #         seen.add(file_path)
+            #         display_path = self.format_display_path(file_path)
+            #         unique_files.append((display_path, file_path))
+            
+            files_list.sort(key=lambda x: x[0])
+            self.found_files = files_list
+            self.filtered_files = files_list.copy()
             
             self.update_files_list()
-            self.update_status(f"Found {len(unique_files)} unique files")
+            self.update_status(f"Found {len(files_list)} files")
             self.search_complete = True
             
             # Clear archives list
@@ -502,7 +508,7 @@ class FileSearchApp(App):
         preview_label = self.query_one("#preview-label", Label)
         preview_label.update("Preview")
         
-        self.update_status(f"Found {len(self.found_files)} unique files")
+        self.update_status(f"Found {len(self.found_files)} files")
 
 
 def main():
