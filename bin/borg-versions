@@ -1,527 +1,77 @@
-#! /usr/bin/env -S uv run --script
-# /// script
-# dependencies = [
-#     "textual",
-#     "fuzzywuzzy",
-#     "python-levenshtein",
-# ]
-# ///
+#!/usr/bin/env bash
 
-"""
-Interactive file search, preview, and restore tool for Borg backups via borgmatic.
-"""
+# Borgmatic File Recovery Commands
+# ================================
+# 
+# This script documents the essential borgmatic commands for finding and restoring files from backups.
+# Use these commands directly in your terminal for file recovery operations.
 
-import argparse
-import asyncio
-import os
-import shutil
-import subprocess
-import tempfile
-from pathlib import Path
-from typing import Dict, List, Tuple, Optional
+cat << 'EOF'
 
-from fuzzywuzzy import fuzz
-from textual.app import App, ComposeResult
-from textual.containers import Container, Horizontal, Vertical
-from textual.widgets import (
-    Footer,
-    Header,
-    Input,
-    Label,
-    ListItem,
-    ListView,
-    TextArea,
-)
-from textual.binding import Binding
+BORGMATIC FILE RECOVERY COMMANDS
+================================
 
+1. FIND FILES ACROSS ALL ARCHIVES
+   borgmatic list --find FILENAME --short
+   borgmatic list --find FILENAME --short --repository local
 
-class FileSearchApp(App):
-    """Main application for searching and restoring files from Borg archives."""
-    
-    CSS = """
-    .search-container {
-        height: 5;
-        margin: 1;
-    }
-    
-    .main-container {
-        height: 1fr;
-    }
-    
-    .file-list {
-        width: 1fr;
-        border: solid $primary;
-        margin-right: 1;
-    }
-    
-    .archive-list {
-        width: 1fr;
-        border: solid $primary;
-        margin-right: 1;
-    }
-    
-    .preview-area {
-        width: 2fr;
-        border: solid $primary;
-    }
-    
-    .status-bar {
-        height: 3;
-        background: $surface;
-        margin: 1;
-    }
-    
-    .fuzzy-search {
-        margin: 1 0;
-    }
-    """
-    
-    BINDINGS = [
-        Binding("ctrl+c", "quit", "Quit"),
-        Binding("ctrl+q", "quit", "Quit"),
-        Binding("escape", "back", "Back"),
-        Binding("enter", "select", "Select/Restore"),
-        Binding("ctrl+f", "focus_search", "Focus Search"),
-    ]
-    
-    def __init__(self, search_term: str, all_repos: bool = False):
-        super().__init__()
-        self.search_term = search_term
-        self.repo = "" if all_repos else "local"
-        self.home_dir = os.path.expanduser("~")
-        
-        # State management
-        self.found_files: List[Tuple[str, str]] = []  # (display_path, full_path)
-        self.filtered_files: List[Tuple[str, str]] = []
-        self.selected_file_full = ""
-        self.archives_with_file: List[str] = []
-        
-        # Simple caches
-        self.file_archives_cache: Dict[str, List[str]] = {}
-        self.file_content_cache: Dict[Tuple[str, str], str] = {}
-        
-        self.search_complete = False
-    
-    def compose(self) -> ComposeResult:
-        """Create the UI layout."""
-        yield Header()
-        
-        with Container(classes="search-container"):
-            yield Label(f"Searching for: {self.search_term}")
-            with Container(classes="fuzzy-search"):
-                yield Label("Filter results:")
-                yield Input(placeholder="Type to filter files...", id="fuzzy-input")
-        
-        with Horizontal(classes="main-container"):
-            with Vertical(classes="file-list"):
-                yield Label("Files", id="files-label")
-                yield ListView(id="files-listview")
-            
-            with Vertical(classes="archive-list"):
-                yield Label("Archives", id="archives-label")
-                yield ListView(id="archives-listview")
-            
-            with Vertical(classes="preview-area"):
-                yield Label("Preview", id="preview-label")
-                yield TextArea("", read_only=True, id="preview-text")
-        
-        with Container(classes="status-bar"):
-            yield Label("Ready", id="status")
-        
-        yield Footer()
-    
-    def on_mount(self) -> None:
-        """Initialize the application."""
-        self.update_status("Searching for files...")
-        self.show_loading("files-listview", "Searching for files...")
-        self.show_loading("archives-listview", "Waiting for file search...")
-        
-        # Start search
-        asyncio.create_task(self.search_files())
-    
-    def show_loading(self, listview_id: str, message: str) -> None:
-        """Show a simple loading message in a listview."""
-        listview = self.query_one(f"#{listview_id}", ListView)
-        listview.clear()
-        listview.append(ListItem(Label(f"⏳ {message}")))
-    
-    def update_status(self, message: str) -> None:
-        """Update the status bar."""
-        status = self.query_one("#status", Label)
-        status.update(message)
-    
-    async def on_input_changed(self, event: Input.Changed) -> None:
-        """Handle fuzzy search input changes."""
-        if event.input.id == "fuzzy-input" and self.search_complete:
-            await self.apply_fuzzy_filter(event.value)
-    
-    async def apply_fuzzy_filter(self, filter_text: str) -> None:
-        """Apply fuzzy search filter to the files list."""
-        if not filter_text.strip():
-            self.filtered_files = self.found_files.copy()
-        else:
-            # Filter and sort by fuzzy match score
-            filtered = []
-            for display_path, full_path in self.found_files:
-                score = fuzz.partial_ratio(filter_text.lower(), display_path.lower())
-                if score >= 60:
-                    filtered.append((display_path, full_path))
-            
-            filtered.sort(key=lambda x: fuzz.partial_ratio(
-                filter_text.lower(), x[0].lower()
-            ), reverse=True)
-            
-            self.filtered_files = filtered
-        
-        self.update_files_list()
-        
-        if filter_text.strip():
-            self.update_status(f"Showing {len(self.filtered_files)} of {len(self.found_files)} files (filtered)")
-        else:
-            self.update_status(f"Found {len(self.found_files)} files")
-    
-    async def search_files(self) -> None:
-        """Search for files matching the search term."""
-        try:
-            cmd = [
-                "borgmatic", "list", 
-                "--repository", self.repo,
-                "--find", self.search_term,
-                "--short"
-            ]
-            
-            result = subprocess.run(cmd, capture_output=True, text=True, check=False)
-            
-            if result.returncode != 0:
-                self.update_status(f"Error searching: {result.stderr}")
-                self.show_error("files-listview", f"Error: {result.stderr}")
-                return
-            
-            # Parse results
-            all_files = []
-            for line in result.stdout.splitlines():
-                line = line.strip()
-                if (line and 
-                    "local:" not in line and 
-                    "Listing archive" not in line and 
-                    "Searching archives" not in line):
-                    all_files.append(line)
-            
-            if not all_files:
-                self.update_status(f"No matches found for '{self.search_term}'")
-                self.show_error("files-listview", "No matches found")
-                return
-            
-            # Create files list (without deduplication for now)
-            files_list = []
-            for file_path in all_files:
-                display_path = self.format_display_path(file_path)
-                files_list.append((display_path, file_path))
-            
-            # # Create unique files list
-            # unique_files = []
-            # seen = set()
-            # for file_path in all_files:
-            #     if file_path not in seen:
-            #         seen.add(file_path)
-            #         display_path = self.format_display_path(file_path)
-            #         unique_files.append((display_path, file_path))
-            
-            files_list.sort(key=lambda x: x[0])
-            self.found_files = files_list
-            self.filtered_files = files_list.copy()
-            
-            self.update_files_list()
-            self.update_status(f"Found {len(files_list)} files")
-            self.search_complete = True
-            
-            # Clear archives list
-            archives_listview = self.query_one("#archives-listview", ListView)
-            archives_listview.clear()
-            
-            # Set initial preview message
-            preview_text = self.query_one("#preview-text", TextArea)
-            preview_text.text = "Select a file to see its versions and preview content"
-            
-        except Exception as e:
-            self.update_status(f"Error during search: {str(e)}")
-            self.show_error("files-listview", f"Error: {str(e)}")
-    
-    def show_error(self, listview_id: str, message: str) -> None:
-        """Show an error message in a listview."""
-        listview = self.query_one(f"#{listview_id}", ListView)
-        listview.clear()
-        listview.append(ListItem(Label(f"❌ {message}")))
-    
-    def format_display_path(self, file_path: str) -> str:
-        """Format file path for display, replacing home directory with ~."""
-        if file_path.startswith(self.home_dir):
-            return file_path.replace(self.home_dir, "~", 1)
-        elif file_path.startswith("/Users/"):
-            parts = file_path.split("/")
-            if len(parts) >= 3:
-                return "~" + "/" + "/".join(parts[3:])
-        return file_path
-    
-    def update_files_list(self) -> None:
-        """Update the files list view."""
-        files_listview = self.query_one("#files-listview", ListView)
-        files_listview.clear()
-        
-        for display_path, _ in self.filtered_files:
-            files_listview.append(ListItem(Label(display_path)))
-    
-    async def on_list_view_highlighted(self, event: ListView.Highlighted) -> None:
-        """Handle highlighting in list views."""
-        if event.list_view.id == "files-listview" and event.item and self.search_complete:
-            file_label = event.item.children[0].renderable
-            if not file_label.startswith("⏳") and not file_label.startswith("❌"):
-                await self.handle_file_selection(file_label)
-        elif event.list_view.id == "archives-listview" and event.item:
-            archive_name = event.item.children[0].renderable
-            if not archive_name.startswith("⏳") and not archive_name.startswith("❌"):
-                await self.show_preview(archive_name)
-    
-    async def handle_file_selection(self, selected_label: str) -> None:
-        """Handle file selection and show archives."""
-        # Find the full path
-        for display_path, full_path in self.filtered_files:
-            if display_path == selected_label:
-                self.selected_file_full = full_path
-                break
-        
-        # Convert display path back to full path if needed
-        if selected_label.startswith("~"):
-            self.selected_file_full = selected_label.replace("~", self.home_dir, 1)
-        
-        # Show archives from cache or search
-        if self.selected_file_full in self.file_archives_cache:
-            self.archives_with_file = self.file_archives_cache[self.selected_file_full]
-            self.update_archives_list()
-            
-            # Show preview of most recent archive
-            if self.archives_with_file:
-                await self.show_preview(self.archives_with_file[0])
-        else:
-            await self.find_archives_with_file()
-    
-    async def find_archives_with_file(self) -> None:
-        """Find all archives that contain the selected file."""
-        self.show_loading("archives-listview", "Finding file versions...")
-        self.update_status("Finding file versions...")
-        
-        try:
-            # Get recent archives
-            cmd = ["borgmatic", "list", "--repository", self.repo, "--short", "--last", "20"]
-            result = subprocess.run(cmd, capture_output=True, text=True, check=False)
-            
-            if result.returncode != 0:
-                self.update_status(f"Error getting archives: {result.stderr}")
-                self.show_error("archives-listview", f"Error: {result.stderr}")
-                return
-            
-            archives = []
-            for line in result.stdout.splitlines():
-                line = line.strip()
-                if line and "local:" not in line and "Listing archive" not in line:
-                    archives.append(line)
-            
-            # Check which archives contain the file
-            archives_with_file = []
-            for i, archive in enumerate(archives):
-                self.update_status(f"Checking archive {i+1}/{len(archives)}: {archive[:30]}...")
-                
-                if self.archive_contains_file(archive, self.selected_file_full):
-                    archives_with_file.append(archive)
-            
-            archives_with_file.sort(reverse=True)  # Most recent first
-            self.archives_with_file = archives_with_file
-            self.file_archives_cache[self.selected_file_full] = archives_with_file
-            
-            if not archives_with_file:
-                self.update_status("No versions found for selected file")
-                self.show_error("archives-listview", "No versions found")
-                return
-            
-            self.update_archives_list()
-            self.update_status(f"Found {len(archives_with_file)} versions")
-            
-            # Show preview of most recent version
-            if archives_with_file:
-                await self.show_preview(archives_with_file[0])
-            
-        except Exception as e:
-            self.update_status(f"Error finding archives: {str(e)}")
-            self.show_error("archives-listview", f"Error: {str(e)}")
-    
-    def archive_contains_file(self, archive: str, file_path: str) -> bool:
-        """Check if an archive contains the specified file."""
-        try:
-            cmd = [
-                "borgmatic", "list",
-                "--repository", self.repo,
-                "--archive", archive,
-                "--path", file_path,
-                "--short"
-            ]
-            result = subprocess.run(cmd, capture_output=True, text=True, check=False)
-            return result.returncode == 0 and result.stdout.strip()
-        except:
-            return False
-    
-    def update_archives_list(self) -> None:
-        """Update the archives list view."""
-        archives_listview = self.query_one("#archives-listview", ListView)
-        archives_listview.clear()
-        
-        if not self.archives_with_file:
-            archives_listview.append(ListItem(Label("No versions found")))
-        else:
-            for archive in self.archives_with_file:
-                archives_listview.append(ListItem(Label(archive)))
-    
-    async def show_preview(self, archive: str) -> None:
-        """Extract and show preview of the file from the selected archive."""
-        # Check cache first
-        cache_key = (archive, self.selected_file_full)
-        if cache_key in self.file_content_cache:
-            preview_text = self.query_one("#preview-text", TextArea)
-            preview_label = self.query_one("#preview-label", Label)
-            preview_label.update(f"Preview from {archive}")
-            preview_text.text = self.file_content_cache[cache_key]
-            return
-        
-        preview_text = self.query_one("#preview-text", TextArea)
-        preview_label = self.query_one("#preview-label", Label)
-        
-        preview_label.update(f"Preview from {archive}")
-        preview_text.text = "⏳ Loading preview..."
-        self.update_status(f"Loading preview from {archive[:30]}...")
-        
-        try:
-            with tempfile.TemporaryDirectory(prefix="borg-preview-") as temp_dir:
-                cmd = [
-                    "borgmatic", "extract",
-                    "--repository", self.repo,
-                    "--archive", archive,
-                    "--destination", temp_dir,
-                    "--path", self.selected_file_full
-                ]
-                
-                result = subprocess.run(cmd, capture_output=True, text=True, check=False)
-                
-                if result.returncode == 0:
-                    temp_file = Path(temp_dir) / self.selected_file_full.lstrip("/")
-                    if temp_file.exists():
-                        try:
-                            with open(temp_file, 'r', encoding='utf-8') as f:
-                                content = f.read()
-                                # Limit preview to first 1000 lines
-                                lines = content.splitlines()
-                                if len(lines) > 1000:
-                                    content = "\n".join(lines[:1000]) + f"\n\n... (showing first 1000 of {len(lines)} lines)"
-                                
-                                self.file_content_cache[cache_key] = content
-                                preview_text.text = content
-                                self.update_status(f"Preview loaded from {archive}")
-                        except UnicodeDecodeError:
-                            content = "📁 Binary file - cannot preview"
-                            self.file_content_cache[cache_key] = content
-                            preview_text.text = content
-                            self.update_status("Binary file detected")
-                        except Exception as e:
-                            preview_text.text = f"❌ Error reading file: {str(e)}"
-                            self.update_status(f"Error reading file: {str(e)}")
-                    else:
-                        preview_text.text = "❌ File not found in archive"
-                        self.update_status("File not found in archive")
-                else:
-                    preview_text.text = f"❌ Error extracting file: {result.stderr}"
-                    self.update_status(f"Error extracting: {result.stderr}")
-                    
-        except Exception as e:
-            preview_text.text = f"❌ Error during preview: {str(e)}"
-            self.update_status(f"Preview error: {str(e)}")
-    
-    async def action_select(self) -> None:
-        """Handle Enter key - restore the currently selected file."""
-        archives_listview = self.query_one("#archives-listview", ListView)
-        
-        if archives_listview.highlighted_child:
-            selected_archive = archives_listview.highlighted_child.children[0].renderable
-            if not selected_archive.startswith("⏳") and not selected_archive.startswith("❌"):
-                await self.restore_file(selected_archive)
-    
-    async def restore_file(self, archive: str) -> None:
-        """Restore the selected file from the specified archive."""
-        self.update_status(f"Restoring file from {archive[:30]}...")
-        
-        try:
-            with tempfile.TemporaryDirectory(prefix="borg-restore-") as temp_dir:
-                cmd = [
-                    "borgmatic", "extract",
-                    "--repository", self.repo,
-                    "--archive", archive,
-                    "--destination", temp_dir,
-                    "--path", self.selected_file_full
-                ]
-                
-                result = subprocess.run(cmd, capture_output=True, text=True, check=False)
-                
-                if result.returncode == 0:
-                    temp_file = Path(temp_dir) / self.selected_file_full.lstrip("/")
-                    if temp_file.exists():
-                        target_file = Path(self.selected_file_full)
-                        
-                        # Backup current file if it exists
-                        if target_file.exists():
-                            backup_file = f"{target_file}.bak"
-                            shutil.copy2(target_file, backup_file)
-                            self.update_status(f"Backed up current file to {backup_file}")
-                            await asyncio.sleep(1)
-                        
-                        # Create directory and restore file
-                        target_file.parent.mkdir(parents=True, exist_ok=True)
-                        shutil.copy2(temp_file, target_file)
-                        self.update_status(f"✅ Restored file from {archive}")
-                    else:
-                        self.update_status("❌ File not found in extracted archive")
-                else:
-                    self.update_status(f"❌ Error extracting file: {result.stderr}")
-                    
-        except Exception as e:
-            self.update_status(f"❌ Error during restoration: {str(e)}")
-    
-    async def action_focus_search(self) -> None:
-        """Focus the fuzzy search input."""
-        fuzzy_input = self.query_one("#fuzzy-input", Input)
-        fuzzy_input.focus()
-    
-    async def action_back(self) -> None:
-        """Handle Escape key - clear selections."""
-        archives_listview = self.query_one("#archives-listview", ListView)
-        archives_listview.clear()
-        
-        preview_text = self.query_one("#preview-text", TextArea)
-        preview_text.text = "Select a file to see its versions and preview content"
-        
-        preview_label = self.query_one("#preview-label", Label)
-        preview_label.update("Preview")
-        
-        self.update_status(f"Found {len(self.found_files)} files")
+   Examples:
+   borgmatic list --find "config.yaml" --short
+   borgmatic list --find "*.py" --short
 
+2. LIST ALL ARCHIVES
+   borgmatic list --short
+   borgmatic list --short --last 10
 
-def main():
-    """Main entry point."""
-    parser = argparse.ArgumentParser(description="Interactive file search and restore for Borg backups")
-    parser.add_argument("search_term", help="Filename to search for")
-    parser.add_argument("--all-repos", action="store_true", help="Search all repositories, not just local")
-    
-    args = parser.parse_args()
-    
-    app = FileSearchApp(args.search_term, args.all_repos)
-    app.run()
+   Examples:
+   borgmatic list --short --last 20
+   borgmatic list --short --repository local
 
+3. LIST FILES IN A SPECIFIC ARCHIVE
+   borgmatic list --archive ARCHIVE_NAME --short
+   borgmatic list --archive ARCHIVE_NAME --path PATH --short
 
-if __name__ == "__main__":
-    main()
+   Examples:
+   borgmatic list --archive "hostname-2024-01-15T10:30:00" --short
+   borgmatic list --archive "hostname-2024-01-15T10:30:00" --path "/home/user" --short
+
+4. EXTRACT/RESTORE A FILE
+   borgmatic extract --archive ARCHIVE_NAME --destination /tmp/restore --path FULL_FILE_PATH
+   
+   Examples:
+   borgmatic extract --archive "hostname-2024-01-15T10:30:00" --destination /tmp/restore --path "/home/user/config.yaml"
+   borgmatic extract --archive "hostname-2024-01-15T10:30:00" --destination . --path "/home/user/important.txt"
+
+5. PREVIEW A FILE (extract to temp location)
+   borgmatic extract --archive ARCHIVE_NAME --destination /tmp/preview --path FULL_FILE_PATH
+   cat /tmp/preview/FULL_FILE_PATH
+
+TYPICAL WORKFLOW:
+================
+
+1. Find files matching your search:
+   borgmatic list --find "myfile.txt" --short
+
+2. List recent archives to see available versions:
+   borgmatic list --short --last 10
+
+3. Check if a specific archive contains your file:
+   borgmatic list --archive "archive-name" --path "/full/path/to/myfile.txt" --short
+
+4. Extract the file to a safe location:
+   borgmatic extract --archive "archive-name" --destination /tmp/restore --path "/full/path/to/myfile.txt"
+
+5. Review the restored file:
+   cat /tmp/restore/full/path/to/myfile.txt
+
+6. Copy it back to original location if needed:
+   cp /tmp/restore/full/path/to/myfile.txt /full/path/to/myfile.txt
+
+NOTES:
+======
+- Always extract to a temporary location first to review before overwriting
+- Use --repository local to limit search to local repository only
+- File paths in archives are absolute paths from the backup root
+- Use quotes around filenames with spaces or special characters
+
+EOF
