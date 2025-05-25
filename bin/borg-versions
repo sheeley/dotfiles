@@ -1,6 +1,7 @@
 #! /usr/bin/env -S uv run --script
 # /// script
 # dependencies = [
+#     "textual",
 # ]
 # ///
 
@@ -8,6 +9,7 @@
 Interactive file search, preview, and restore tool for Borg backups via borgmatic.
 """
 
+import argparse
 import asyncio
 import os
 import shutil
@@ -402,14 +404,12 @@ class FileSearchApp(App):
 
 def main():
     """Main entry point."""
-    import argparse
-    
     parser = argparse.ArgumentParser(description="Interactive file search and restore for Borg backups")
     parser.add_argument("search_term", help="Filename or content to search for")
     parser.add_argument("--all-repos", action="store_true", help="Search all repositories, not just local")
     parser.add_argument("--content", action="store_true", help="Search file contents instead of filenames")
     
-    args =.parse_args()
+    args = parser.parse_args()
     
     if args.content:
         print("Content search not yet implemented - searching filenames instead")
