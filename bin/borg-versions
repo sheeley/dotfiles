@@ -10,29 +10,24 @@ Interactive file search, preview, and restore tool for Borg backups via borgmati
 """
 
 import argparse
-import asyncio
 import os
 import shutil
 import subprocess
 import tempfile
 from pathlib import Path
-from typing import List, Optional
+from typing import List, Tuple
 
 from textual.app import App, ComposeResult
 from textual.containers import Container, Horizontal, Vertical
 from textual.widgets import (
-    Button,
     Footer,
     Header,
-    Input,
     Label,
     ListItem,
     ListView,
-    Static,
     TextArea,
 )
 from textual.binding import Binding
-from textual.message import Message
 
 
 class FileSearchApp(App):
@@ -87,12 +82,10 @@ class FileSearchApp(App):
         self.home_dir = os.path.expanduser("~")
         
         # State management
-        self.current_mode = "search"  # search, files, archives
-        self.found_files: List[str] = []
+        self.found_files: List[Tuple[str, str]] = []
         self.selected_file_display = ""
         self.selected_file_full = ""
         self.archives_with_file: List[str] = []
-        self.current_preview = ""
     
     def compose(self) -> ComposeResult:
         """Create the UI layout."""
