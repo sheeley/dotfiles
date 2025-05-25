@@ -2,6 +2,8 @@
 # /// script
 # dependencies = [
 #     "textual",
+#     "fuzzywuzzy",
+#     "python-levenshtein",
 # ]
 # ///
 
@@ -18,11 +20,13 @@ import tempfile
 from pathlib import Path
 from typing import Dict, List, Tuple
 
+from fuzzywuzzy import fuzz
 from textual.app import App, ComposeResult
 from textual.containers import Container, Horizontal, Vertical
 from textual.widgets import (
     Footer,
     Header,
+    Input,
     Label,
     ListItem,
     ListView,
@@ -36,7 +40,7 @@ class FileSearchApp(App):
     
     CSS = """
     .search-container {
-        height: 3;
+        height: 5;
         margin: 1;
     }
     
@@ -69,6 +73,21 @@ class FileSearchApp(App):
     
     .activity {
         color: $warning;
+        text-align: center;
+        background: $surface;
+        height: 3;
+    }
+    
+    .loading-overlay {
+        background: $surface;
+        color: $warning;
+        text-align: center;
+        height: 1fr;
+        content-align: center middle;
+    }
+    
+    .fuzzy-search {
+        margin: 1 0;
     }
     """
     
@@ -77,6 +96,7 @@ class FileSearchApp(App):
         Binding("ctrl+q", "quit", "Quit"),
         Binding("escape", "back", "Back"),
         Binding("enter", "select", "Select/Restore"),
+        Binding("ctrl+f", "focus_search", "Focus Search"),
     ]
     
     def __init__(self, search_term: str, all_repos: bool = False, content: bool = False):
@@ -88,15 +108,21 @@ class FileSearchApp(App):
         
         # State management
         self.found_files: List[Tuple[str, str]] = []
+        self.filtered_files: List[Tuple[str, str]] = []
         self.selected_file_display = ""
         self.selected_file_full = ""
         self.archives_with_file: List[str] = []
         
-        # Cache for file -> archives mapping
+        # Cache for various operations
         self.file_archives_cache: Dict[str, List[str]] = {}
+        self.archives_list_cache: List[str] = []
+        self.file_content_cache: Dict[Tuple[str, str], str] = {}  # (archive, file) -> content
         
         # Activity indicator state
-        self.activity_task = None
+        self.activity_tasks: Dict[str, asyncio.Task] = {}
+        
+        # Fuzzy search state
+        self.fuzzy_filter = ""
     
     def compose(self) -> ComposeResult:
         """Create the UI layout."""
@@ -105,6 +131,9 @@ class FileSearchApp(App):
         with Container(classes="search-container"):
             yield Label(f"Searching for: {self.search_term}")
             yield Label(f"Search type: {'content' if self.content_search else 'filename'}")
+            with Container(classes="fuzzy-search"):
+                yield Label("Filter results:")
+                yield Input(placeholder="Type to filter files...", id="fuzzy-input")
         
         with Horizontal(classes="main-container"):
             with Vertical(classes="file-list"):
@@ -120,55 +149,109 @@ class FileSearchApp(App):
                 yield TextArea("", read_only=True, id="preview-text")
         
         with Container(classes="status-bar"):
-            yield Label("Searching for files...", id="status", classes="activity")
+            yield Label("Ready", id="status")
         
         yield Footer()
     
-    async def start_activity_indicator(self, base_message: str) -> None:
-        """Start an animated activity indicator."""
-        if self.activity_task:
-            self.activity_task.cancel()
+    async def start_activity_indicator(self, widget_id: str, base_message: str) -> None:
+        """Start an animated activity indicator for a specific widget."""
+        # Cancel existing task for this widget
+        if widget_id in self.activity_tasks:
+            self.activity_tasks[widget_id].cancel()
         
-        self.activity_task = asyncio.create_task(self._animate_activity(base_message))
+        self.activity_tasks[widget_id] = asyncio.create_task(
+            self._animate_activity(widget_id, base_message)
+        )
     
-    async def stop_activity_indicator(self) -> None:
-        """Stop the activity indicator."""
-        if self.activity_task:
-            self.activity_task.cancel()
-            self.activity_task = None
+    async def stop_activity_indicator(self, widget_id: str) -> None:
+        """Stop the activity indicator for a specific widget."""
+        if widget_id in self.activity_tasks:
+            self.activity_tasks[widget_id].cancel()
+            del self.activity_tasks[widget_id]
     
-    async def _animate_activity(self, base_message: str) -> None:
+    async def _animate_activity(self, widget_id: str, base_message: str) -> None:
         """Animate the activity indicator with rotating dots."""
-        status = self.query_one("#status", Label)
         dots = ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"]
         i = 0
         
         try:
             while True:
-                status.update(f"{dots[i]} {base_message}")
-                status.add_class("activity")
+                message = f"{dots[i]} {base_message}"
+                
+                if widget_id == "files-listview":
+                    listview = self.query_one("#files-listview", ListView)
+                    listview.clear()
+                    listview.append(ListItem(Label(message, classes="activity")))
+                elif widget_id == "archives-listview":
+                    listview = self.query_one("#archives-listview", ListView)
+                    listview.clear()
+                    listview.append(ListItem(Label(message, classes="activity")))
+                elif widget_id == "preview-text":
+                    preview = self.query_one("#preview-text", TextArea)
+                    preview.text = message
+                elif widget_id == "status":
+                    status = self.query_one("#status", Label)
+                    status.update(message)
+                    status.add_class("activity")
+                
                 i = (i + 1) % len(dots)
                 await asyncio.sleep(0.1)
         except asyncio.CancelledError:
             pass
     
-    async def update_status(self, message: str, is_final: bool = True) -> None:
-        """Update status message and optionally stop activity indicator."""
-        if is_final:
-            await self.stop_activity_indicator()
+    async def update_status(self, message: str, widget_id: str = "status") -> None:
+        """Update status message and stop activity indicator."""
+        await self.stop_activity_indicator(widget_id)
         
-        status = self.query_one("#status", Label)
-        status.update(message)
-        if is_final:
+        if widget_id == "status":
+            status = self.query_one("#status", Label)
+            status.update(message)
             status.remove_class("activity")
     
     async def on_mount(self) -> None:
         """Initialize the application by searching for files."""
         await self.search_files()
     
+    async def on_input_changed(self, event: Input.Changed) -> None:
+        """Handle fuzzy search input changes."""
+        if event.input.id == "fuzzy-input":
+            self.fuzzy_filter = event.value
+            await self.apply_fuzzy_filter()
+    
+    async def apply_fuzzy_filter(self) -> None:
+        """Apply fuzzy search filter to the files list."""
+        if not self.fuzzy_filter.strip():
+            self.filtered_files = self.found_files.copy()
+        else:
+            # Use fuzzy matching to filter files
+            filtered = []
+            for display_path, full_path in self.found_files:
+                # Calculate fuzzy match score
+                score = fuzz.partial_ratio(self.fuzzy_filter.lower(), display_path.lower())
+                if score >= 60:  # Threshold for fuzzy matching
+                    filtered.append((display_path, full_path))
+            
+            # Sort by fuzzy match score (best matches first)
+            filtered.sort(key=lambda x: fuzz.partial_ratio(
+                self.fuzzy_filter.lower(), x[0].lower()
+            ), reverse=True)
+            
+            self.filtered_files = filtered
+        
+        await self.update_files_list()
+        
+        # Update status
+        if self.fuzzy_filter.strip():
+            await self.update_status(
+                f"✅ Showing {len(self.filtered_files)} of {len(self.found_files)} files (filtered)"
+            )
+        else:
+            await self.update_status(f"✅ Found {len(self.found_files)} unique files")
+    
     async def search_files(self) -> None:
         """Search for files matching the search term."""
-        await self.start_activity_indicator("Searching for files...")
+        await self.start_activity_indicator("files-listview", "Searching for files...")
+        await self.start_activity_indicator("status", "Searching for files...")
         
         try:
             # Run borgmatic search
@@ -187,6 +270,7 @@ class FileSearchApp(App):
             )
             
             if result.returncode != 0:
+                await self.update_status(f"❌ Error searching: {result.stderr}", "files-listview")
                 await self.update_status(f"❌ Error searching: {result.stderr}")
                 return
             
@@ -201,6 +285,7 @@ class FileSearchApp(App):
                     all_files.append(line)
             
             if not all_files:
+                await self.update_status(f"❌ No matches found for '{self.search_term}'", "files-listview")
                 await self.update_status(f"❌ No matches found for '{self.search_term}'")
                 return
             
@@ -215,13 +300,38 @@ class FileSearchApp(App):
             
             unique_files.sort(key=lambda x: x[0])
             self.found_files = unique_files
+            self.filtered_files = unique_files.copy()
+            
+            # Cache archives list for later use
+            await self.cache_archives_list()
             
             # Update UI
             await self.update_files_list()
+            await self.update_status(f"✅ Found {len(unique_files)} unique files", "files-listview")
             await self.update_status(f"✅ Found {len(unique_files)} unique files")
             
         except Exception as e:
+            await self.update_status(f"❌ Error during search: {str(e)}", "files-listview")
             await self.update_status(f"❌ Error during search: {str(e)}")
+    
+    async def cache_archives_list(self) -> None:
+        """Cache the list of recent archives for faster lookups."""
+        if self.archives_list_cache:
+            return  # Already cached
+        
+        try:
+            cmd = ["borgmatic", "list", "--repository", self.repo, "--short", "--last", "20"]
+            result = subprocess.run(cmd, capture_output=True, text=True, check=False)
+            
+            if result.returncode == 0:
+                archives = []
+                for line in result.stdout.splitlines():
+                    line = line.strip()
+                    if line and "local:" not in line and "Listing archive" not in line:
+                        archives.append(line)
+                self.archives_list_cache = archives
+        except Exception:
+            pass  # Cache miss is not critical
     
     def format_display_path(self, file_path: str) -> str:
         """Format file path for display, replacing home directory with ~."""
@@ -236,10 +346,11 @@ class FileSearchApp(App):
     
     async def update_files_list(self) -> None:
         """Update the files list view."""
+        await self.stop_activity_indicator("files-listview")
         files_listview = self.query_one("#files-listview", ListView)
         files_listview.clear()
         
-        for display_path, _ in self.found_files:
+        for display_path, _ in self.filtered_files:
             files_listview.append(ListItem(Label(display_path)))
     
     async def on_list_view_selected(self, event: ListView.Selected) -> None:
@@ -254,14 +365,19 @@ class FileSearchApp(App):
         if event.list_view.id == "archives-listview" and event.item:
             # Update preview when archive is highlighted
             archive_name = event.item.children[0].renderable
-            await self.show_preview(archive_name)
+            if not archive_name.startswith("⠋"):  # Skip if it's an activity indicator
+                await self.show_preview(archive_name)
     
     async def handle_file_selection(self, selected_label: str) -> None:
         """Handle file selection and find archives containing it."""
+        # Skip if it's an activity indicator
+        if selected_label.startswith("⠋"):
+            return
+            
         self.selected_file_display = selected_label
         
         # Find the full path
-        for display_path, full_path in self.found_files:
+        for display_path, full_path in self.filtered_files:
             if display_path == selected_label:
                 self.selected_file_full = full_path
                 break
@@ -283,27 +399,40 @@ class FileSearchApp(App):
             )
             return
         
-        await self.start_activity_indicator(f"Getting versions for {self.selected_file_display}...")
+        await self.start_activity_indicator("archives-listview", f"Finding versions of {self.selected_file_display}...")
+        await self.start_activity_indicator("status", f"Finding versions of {self.selected_file_display}...")
         
         try:
-            # Get list of recent archives
-            cmd = ["borgmatic", "list", "--repository", self.repo, "--short", "--last", "20"]
-            result = subprocess.run(cmd, capture_output=True, text=True, check=False)
-            
-            if result.returncode != 0:
-                await self.update_status(f"❌ Error getting archives: {result.stderr}")
-                return
-            
-            archives = []
-            for line in result.stdout.splitlines():
-                line = line.strip()
-                if line and "local:" not in line and "Listing archive" not in line:
-                    archives.append(line)
+            # Use cached archives list if available
+            archives = self.archives_list_cache
+            if not archives:
+                # Fallback to fetching archives
+                cmd = ["borgmatic", "list", "--repository", self.repo, "--short", "--last", "20"]
+                result = subprocess.run(cmd, capture_output=True, text=True, check=False)
+                
+                if result.returncode != 0:
+                    await self.update_status(f"❌ Error getting archives: {result.stderr}", "archives-listview")
+                    await self.update_status(f"❌ Error getting archives: {result.stderr}")
+                    return
+                
+                archives = []
+                for line in result.stdout.splitlines():
+                    line = line.strip()
+                    if line and "local:" not in line and "Listing archive" not in line:
+                        archives.append(line)
             
             # Check which archives contain the file
             archives_with_file = []
             for i, archive in enumerate(archives):
-                await self.start_activity_indicator(f"Checking archive {i+1}/{len(archives)}: {archive[:30]}...")
+                await self.start_activity_indicator(
+                    "archives-listview", 
+                    f"Checking archive {i+1}/{len(archives)}: {archive[:30]}..."
+                )
+                await self.start_activity_indicator(
+                    "status", 
+                    f"Checking archive {i+1}/{len(archives)}: {archive[:30]}..."
+                )
+                
                 if await self.archive_contains_file(archive, self.selected_file_full):
                     archives_with_file.append(archive)
             
@@ -314,15 +443,21 @@ class FileSearchApp(App):
             self.file_archives_cache[self.selected_file_full] = archives_with_file
             
             if not archives_with_file:
+                await self.update_status(f"❌ No versions found for {self.selected_file_display}", "archives-listview")
                 await self.update_status(f"❌ No versions found for {self.selected_file_display}")
                 return
             
             await self.update_archives_list()
             await self.update_status(
+                f"✅ Found {len(archives_with_file)} versions of {self.selected_file_display}", 
+                "archives-listview"
+            )
+            await self.update_status(
                 f"✅ Found {len(archives_with_file)} versions of {self.selected_file_display}"
             )
             
         except Exception as e:
+            await self.update_status(f"❌ Error finding archives: {str(e)}", "archives-listview")
             await self.update_status(f"❌ Error finding archives: {str(e)}")
     
     async def archive_contains_file(self, archive: str, file_path: str) -> bool:
@@ -342,6 +477,7 @@ class FileSearchApp(App):
     
     async def update_archives_list(self) -> None:
         """Update the archives list view."""
+        await self.stop_activity_indicator("archives-listview")
         archives_listview = self.query_one("#archives-listview", ListView)
         archives_listview.clear()
         
@@ -350,17 +486,28 @@ class FileSearchApp(App):
     
     async def handle_archive_selection(self, selected_archive: str) -> None:
         """Handle archive selection and show preview."""
+        # Skip if it's an activity indicator
+        if selected_archive.startswith("⠋"):
+            return
         await self.show_preview(selected_archive)
     
     async def show_preview(self, archive: str) -> None:
         """Extract and show preview of the file from the selected archive."""
+        # Check cache first
+        cache_key = (archive, self.selected_file_full)
+        if cache_key in self.file_content_cache:
+            preview_text = self.query_one("#preview-text", TextArea)
+            preview_label = self.query_one("#preview-label", Label)
+            preview_label.update(f"Preview from {archive} (cached)")
+            preview_text.text = self.file_content_cache[cache_key]
+            return
+        
         preview_text = self.query_one("#preview-text", TextArea)
         preview_label = self.query_one("#preview-label", Label)
         
         preview_label.update(f"Preview from {archive}")
-        preview_text.text = "📄 Loading preview..."
         
-        await self.start_activity_indicator(f"Extracting preview from {archive[:30]}...")
+        await self.start_activity_indicator("preview-text", f"Extracting preview from {archive[:30]}...")
         
         try:
             with tempfile.TemporaryDirectory(prefix="borg-preview-") as temp_dir:
@@ -385,24 +532,31 @@ class FileSearchApp(App):
                                 lines = content.splitlines()
                                 if len(lines) > 1000:
                                     content = "\n".join(lines[:1000]) + f"\n\n... (truncated, showing first 1000 of {len(lines)} lines)"
+                                
+                                # Cache the content
+                                self.file_content_cache[cache_key] = content
+                                
+                                await self.stop_activity_indicator("preview-text")
                                 preview_text.text = content
-                                await self.update_status(f"✅ Preview loaded from {archive}")
                         except UnicodeDecodeError:
-                            preview_text.text = "📁 Binary file - cannot preview"
-                            await self.update_status(f"ℹ️ Binary file detected in {archive}")
+                            content = "📁 Binary file - cannot preview"
+                            self.file_content_cache[cache_key] = content
+                            await self.stop_activity_indicator("preview-text")
+                            preview_text.text = content
                         except Exception as e:
-                            preview_text.text = f"❌ Error reading file: {str(e)}"
-                            await self.update_status(f"❌ Error reading file from {archive}")
+                            content = f"❌ Error reading file: {str(e)}"
+                            await self.stop_activity_indicator("preview-text")
+                            preview_text.text = content
                     else:
+                        await self.stop_activity_indicator("preview-text")
                         preview_text.text = "❌ File not found in archive"
-                        await self.update_status(f"❌ File not found in {archive}")
                 else:
+                    await self.stop_activity_indicator("preview-text")
                     preview_text.text = f"❌ Error extracting file: {result.stderr}"
-                    await self.update_status(f"❌ Error extracting from {archive}")
                     
         except Exception as e:
+            await self.stop_activity_indicator("preview-text")
             preview_text.text = f"❌ Error during preview: {str(e)}"
-            await self.update_status(f"❌ Error during preview: {str(e)}")
     
     async def action_select(self) -> None:
         """Handle Enter key - restore the currently selected file."""
@@ -410,11 +564,13 @@ class FileSearchApp(App):
         
         if archives_listview.highlighted_child:
             selected_archive = archives_listview.highlighted_child.children[0].renderable
-            await self.restore_file(selected_archive)
+            # Skip if it's an activity indicator
+            if not selected_archive.startswith("⠋"):
+                await self.restore_file(selected_archive)
     
     async def restore_file(self, archive: str) -> None:
         """Restore the selected file from the specified archive."""
-        await self.start_activity_indicator(f"Restoring {self.selected_file_display} from {archive[:30]}...")
+        await self.start_activity_indicator("status", f"Restoring {self.selected_file_display} from {archive[:30]}...")
         
         try:
             with tempfile.TemporaryDirectory(prefix="borg-restore-") as temp_dir:
@@ -437,7 +593,7 @@ class FileSearchApp(App):
                         if target_file.exists():
                             backup_file = f"{target_file}.bak"
                             shutil.copy2(target_file, backup_file)
-                            await self.update_status(f"💾 Backed up current file to {backup_file}", False)
+                            await self.update_status(f"💾 Backed up current file to {backup_file}")
                             await asyncio.sleep(1)  # Brief pause to show backup message
                         
                         # Create directory if needed
@@ -454,10 +610,16 @@ class FileSearchApp(App):
         except Exception as e:
             await self.update_status(f"❌ Error during restoration: {str(e)}")
     
+    async def action_focus_search(self) -> None:
+        """Focus the fuzzy search input."""
+        fuzzy_input = self.query_one("#fuzzy-input", Input)
+        fuzzy_input.focus()
+    
     async def action_back(self) -> None:
         """Handle Escape key - go back to previous view."""
         # Stop any ongoing activity
-        await self.stop_activity_indicator()
+        for widget_id in list(self.activity_tasks.keys()):
+            await self.stop_activity_indicator(widget_id)
         
         # Clear current selections and return to file list
         archives_listview = self.query_one("#archives-listview", ListView)
