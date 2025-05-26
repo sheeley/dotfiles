@@ -1,8 +1,8 @@
 #! /usr/bin/env bash
 # Purpose: Display help information for shell commands
 
-tldr $1 ||
-	man $1 ||
+tldr "$1" ||
+	man "$1" ||
 	$1 --help 2>&1 | less ||
 	$1 -h 2>&1 | less ||
 	$1 help 2>&1 | less
