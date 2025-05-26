@@ -124,6 +124,7 @@ in {
       };
       pattern = {
         "#! /usr/bin/env nu" = "nu";
+        "#! /usr/bin/env -S uv run --script" = "python";
       };
     };
 
