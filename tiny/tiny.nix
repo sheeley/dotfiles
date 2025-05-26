@@ -9,7 +9,7 @@
     # Include the results of the hardware scan.
     ./hardware-configuration.nix
     ./observability.nix
-    ../nixos-common.nix
+    ../nixos/common.nix
     ../programs/nix-cache.nix
     # ./coredns.nix
   ];
@@ -49,7 +49,7 @@
         HA_ACCESS_TOKEN = private.HA_ACCESS_TOKEN;
         LANGUAGE = "en";
         MQTT_SERVER = "hae.sheeley.house";
-#        REAL_TIME = true;
+        #        REAL_TIME = true;
         #RENDERING_DELAY = 2;
         COLOR_MODE = "GrayScale";
         # image 1
