@@ -41,6 +41,7 @@ with pkgs; [
   nix-tree # Visualize Nix dependency trees
   nvd # Nix/NixOS package version diff tool
   osc # Command line tool to access the system clipboard from anywhere using the ANSI OSC52 sequence
+  oils-for-unix # bash-compatible new terminal
   procs # better ps
   pv # Monitor data flow through a pipe
   rclone # Cloud storage synchronization and file management
