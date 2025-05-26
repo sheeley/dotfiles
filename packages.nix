@@ -15,6 +15,7 @@ with pkgs; [
   duf # User-friendly disk usage/free space utility
   entr # Automatically run commands when files change
   eza # Modern, enhanced `ls` command with Git integration
+  f2 # Command-line batch renaming tool
   fd # Fast, user-friendly alternative to `find`
   fend # better CLI calculator
   findutils # Basic utilities for searching files (e.g., `find`, `xargs`)
@@ -39,6 +40,7 @@ with pkgs; [
   nix-diff # Tool for showing differences between Nix derivations
   nix-tree # Visualize Nix dependency trees
   nvd # Nix/NixOS package version diff tool
+  osc # Command line tool to access the system clipboard from anywhere using the ANSI OSC52 sequence
   procs # better ps
   pv # Monitor data flow through a pipe
   rclone # Cloud storage synchronization and file management
