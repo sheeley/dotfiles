@@ -1,6 +1,6 @@
 #! /usr/bin/env bash
 set -eo pipefail
-#set -x
+# set -x
 
 PATH="$PATH:./bin"
 
@@ -145,14 +145,14 @@ fi
 if command -v nvd &>/dev/null; then
 	nvd diff /run/current-system result
 	if opt_out "nvd ^ Continue?"; then
-		exit 0
+		exit 1
 	fi
 
 	if command -v nix-diff &>/dev/null; then
 		if confirm "Run nix-diff?"; then
 			nix-diff --line-oriented --context 5 /run/current-system result
 			if opt_out "nix-diff ^ Continue?"; then
-				exit 0
+				exit 1
 			fi
 		fi
 	fi
