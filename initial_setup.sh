@@ -44,25 +44,6 @@ exists() {
 	return 1
 }
 
-set_hostname() {
-	echo -n "New hostname: "
-	read -r NEW_HOST
-
-	if confirm "Set hostname to $NEW_HOST?"; then
-		if [[ "$IS_MAC" ]]; then
-			sudo scutil --set ComputerName "$NEW_HOST"
-			sudo scutil --set HostName "$NEW_HOST"
-		elif [[ "$IS_NIX" ]]; then
-			echo "put in /etc/nixos/configuration.nix: "
-			echo "networking.hostName = \"$NEW_HOST\";"
-			echo "sudo nixos-rebuild switch"
-			echo "sudo reboot"
-		fi
-	else
-		return 1
-	fi
-}
-
 if [[ "sheeley" != $(whoami) ]]; then
 	if confirm "username is $(whoami), change to sheeley?"; then
 		sudo useradd -m -G wheel -s /run/current-system/sw/bin/bash
@@ -105,11 +86,7 @@ PREFIX="nixpkgs"
 if ! exists git; then
 	nix-env -iA "$PREFIX.git"
 fi
-if ! exists rg; then
-	nix-env -iA "$PREFIX.git"
-fi
 
-# HOST=$(hostname)
 if [[ "$IS_MAC" ]]; then
 	# nix-darwin doesn't install brew.
 	if ! exists brew; then
@@ -198,7 +175,7 @@ if [ ! -f ~/.gh_done ]; then
 	touch ~/.gh_done
 fi
 
-if [ ! -d ~/dotfiles ]; 
+if [ ! -d ~/dotfiles ]; then
 # then
 # 	(
 # 		cd ~/dotfiles
