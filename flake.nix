@@ -128,6 +128,22 @@
       };
     };
 
+    darwinConfigurations."stud" = darwin.lib.darwinSystem {
+      system = "aarch64-darwin";
+      pkgs = legacyDarwinPackages.aarch64-darwin;
+      modules =
+        sharedDarwinModules
+        ++ [
+          ./darwin/personal.nix
+        ];
+
+      specialArgs = {
+        inherit inputs;
+        user = "sheeley";
+        private = private;
+      };
+    };
+
     nixosConfigurations."tiny" = nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
       pkgs = legacyNixPackages.x86_64-linux;
