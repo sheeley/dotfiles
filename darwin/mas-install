@@ -25,3 +25,6 @@ IDS=(
 )
 
 mas install "${IDS[@]}"
+
+open /Applications/Amphetamine.app/
+open /Applications/Magnet.app/
