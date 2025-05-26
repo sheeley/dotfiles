@@ -1,0 +1,6 @@
+#! /usr/bin/env bash
+set -euo pipefail
+# set -x
+KEY=$(cut -d ' ' -f 1-2 <~/.ssh/id_ed25519.pub)
+HOST=$(hostname_wrapper)
+echo "$KEY # $HOST" >>~/dotfiles/files/authorized_keys
