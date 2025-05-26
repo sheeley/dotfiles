@@ -25,7 +25,7 @@
       [
         "git-delta"
         "swiftformat"
-        "touch2sudo"
+        # "touch2sudo"
       ]
       ++ ((lib.optionals (lib.hasAttr "personal" private && private.personal)) [
         "dovecot"
