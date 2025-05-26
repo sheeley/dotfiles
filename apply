@@ -1,5 +1,6 @@
 #! /usr/bin/env bash
-set -e
+set -eo pipefail
+#set -x
 
 PATH="$PATH:./bin"
 
@@ -27,6 +28,13 @@ if [[ "$1" == "--offline" ]]; then
 fi
 set -u
 
+if [[ "$NOT_NIX" ]]; then
+	if ! exists nix; then
+		# shellcheck disable=SC1091
+		. /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
+	fi
+fi
+
 if ! exists rg; then
 	nix-env -iA nixpkgs.ripgrep
 fi
@@ -46,12 +54,30 @@ set -e
 OSC=$(get-osc)
 VALID_HOSTNAMES=$(get-flake-configurations)
 
-# HOST=$(scutil --get HostName)
-# if ! grep -q "darwinConfigurations.\"$HOST\"" ~/dotfiles/flake.nix && confirm "Change from current hostname: $HOST?"; then
-# 	while true; do
-# 		set_hostname && break
-# 	done
-# fi
+HOST=$(hostname_wrapper)
+if ! grep -q "darwinConfigurations.\"$HOST\"" ~/dotfiles/flake.nix && confirm "Change from current hostname: $HOST?"; then
+set_hostname() {
+	echo -n "New hostname: "
+	read -r NEW_HOST
+
+	if confirm "Set hostname to $NEW_HOST?"; then
+		if [[ "$IS_MAC" ]]; then
+			sudo scutil --set ComputerName "$NEW_HOST"
+			sudo scutil --set HostName "$NEW_HOST"
+		elif [[ "$IS_NIX" ]]; then
+			echo "put in /etc/nixos/configuration.nix: "
+			echo "networking.hostName = \"$NEW_HOST\";"
+			echo "sudo nixos-rebuild switch"
+			echo "sudo reboot"
+		fi
+	else
+		return 1
+	fi
+}
+	while true; do
+		set_hostname && break
+	done
+fi
 
 HN=$(hostname_wrapper)
 if grep -q "$HN" home-manager-only; then
@@ -61,7 +87,7 @@ fi
 
 # is this a valid host, or the special case of sheeley (using home-manager on linux)
 if [[ ! "${VALID_HOSTNAMES[*]}" =~ $HN ]]; then
-	echo "invalid hostname: '$HN'"
+	echo "hostname '$HN' not found in flake.nix"
 	if [[ "$IS_NIX" && ! -d "$HOME/dotfiles/$(hostname)" ]]; then
 		if confirm "Change from current hostname: $HOST?"; then
 			while true; do
