@@ -26,5 +26,12 @@ IDS=(
 
 mas install "${IDS[@]}"
 
-open /Applications/Amphetamine.app/
-open /Applications/Magnet.app/
+open_if_not_running() {
+	if ! pgrep -q -f "$1"; then
+		open -j "$1"
+	fi
+}
+
+# Ensure these are opened at least once to get services set up
+open_if_not_running /Applications/Amphetamine.app/
+open_if_not_running /Applications/Magnet.app/

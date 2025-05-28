@@ -169,6 +169,7 @@ if [[ "$IS_MAC" ]]; then
 	fi
 
 	./result/sw/bin/darwin-rebuild switch --flake . --impure
+	./darwin/apply
 else
 	sudo nixos-rebuild switch --flake . --impure
 fi
