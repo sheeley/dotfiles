@@ -1,0 +1,6 @@
+#! /usr/bin/env bash
+set -euo pipefail
+# set -x
+#
+
+open "https://search.nixos.org/packages?channel=unstable&from=0&size=50&sort=relevance&type=packages&query=$1"
