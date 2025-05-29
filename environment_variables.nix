@@ -22,7 +22,7 @@ in {
 
   # go settings
   GOPATH = "${homeDirectory}/go";
-  GOPROXY = "direct";
+  # GOPROXY = "direct";
   # GOSUMDB = "off";
 
   # directories

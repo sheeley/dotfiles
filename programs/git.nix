@@ -72,11 +72,13 @@
 
       pull.rebase = true;
       push.default = "current";
-      # url = {
-      #   "ssh://git@github.com" = {
-      #     insteadOf = "https://github.com/";
-      #   };
-      # };
+
+      # golang rewrites
+      url = {
+        "ssh://git@github.com" = {
+          insteadOf = "https://github.com/";
+        };
+      };
 
       merge = {
         tool = "vimdiff";
