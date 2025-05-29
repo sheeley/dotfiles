@@ -12,8 +12,6 @@
   "${homeDirectory}/dotfiles/bin"
   "${homeDirectory}/.local/bin"
 
-  "${homeDirectory}/projects/sheeley/infrastructure/bin"
-  "${homeDirectory}/projects/sheeley/infrastructure/scripts"
   "${homeDirectory}/go/bin"
   "${homeDirectory}/.cargo/bin"
   "${homeDirectory}/non-nix-bin"
