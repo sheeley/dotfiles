@@ -55,7 +55,7 @@ if [ -f "$1" ]; then
 fi
 
 # if the file doesn't exist, check if there is a filename that contains the filename passed in
-MATCH=$(fd --type file --glob "*$1*" .)
+MATCH=$(fd --type file --exclude "*.lock" --glob "*$1*" .)
 LINES=0
 if [[ "$MATCH" != "" ]]; then
 	LINES=$(echo "$MATCH" | wc -l)
