@@ -1,31 +1,5 @@
 #! /usr/bin/env nu
 # Purpose: Create a new Nix flake configuration file
 
-let envrc_contents = "use flake ."
-let flake_contents = r#'
-{
-	description = "A new flake";
-	inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
-    inputs.flake-utils.url = "github:numtide/flake-utils";
-    outputs = { self, nixpkgs, flake-utils }:
-	    flake-utils.lib.eachDefaultSystem (system:
-        let pkgs = nixpkgs.legacyPackages.${system};
-        in
-        {
-			devShells.default = pkgs.mkShell {
-            buildInputs = with pkgs; [ terraform ];
-			
-			shellHook = ''
-				# this prints out all the installed packages magically
-				nix eval .#devShells.aarch64-darwin.default.buildInputs --json | jq
-             '';
-        	};
-        }
-	);
-}
-'#
-
-
-
-$envrc_contents | save ".envrc"
-$flake_contents | save flake.nix
+"use flake ." | save ".envrc"
+cp ~/dotfiles/files/flake-template.nix flake.nix

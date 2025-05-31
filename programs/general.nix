@@ -1,4 +1,4 @@
-{pkgs, ...}: {
+{...}: {
   programs.bash.enable = true;
   programs.zsh.enable = true;
   programs.home-manager.enable = true;
@@ -33,6 +33,8 @@
 
     config = {
       warn_timeout = 0;
+      hide_env_diff = true;
+      # log_filter = "^$";
     };
   };
 }
