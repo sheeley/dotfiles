@@ -12,6 +12,4 @@
   # borgUser = "";
 
   # tailscaleKey = "";
-
-  
 }
