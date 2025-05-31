@@ -24,6 +24,7 @@
     brews =
       [
         "git-delta"
+        "mas"
         "swiftformat"
         # "touch2sudo"
       ]
@@ -31,21 +32,21 @@
         "dovecot"
       ]);
 
-    casks =
-      [
-        "1password"
-        "1password/tap/1password-cli"
-        # "eloston-chromium"
-        "ghostty"
-        "iterm2"
-        # "little-snitch"
-        "obsidian"
-        "shortcat"
-        "slack"
-      ]
-      ++ ((lib.optionals (lib.hasAttr "personal" private && private.personal)) [
-        "whisky"
-      ]);
+    casks = [
+      "1password"
+      "1password/tap/1password-cli"
+      # "eloston-chromium"
+      "ghostty"
+      "iterm2"
+      "little-snitch"
+      "obsidian"
+      "shortcat"
+      "slack"
+    ];
+
+    # ++ ((lib.optionals (lib.hasAttr "personal" private && private.personal)) [
+    #   "whisky"
+    # ]);
 
     taps = [
       "1password/tap"
