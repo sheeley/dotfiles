@@ -6,67 +6,74 @@
   ...
 }: {
   imports = [
-    # Include the results of the hardware scan.
     ./hardware-configuration.nix
-    ./observability.nix
+    ../shared/observability # Import shared observability
     ../nixos/common.nix
     ../programs/nix-cache.nix
-    # ./coredns.nix
   ];
 
   boot.loader.grub.enable = true;
-  boot.loader.grub.device = "/dev/sda"; # or "nodev" for efi only
+  boot.loader.grub.device = "/dev/sda";
 
-  networking.hostName = "tiny"; # Define your hostname.
-  system.stateVersion = "24.05"; # Did you read the comment?
+  networking.hostName = "tiny";
+  system.stateVersion = "24.05";
 
-  # networking.firewall.allowedUDPPorts = [53];
+  # Observability configuration - Central server role
+  services.observability = {
+    enable = true;
+    role = "server"; # Acts as central collection point
+    hostName = "tiny";
 
-  # Useful other development tools
+    loki = {
+      enable = true;
+      port = 3100;
+    };
+
+    prometheus = {
+      enable = true;
+      port = 9001;
+      scrapeInterval = "10s";
+    };
+
+    alloy = {
+      enable = true;
+    };
+  };
+
+  # Override UniFi exporter password from private
+  services.prometheus.exporters.unpoller.controllers = lib.mkForce [
+    {
+      url = "https://172.20.1.1";
+      user = "prom";
+      pass = private.unpoller_pass;
+    }
+  ];
+
+  # Container setup
+  virtualisation.containers.enable = true;
+  virtualisation = {
+    podman = {
+      enable = true;
+      dockerCompat = true;
+      defaultNetwork.settings.dns_enabled = true;
+    };
+  };
+
   environment.systemPackages = with pkgs; [
     podman
-    dive # look into docker image layers
-    podman-tui # status of containers in the terminal
-    # docker-compose # start group of containers for dev
-    #podman-compose # start group of containers for dev
+    dive
+    podman-tui
   ];
+
   virtualisation.oci-containers.backend = "podman";
   virtualisation.oci-containers.containers = {
     hass-screenshot = {
       image = "lanrat/hass-screenshot";
       autoStart = true;
       ports = ["127.0.0.1:5000:5000"];
-      # memory: 1G
-      # healthcheck:
-      #   test: "wget --no-verbose --tries=1 --spider http://localhost:5000/ || exit 1"
-      #   interval: 60s
-      #   timeout: 5s
-      #   retries: 3
-      #   start_period: 60s
       environment = {
         TZ = "America/Los_Angeles";
         HA_BASE_URL = "https://hae.sheeley.house";
-        HA_ACCESS_TOKEN = private.HA_ACCESS_TOKEN;
-        LANGUAGE = "en";
-        MQTT_SERVER = "hae.sheeley.house";
-        #        REAL_TIME = true;
-        #RENDERING_DELAY = 2;
-        COLOR_MODE = "GrayScale";
-        # image 1
-        HA_SCREENSHOT_URL = "/dashboard-inkplate/0?kiosk";
-        #RENDERING_SCREEN_HEIGHT = 825;
-        #RENDERING_SCREEN_WIDTH = 1200;
-        #GRAYSCALE_DEPTH = 3;
-        # # image 2
-        # HA_SCREENSHOT_URL_2 = "/lovelace-infra/hud2?kiosk";
-        # RENDERING_SCREEN_HEIGHT_2 = 800;
-        # RENDERING_SCREEN_WIDTH_2 = 600;
-        # GRAYSCALE_DEPTH_2 = 4;
-        # # image 3
-        # HA_SCREENSHOT_URL_3 = "/lovelace-infra/hud3?kiosk";
-        # RENDERING_SCREEN_HEIGHT_3 = 800;
-        # RENDERING_SCREEN_WIDTH_3 = 600;
-        # GRAYSCALE_DEPTH_3 = 4;
       };
     };
   };
