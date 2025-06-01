@@ -5,6 +5,6 @@ source_directories:
 
 repositories:
   - path: /local-2tb/backup
-  - path: ssh://@repo@.repo.borgbase.com/./repo
+  # - path: ssh://@repo@.repo.borgbase.com/./repo
     label: "proxmox on BorgBase"
 

@@ -65,7 +65,7 @@
     );
     sharedModules = [
       ./environment.nix
-      ./home.nix
+      ./home-manager.nix
       ./system.nix
     ];
     sharedDarwinModules =
@@ -175,7 +175,7 @@
           };
           services.home-manager.autoExpire.enable = true;
         }
-        ./home-manager.nix
+        ./home.nix
       ];
 
       extraSpecialArgs = {

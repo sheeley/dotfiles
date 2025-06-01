@@ -1,0 +1,28 @@
+{...}: {
+  home = {
+    shellAliases = {
+      amend = "git commit --amend --no-edit";
+      # cat = "bat";
+      cddot = "cd ~/dotfiles";
+      cdgo = "cd $GOPATH/src";
+      cdicloud = "cd $ICLOUD_DIR";
+      cdinfra = "cd $PRIVATE_TOOLS_DIR";
+      cdnotes = "cd $NOTES_DIR";
+      cdproj = "cd $HOME/projects/sheeley/$1* || cd $HOME/projects/sheeley/";
+      cdscratch = "cd ~/scratch";
+      cdtools = "cd $TOOLS_DIR";
+      cdwork = "cd ~/work";
+      cdworknotes = "cd $WORK_NOTES_DIR";
+      clone = "git clone";
+      l = "a";
+      la = "ls -la";
+      lc = "light_control";
+      u = "./update";
+      va = "vim ./apply";
+      vas = "vim ./apply_sudo";
+      vdot = "vim ~/dotfiles";
+      vprivate = "vim ~/.nix-private/private.nix";
+      vv = "vim ~/dotfiles/bin/v";
+    };
+  };
+}

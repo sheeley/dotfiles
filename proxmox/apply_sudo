@@ -14,3 +14,26 @@ cp -f ./resolved.yaml /etc/backup/borgmatic.yaml
 cp -f ./backup ./send-notification /bin/
 
 systemctl daemon-reload
+
+# set up pam sudo
+sed -i 's/#Defaults:%sudo env_keep += "SSH_AGENT_PID SSH_AUTH_SOCK"/Defaults:%sudo env_keep += "SSH_AGENT_PID SSH_AUTH_SOCK"/g' /etc/sudoers
+SUDO_FILE=/etc/sudoers.d/pam_sudo
+if [[ ! -f "$SUDO_FILE" ]]; then
+	echo "sheeley ALL = (ALL) ALL" >"$SUDO_FILE"
+fi
+
+# TODO: PAM isn't working.
+# it _seems_ like I've followed all of the steps, but something is off.
+# The linux box has the .so, macos has touch2sudo, but when sudoing I get the normal text input (and it doesn't work).
+# Next steps?
+# * revert the ssh-add -c - that made the key stop working for login for some reason
+# * create a second key, ssh-add -c it, copy its pub to the linux box
+# * uncomment this
+# ????
+#
+# if ! grep "pam_ssh_agent_auth.so" /etc/pam.d/sudo; then
+# 	SO_LOCATION=$(sudo /home/sheeley/.nix-profile/bin/fd pam_ssh_agent_auth.so / | grep home)
+# 	INSERT="auth sufficient $SO_LOCATION\nfile=/etc/ssh/sudo_authorized_keys/%u\n"
+# 	# TODO: swap to just sed the file in place, insert the two lines
+# 	sed -e "s#SO_LOCATION#$SO_LOCATION#g" ~/dotfiles/files/pamdsudo >/etc/pam.d/sudo
+# fi

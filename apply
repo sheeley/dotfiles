@@ -80,7 +80,7 @@ if ! grep -q "$OSC.\"$HOST\"" ~/dotfiles/flake.nix && confirm "Change from curre
 fi
 
 HN=$(hostname_wrapper)
-if grep -q "$HN" home-manager-only; then
+if grep -q "$HN" ./home-manager-only-hosts; then
 	home-manager --flake . --impure switch --show-trace -b backup
 	exit 0
 fi
