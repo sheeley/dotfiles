@@ -1,0 +1,95 @@
+#!/usr/bin/env nu
+# mvrn - Move/Rename with reference updates
+# Usage: mvrn <old_filename> <new_filename>
+
+def main [old_name: string, new_name: string] {
+    # Check if old file exists
+    if not ($old_name | path exists) {
+        print $"Error: File '($old_name)' does not exist"
+        exit 1
+    }
+
+    # Check if new file already exists
+    if ($new_name | path exists) {
+        print $"Error: File '($new_name)' already exists"
+        exit 1
+    }
+
+    # Get the basename for searching
+    let old_basename = ($old_name | path basename)
+    let new_basename = ($new_name | path basename)
+
+    print $"🔍 Searching for references to '($old_basename)'..."
+    print ""
+
+    # Find all files containing the old filename
+    let matches = (rg --files-with-matches $old_basename | lines)
+
+    if ($matches | is-empty) {
+        print $"No references to '($old_basename)' found in any files."
+        print ""
+        let proceed = (input "Proceed with simple rename? [y/N] ")
+        if $proceed == "y" {
+            mv $old_name $new_name
+            print $"✅ Renamed '($old_name)' to '($new_name)'"
+        }
+        return
+    }
+
+    # Show matches with context
+    for $file in $matches {
+        print $"📄 ($file):"
+        rg --line-number --max-count=3 $old_basename $file | lines | each { |line| print $"   ($line)" }
+        print ""
+    }
+
+    print "─────────────────────────────────────────"
+    print $"Found references in ($matches | length) file\(s)"
+    print ""
+
+    # Let user select files to update
+    print "Select files to update references in (use space to select multiple, enter to confirm):"
+    let selected_files = ($matches | input list --multi)
+
+    if ($selected_files | is-empty) {
+        print "No files selected for update."
+        let proceed = (input "Proceed with simple rename? [y/N] ")
+        if $proceed == "y" {
+            mv $old_name $new_name
+            print $"✅ Renamed '($old_name)' to '($new_name)'"
+        }
+        return
+    }
+
+    print ""
+    print "Will update references in:"
+    $selected_files | each { |file| print $"  - ($file)" }
+    print ""
+
+    let proceed = (input "Proceed with rename and reference updates? [y/N] ")
+    if $proceed == "y" {
+        # First, rename the actual file
+        mv $old_name $new_name
+        print $"✅ Renamed '($old_name)' to '($new_name)'"
+        print ""
+        
+        # Update references in selected files
+        print "Updating references..."
+        for $file in $selected_files {
+            # Use sed to replace the old basename with the new one
+            if (sys | get host.name | str contains "Darwin") {
+                # macOS sed syntax
+                ^sed -i '' $"s|($old_basename)|($new_basename)|g" $file
+            } else {
+                # GNU sed syntax
+                ^sed -i $"s|($old_basename)|($new_basename)|g" $file
+            }
+            print $"  ✅ Updated: ($file)"
+        }
+        
+        print ""
+        print $"🎉 Done! Renamed '($old_name)' to '($new_name)' and updated ($selected_files | length) file\(s)"
+    } else {
+        print "Operation cancelled."
+    }
+}
