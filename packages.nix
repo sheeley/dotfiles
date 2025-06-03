@@ -9,7 +9,6 @@ with pkgs; [
   bat # Enhanced `cat` command with syntax highlighting and paging
   borgmatic # Backup, bb!
   bottom # btm ~ better top, htop, cpu, mem, etc
-  coreutils-prefixed # GNU Coreutils with commands prefixed (e.g., `gfind`, `gsed`)
   du-dust # Disk usage visualization tool
   dua # disk usage, interactively
   duf # User-friendly disk usage/free space utility
@@ -58,7 +57,8 @@ with pkgs; [
   # tailspin # Log file highlighter
   tre-command # Modern `tree` command alternative
   ugrep # Ultra-fast grep alternative with additional features
-  uv # Disk usage analyzer
+  uutils-coreutils-noprefix # GNU Coreutils with commands (e.g., `gfind`, `gsed`)
+  uv # Python but good
   viddy # better watch file change
   wget # Command-line utility for retrieving files via HTTP/HTTPS
   yq-go # YAML processor (like `jq`, but for YAML)
