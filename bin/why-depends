@@ -7,8 +7,8 @@ HN=$(hostname_wrapper)
 OSC="nixosConfigurations"
 if [[ "$OS" == *"Darwin"* ]]; then
 	OSC="darwinConfigurations"
-	nix why-depends ".#${OSC}.${HN}.system" --impure --extra-experimental-features "nix-command flakes" "github:nixos/nixpkgs#$1"
-	nix why-depends ".#${OSC}.${HN}.system" --impure --extra-experimental-features "nix-command flakes" --derivation "github:nixos/nixpkgs#$1"
+	nix why-depends "path:.#${OSC}.${HN}.system" --extra-experimental-features "nix-command flakes" "github:nixos/nixpkgs#$1"
+	nix why-depends "path:.#${OSC}.${HN}.system" --extra-experimental-features "nix-command flakes" --derivation "github:nixos/nixpkgs#$1"
 else
-	nix why-depends ".#${OSC}.${HN}.config.system.build.toplevel" --impure --extra-experimental-features "nix-command flakes" "github:nixos/nixpkgs#$1"
+	nix why-depends "path:.#${OSC}.${HN}.config.system.build.toplevel" --extra-experimental-features "nix-command flakes" "github:nixos/nixpkgs#$1"
 fi

@@ -4,3 +4,6 @@ last-*.txt
 resolved.yaml
 merged.yaml
 .aider*
+anthropic
+private.nix
+.claude

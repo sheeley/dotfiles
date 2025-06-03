@@ -81,7 +81,7 @@ fi
 
 HN=$(hostname_wrapper)
 if grep -q "$HN" ./home-manager-only-hosts; then
-	home-manager --flake . --impure switch --show-trace -b backup
+	home-manager --flake path:. switch --show-trace -b backup
 	exit 0
 fi
 
@@ -135,11 +135,12 @@ if [[ ! "${VALID_HOSTNAMES[*]}" =~ $HN ]]; then
 fi
 
 if [[ "$IS_MAC" ]]; then
-	nix build ".#${OSC}.${HN}.system" --impure --extra-experimental-features "nix-command flakes" $OFFLINE --show-trace
+	# Use darwin-rebuild build to create the result symlink
+	darwin-rebuild build --flake path:. --show-trace $OFFLINE
 elif [[ "$IS_NIX" ]]; then
-	nix build ".#${OSC}.${HN}.config.system.build.toplevel" --impure --extra-experimental-features "nix-command flakes" $OFFLINE --show-trace
+	nix build "path:.#${OSC}.${HN}.config.system.build.toplevel" --extra-experimental-features "nix-command flakes" $OFFLINE --show-trace
 else
-	nix build ".#${OSC}.${HN}" --impure --extra-experimental-features "nix-command flakes" $OFFLINE --show-trace
+	nix build "path:.#${OSC}.${HN}" --extra-experimental-features "nix-command flakes" $OFFLINE --show-trace
 fi
 # if possible, diff the derivations and ask for input
 if command -v nvd &>/dev/null; then
@@ -159,7 +160,7 @@ if command -v nvd &>/dev/null; then
 fi
 
 if [[ "$IS_MAC" ]]; then
-	echo "darwin-rebuild"
+	echo "darwin-rebuild activate"
 
 	if [[ -f /etc/bashrc ]]; then
 		sudo mv -f /etc/bashrc /etc/bashrc.backup-before-nix
@@ -168,10 +169,11 @@ if [[ "$IS_MAC" ]]; then
 		sudo mv -f /etc/zshrc /etc/bashrc.backup-before-nix
 	fi
 
-	./result/sw/bin/darwin-rebuild switch --flake . --impure
+	# Use activate instead of switch since we already built
+	./result/sw/bin/darwin-rebuild activate
 	./darwin/apply
 else
-	sudo nixos-rebuild switch --flake . --impure
+	sudo nixos-rebuild switch --flake path:.
 fi
 
 date >last-applied.txt

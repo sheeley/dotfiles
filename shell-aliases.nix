@@ -21,7 +21,7 @@
       va = "vim ./apply";
       vas = "vim ./apply_sudo";
       vdot = "vim ~/dotfiles";
-      vprivate = "vim ~/.nix-private/private.nix";
+      vprivate = "vim ~/dotfiles/private.nix";
       vv = "vim ~/dotfiles/bin/v";
     };
   };

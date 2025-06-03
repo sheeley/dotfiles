@@ -130,7 +130,7 @@ else
 	EMAIL=$(cut -d' ' -f3 <~/.ssh/id_ed25519.pub)
 fi
 
-if [[ ! -f ~/.nix-private/private.nix ]]; then
+if [[ ! -f ~/dotfiles/private.nix ]]; then
 	if ! exists op; then
 		brew install --cask 1password 1password/tap/1password-cli
   		confirm "Log in to 1password, go to settings -> developer -> enable CLI integration. Continue?"
@@ -185,21 +185,20 @@ if [ ! -d ~/dotfiles ]; then
 	git clone git@github.com:sheeley/dotfiles.git ~/dotfiles
 fi
 
-if [ ! -f ~/.nix-private/private.nix ]; then
-	mkdir -p ~/.nix-private
-	cp ~/dotfiles/private.nix ~/.nix-private/private.nix
-	echo "set values in ~/.nix-private/private.nix"
+if [ ! -f ~/dotfiles/private.nix ]; then
+	cp ~/dotfiles/private.template.nix ~/dotfiles/private.nix
+	echo "set values in ~/dotfiles/private.nix"
 	if [[ "$IS_MAC" ]]; then
-		sed -i "" "s/EMAIL_HERE/$EMAIL/g" ~/.nix-private/private.nix
-		sed -i "" "s/EMAIL_HERE/$EMAIL/g" ~/.nix-private/private.nix
+		sed -i "" "s/EMAIL_HERE/$EMAIL/g" ~/dotfiles/private.nix
+		sed -i "" "s/GH_TOKEN_HERE/$HOMEBREW_GITHUB_API_TOKEN/g" ~/dotfiles/private.nix
 	else
-		sed -i "s/GH_TOKEN_HERE/$HOMEBREW_GITHUB_API_TOKEN/g" ~/.nix-private/private.nix
-		sed -i "s/EMAIL_HERE/$EMAIL/g" ~/.nix-private/private.nix
+		sed -i "s/EMAIL_HERE/$EMAIL/g" ~/dotfiles/private.nix
+		sed -i "s/GH_TOKEN_HERE/$HOMEBREW_GITHUB_API_TOKEN/g" ~/dotfiles/private.nix
 	fi
 fi
 
 set +e
-if grep -q UNALTERED ~/.nix-private/private.nix && confirm "Customize private.nix"; then
+if grep -q UNALTERED ~/dotfiles/private.nix && confirm "Customize private.nix"; then
 	set +u
  	if [[ -z "$EDITOR" ]]; then
 		if exists vim; then
@@ -209,7 +208,7 @@ if grep -q UNALTERED ~/.nix-private/private.nix && confirm "Customize private.ni
 	  	fi
    	fi
     	set -u
-   	$EDITOR --wait ~/.nix-private/private.nix
+   	$EDITOR --wait ~/dotfiles/private.nix
 fi
 set -e
 

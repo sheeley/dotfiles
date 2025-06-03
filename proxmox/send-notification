@@ -2,7 +2,7 @@
 set -euo pipefail
 # set -x
 
-TO=$(grep 'email =' ~/.nix-private/private.nix | sed 's/email = "//' | sed 's/";//' | xargs)
+TO=$(grep 'email =' ~/dotfiles/private.nix | sed 's/email = "//' | sed 's/";//' | xargs)
 
 set +e
 BODY=$(sudo journalctl -u "$1" _SYSTEMD_INVOCATION_ID="$(sudo systemctl show -p InvocationID --value "$1")")

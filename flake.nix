@@ -76,10 +76,7 @@
         ./darwin/hm.nix
       ]
       ++ sharedModules;
-    private =
-      if builtins.currentSystem == "aarch64-darwin"
-      then legacyDarwinPackages.aarch64-darwin.callPackage ~/.nix-private/private.nix {}
-      else legacyNixPackages.x86_64-linux.callPackage /home/sheeley/.nix-private/private.nix {};
+    private = import ./private.nix;
   in {
     darwinConfigurations."jmba" = darwin.lib.darwinSystem {
       system = "aarch64-darwin";
