@@ -25,6 +25,9 @@ Host homebase
 Host proxmox
   HostName proxmox.sheeley.house
 
+Host stud
+  HostName stud.sheeley.house
+
 Host tiny
   HostName tiny.sheeley.house
       ";
