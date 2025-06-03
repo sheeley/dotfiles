@@ -5,6 +5,5 @@ upgrade_nix
 
 if confirm "Update flake sources?"; then
 	nix flake update \
-		--extra-experimental-features "nix-command flakes" \
-		--impure
+		--extra-experimental-features "nix-command flakes"
 fi

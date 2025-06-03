@@ -3,4 +3,4 @@
 set -euo pipefail
 # set -x
 
-nix eval --json --impure --expr "import $HOME/.nix-private/private.nix { }"
+nix eval --json --expr "import $(git rev-parse --show-toplevel)/private.nix"

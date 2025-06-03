@@ -16,9 +16,9 @@ fi
 echo "rebuild"
 OS=$(uname -a)
 if [[ "$OS" == *"Darwin"* ]]; then
-	./result/sw/bin/darwin-rebuild --rollback switch --flake . --impure
+	./result/sw/bin/darwin-rebuild --rollback switch --flake path:.
 else
-	sudo nixos-rebuild --rollback switch --flake . --impure
+	sudo nixos-rebuild --rollback switch --flake path:.
 fi
 
 date >last-applied.txt
