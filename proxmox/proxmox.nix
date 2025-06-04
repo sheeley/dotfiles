@@ -348,4 +348,7 @@ in {
       };
     };
   };
+
+  # Enable copyq clipboard manager
+  services.copyq.enable = true;
 }
