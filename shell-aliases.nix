@@ -2,13 +2,13 @@
   home = {
     shellAliases = {
       amend = "git commit --amend --no-edit";
-      # cat = "bat";
       cddot = "cd ~/dotfiles";
       cdgo = "cd $GOPATH/src";
       cdicloud = "cd $ICLOUD_DIR";
       cdinfra = "cd $PRIVATE_TOOLS_DIR";
       cdnotes = "cd $NOTES_DIR";
-      cdproj = "cd $HOME/projects/sheeley/$1* || cd $HOME/projects/sheeley/";
+      # cdproj = "cd $HOME/projects/sheeley/$1* || ";
+      cdproj = "cd $HOME/projects/sheeley/";
       cdscratch = "cd ~/scratch";
       cdtools = "cd $TOOLS_DIR";
       cdwork = "cd ~/work";
