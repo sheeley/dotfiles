@@ -41,9 +41,4 @@
 
   # fast dbus
   # services.dbus.implementation = "broker";
-
-  # Enable copyq clipboard manager via Home Manager
-  home-manager.users.sheeley = {
-    services.copyq.enable = true;
-  };
 }
