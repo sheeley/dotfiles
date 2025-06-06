@@ -1,4 +1,5 @@
 {
+  glow                 # Render markdown on the CLI, with pizzazz!
   lib,
   private,
   pkgs,
@@ -62,9 +63,14 @@ with pkgs; [
   viddy # better watch file change
   wget # Command-line utility for retrieving files via HTTP/HTTPS
   yq-go # YAML processor (like `jq`, but for YAML)
+  lazydocker # Simple terminal UI for both docker and docker-compose
+  grex # Command-line tool for generating regular expressions from user-provided test ...
+  git-absorb # git commit --fixup, but automatic
+  onefetch # Git repository summary on your terminal
+  dog # cat replacement
+  nix-index # Files database for nixpkgs
 ]
 # ++ ((lib.optionals (pkgs.system == "aarch64-darwin")) [
 #   obsidian
 #   # dockutil
 # ])
-

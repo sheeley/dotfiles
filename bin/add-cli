@@ -1,0 +1,218 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+PACKAGES_FILE="$HOME/dotfiles/packages.nix"
+
+usage() {
+    echo "Usage: add-cli <package1> [package2] ..."
+    echo "Searches nixpkgs for packages and binaries, adds selected packages to packages.nix"
+    exit 1
+}
+
+[[ $# -eq 0 || "$1" == "--help" || "$1" == "-h" ]] && usage
+
+# Check if package is already installed
+is_installed() {
+    local pkg="$1"
+    grep -q "^\s*$pkg\s*\(#\|$\)" "$PACKAGES_FILE" || command -v "$pkg" >/dev/null 2>&1
+}
+
+# Search for exact package match
+search_package() {
+    nix search nixpkgs "^$1$" --json 2>/dev/null | 
+        jq -r 'keys[] | split(".") | .[-1]' 2>/dev/null | 
+        head -1 || true
+}
+
+# Search for packages providing binary (fallback method)
+search_providers() {
+    nix search nixpkgs "$1" --json 2>/dev/null | 
+        jq -r 'to_entries[] | select(.value.pname? == "'"$1"'" or (.value.description? // "" | test("'"$1"'"; "i"))) | .key | split(".") | .[-1]' 2>/dev/null | 
+        head -5 || true
+}
+
+# Get package description
+get_description() {
+    nix search nixpkgs "^$1$" --json 2>/dev/null | 
+        jq -r '.[] | .description // "No description"' 2>/dev/null | 
+        head -1 || echo "No description"
+}
+
+# Interactive selection with fzf
+select_package() {
+    local query="$1"
+    shift
+    local candidates=("$@")
+    
+    [[ ${#candidates[@]} -eq 0 ]] && return
+    
+    # Build selection list with descriptions
+    local options=()
+    for pkg in "${candidates[@]}"; do
+        local desc=$(get_description "$pkg")
+        [[ ${#desc} -gt 80 ]] && desc="${desc:0:77}..."
+        options+=("$(printf "%-25s │ %s" "$pkg" "$desc")")
+    done
+    
+    # Add skip option at the end
+    options+=("SKIP - Don't install anything for '$query'")
+    
+    # Use fzf for selection with ANSI colors
+    local selected=$(printf '%s\n' "${options[@]}" | 
+        fzf --height=40% \
+            --layout=reverse \
+            --border \
+            --header="Select package for '$query'" \
+            --prompt="▶ " \
+            --pointer="→" \
+            --marker="✓" \
+            --bind="j:down,k:up" \
+            --no-multi \
+            --ansi \
+            --color="fg:#626880,bg:-1,hl:#5e81ac,fg+:#c6d0f5,bg+:-1,hl+:#88c0d0,info:#81a1c1,border:#4c566a,prompt:#88c0d0,pointer:#81a1c1,marker:#a3be8c,header:#8fbcbb")
+    
+    # Extract package name from selection
+    if [[ -n "$selected" ]] && [[ ! "$selected" =~ ^SKIP ]]; then
+        echo "$selected" | cut -d' ' -f1
+    fi
+}
+
+# Verify package exists in nixpkgs
+verify_package() {
+    local pkg="$1"
+    nix search nixpkgs "^$pkg$" --json 2>/dev/null | jq -r 'keys[]' 2>/dev/null | grep -q . || return 1
+}
+
+# Add packages to packages.nix maintaining alphabetical order
+update_packages() {
+    local packages=("$@")
+    [[ ${#packages[@]} -eq 0 ]] && { echo "No packages to add."; return; }
+    
+    # Verify all packages exist
+    local verified=()
+    local failed=()
+    
+    echo "Verifying packages..."
+    for pkg in "${packages[@]}"; do
+        if verify_package "$pkg"; then
+            verified+=("$pkg")
+            echo "  ✓ $pkg"
+        else
+            failed+=("$pkg")
+            echo "  ✗ $pkg - not found in nixpkgs"
+        fi
+    done
+    
+    [[ ${#verified[@]} -eq 0 ]] && { echo "No valid packages to add."; return; }
+    
+    # Filter out already existing packages
+    local to_add=()
+    for pkg in "${verified[@]}"; do
+        if ! grep -q "^\s*$pkg\s*\(#\|$\)" "$PACKAGES_FILE"; then
+            to_add+=("$pkg")
+        fi
+    done
+    
+    [[ ${#to_add[@]} -eq 0 ]] && { echo "All packages already in packages.nix"; return; }
+    
+    echo -e "\nAdding to packages.nix: ${to_add[*]}"
+    
+    # Build all new lines
+    local new_lines=""
+    for pkg in "${to_add[@]}"; do
+        local desc=$(get_description "$pkg")
+        [[ ${#desc} -gt 80 ]] && desc="${desc:0:77}..."
+        new_lines+="  $pkg # $desc\n"
+    done
+    
+    # Create temp file with new content
+    local temp=$(mktemp)
+    while IFS= read -r line; do
+        if [[ "$line" =~ ^\] ]]; then
+            # Insert new packages before the closing bracket
+            printf "%b" "$new_lines" >> "$temp"
+        fi
+        echo "$line" >> "$temp"
+    done < "$PACKAGES_FILE"
+    
+    mv "$temp" "$PACKAGES_FILE"
+    
+    echo "✓ Updated packages.nix (added ${#to_add[@]} packages)"
+    
+    # Run nix fmt to sort packages
+    echo "Formatting packages.nix..."
+    if command -v alejandra >/dev/null 2>&1; then
+        alejandra "$PACKAGES_FILE" >/dev/null 2>&1
+    elif command -v nix >/dev/null 2>&1 && nix fmt --help >/dev/null 2>&1; then
+        nix fmt "$PACKAGES_FILE" 2>/dev/null
+    fi
+    
+    [[ ${#failed[@]} -gt 0 ]] && echo -e "\nFailed to add: ${failed[*]}"
+}
+
+# Main processing
+declare -a already_installed=() singletons=() ambiguous=()
+declare -A singleton_map ambiguous_map
+
+echo "Searching nixpkgs for all packages..."
+
+# First pass: lookup all packages
+for arg in "$@"; do
+    if is_installed "$arg"; then
+        already_installed+=("$arg")
+        continue
+    fi
+    
+    exact=$(search_package "$arg")
+    readarray -t providers < <(search_providers "$arg")
+    
+    # Remove exact match from providers to avoid duplicates
+    [[ -n "$exact" ]] && providers=($(printf '%s\n' "${providers[@]}" | grep -v "^$exact$" || true))
+    
+    # Build candidate list
+    candidates=()
+    [[ -n "$exact" ]] && candidates+=("$exact")
+    candidates+=("${providers[@]}")
+    
+    if [[ ${#candidates[@]} -eq 0 ]]; then
+        echo "✗ $arg -> not found"
+    elif [[ ${#candidates[@]} -eq 1 ]]; then
+        singletons+=("$arg")
+        singleton_map["$arg"]="${candidates[0]}"
+    else
+        ambiguous+=("$arg")
+        ambiguous_map["$arg"]="${candidates[*]}"
+    fi
+done
+
+# Show all singletons at once
+if [[ ${#singletons[@]} -gt 0 ]]; then
+    echo -e "\nDirect matches:"
+    for arg in "${singletons[@]}"; do
+        echo "✓ $arg -> ${singleton_map[$arg]}"
+    done
+fi
+
+# Handle ambiguous cases
+declare -a to_install=()
+
+# Add all singletons
+for arg in "${singletons[@]}"; do
+    to_install+=("${singleton_map[$arg]}")
+done
+
+# Process ambiguous ones
+if [[ ${#ambiguous[@]} -gt 0 ]]; then
+    echo -e "\nMultiple matches found - please select:"
+    for arg in "${ambiguous[@]}"; do
+        IFS=' ' read -ra candidates <<< "${ambiguous_map[$arg]}"
+        if selected=$(select_package "$arg" "${candidates[@]}"); then
+            [[ -n "$selected" ]] && { echo "✓ $arg -> $selected"; to_install+=("$selected"); } || echo "⚠ $arg -> skipped"
+        fi
+    done
+fi
+
+# Show results
+[[ ${#already_installed[@]} -gt 0 ]] && { echo -e "\nAlready installed:"; printf '  %s\n' "${already_installed[@]}"; }
+[[ ${#to_install[@]} -gt 0 ]] && { echo ""; update_packages "${to_install[@]}"; } || echo -e "\nNo new packages to install."
