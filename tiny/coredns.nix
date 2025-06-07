@@ -1,6 +1,6 @@
 {pkgs, ...}: let
   # REVIEW: https://github.com/NixOS/nixpkgs/pull/359426
-  coreDNS = pkgs.coredns.overrideAttrs (oldAttrs: {
+  coreDNS = pkgs.coredns.overrideAttrs (_oldAttrs: {
     modBuildPhase = ''
       for plugin in ${builtins.toString (attrsToPlugins externalPlugins)}; do echo $plugin >> plugin.cfg; done
       for src in ${builtins.toString (attrsToSources externalPlugins)}; do go get $src; done

@@ -1,9 +1,4 @@
-{
-  config,
-  lib,
-  pkgs,
-  ...
-}: let
+{pkgs, ...}: let
   # SSH health metrics exporter
   sshHealthScript = pkgs.writeShellScript "ssh-health-metrics" ''
     # HELP ssh_service_active SSH service status
@@ -150,12 +145,7 @@ in {
     };
   };
 
-  systemd.timers.ssh = {
-    config,
-    lib,
-    pkgs,
-    ...
-  }: let
+  systemd.timers.ssh = {pkgs, ...}: let
     # SSH health metrics exporter
     sshHealthScript = pkgs.writeShellScript "ssh-health-metrics" ''
       # HELP ssh_service_active SSH service status

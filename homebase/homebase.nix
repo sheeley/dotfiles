@@ -12,12 +12,7 @@ in {
   homebrew.casks = [
     "utm"
   ];
-  home-manager.users.${user} = {
-    config,
-    lib,
-    pkgs,
-    ...
-  }: {
+  home-manager.users.${user} = {pkgs, ...}: {
     home = {
       packages = with pkgs; [
         borgmatic

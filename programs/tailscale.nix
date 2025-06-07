@@ -1,9 +1,4 @@
-{
-  pkgs,
-  lib,
-  private,
-  ...
-}: {
+_: {
   # system.activationScripts.postUserActivation.text = ''
   #   # check if we are already authenticated to tailscale
   #   status="$(tailscale status -json | ${pkgs.jq}/bin/jq -r .BackendState)"

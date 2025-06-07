@@ -1,5 +1,5 @@
 {user, ...}: {
-  home-manager.users.${user} = {lib, ...}: {
+  home-manager.users.${user} = {...}: {
     home.sessionVariables.SSH_ASKPASS = "/opt/homebrew/bin/touch2sudo";
 
     imports = [
