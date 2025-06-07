@@ -44,6 +44,7 @@ exists() {
 	return 1
 }
 
+
 if [[ "sheeley" != $(whoami) ]]; then
 	if confirm "username is $(whoami), change to sheeley?"; then
 		sudo useradd -m -G wheel -s /run/current-system/sw/bin/bash
@@ -78,13 +79,13 @@ if ! (nix-channel --list | grep -q nixpkgs); then
 	nix-channel --update
 fi
 
-PREFIX="nixpkgs"
-# if [[ "$NOT_MAC" ]]; then
-# 	PREFIX="nixos"
-# fi
-# git to clone the repo, ripgrep to run ./apply
+# git to clone the repo
 if ! exists git; then
-	nix-env -iA "$PREFIX.git"
+	if [[ "$IS_NIX" ]]; then
+		nix-env -iA nixos.git
+	else
+		nix-env -iA nixpkgs.git
+	fi
 fi
 
 if [[ "$IS_MAC" ]]; then

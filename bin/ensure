@@ -1,0 +1,37 @@
+#!/usr/bin/env nu
+
+# Install a Nix package if the command doesn't exist
+def main [
+    command: string              # The command to check for
+    package?: string             # The nix package name (defaults to command name)
+    --install-if: string = ""    # Only install if this evaluates to non-empty
+] {
+    # Default package to command name if not specified
+    let pkg = if ($package | is-empty) { $command } else { $package }
+    
+    # Check if command already exists
+    if (which $command | length) > 0 {
+        return
+    }
+    
+    # If --install-if was provided, only install if it has a value
+    # This allows: ensure --install-if="$(command -v gsed)" sed gnused
+    # to skip installation if gsed exists
+    if ($install_if | describe) != "nothing" and $install_if == "" {
+        return
+    }
+    
+    # Ensure profile directory exists and is writable
+    let user = (whoami)
+    let profile_dir = $"/nix/var/nix/profiles/per-user/($user)"
+    
+    if not ($profile_dir | path exists) {
+        sudo mkdir -p $profile_dir
+        sudo chown $user $profile_dir
+    } else if not (ls -l ($profile_dir | path dirname) | where name == ($profile_dir | path basename) | get mode.0 | str contains "w") {
+        sudo chown $user $profile_dir
+    }
+    
+    print $"Installing ($pkg)..."
+    nix profile install $"github:NixOS/nixpkgs/nixpkgs-unstable#($pkg)"
+}

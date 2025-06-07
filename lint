@@ -1,0 +1,84 @@
+#!/usr/bin/env bash
+set -eo pipefail
+
+# Colors for output
+GREEN='\033[0;32m'
+RED='\033[0;31m'
+YELLOW='\033[1;33m'
+NC='\033[0m' # No Color
+
+# Add bin to PATH
+PATH="$PATH:./bin"
+
+echo -e "${YELLOW}Running Nix linters...${NC}"
+
+# Run the linters with auto-fix
+echo "Running statix..."
+statix fix .
+
+echo "Running deadnix..."
+deadnix --edit .
+
+echo "Running alejandra..."
+alejandra .
+
+echo -e "${GREEN}✓ All files have been linted and fixed${NC}"
+
+# Now check all configurations can build
+echo -e "\n${YELLOW}Checking all system configurations...${NC}"
+
+# Function to check if a build succeeds
+check_build() {
+    local config_type="$1"
+    local config_name="$2"
+    local flake_ref="$3"
+    
+    echo -n "  Checking $config_type.$config_name... "
+    
+    if nix build --dry-run "$flake_ref" --no-link &>/dev/null; then
+        echo -e "${GREEN}✓${NC}"
+        return 0
+    else
+        echo -e "${RED}✗${NC}"
+        echo "    To see details: nix build $flake_ref --show-trace"
+        return 1
+    fi
+}
+
+# Track if any builds failed
+failed=0
+
+# Check Darwin configurations
+echo "Darwin configurations:"
+for config in jmba homebase Sheeley-MBP stud; do
+    if ! check_build "darwinConfigurations" "$config" "path:.#darwinConfigurations.$config.system"; then
+        failed=1
+    fi
+done
+
+# Check NixOS configurations
+echo -e "\nNixOS configurations:"
+for config in tiny; do
+    if ! check_build "nixosConfigurations" "$config" "path:.#nixosConfigurations.$config.config.system.build.toplevel"; then
+        failed=1
+    fi
+done
+
+# Check Home Manager configurations
+echo -e "\nHome Manager configurations:"
+for config in sheeley; do
+    if ! check_build "homeConfigurations" "$config" "path:.#homeConfigurations.$config.activationPackage"; then
+        failed=1
+    fi
+done
+
+# Summary
+echo
+if [ $failed -eq 0 ]; then
+    echo -e "${GREEN}✓ All configurations can build successfully!${NC}"
+    exit 0
+else
+    echo -e "${RED}✗ Some configurations failed to build${NC}"
+    echo "Run with --show-trace to see detailed errors"
+    exit 1
+fi
