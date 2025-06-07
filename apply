@@ -35,9 +35,30 @@ if [[ "$NOT_NIX" ]]; then
 	fi
 fi
 
-if ! exists rg; then
-	nix-env -iA nixpkgs.ripgrep
+# ensure the nix profile directory exists and is owned by this user
+MOI=$(whoami)
+PROFILE_DIR="/nix/var/nix/profiles/per-user/$MOI"
+if [[ -d "$PROFILE_DIR" ]]; then
+	sudo mkdir -p "$PROFILE_DIR"
+	sudo chown "$MOI" "$PROFILE_DIR"
 fi
+
+# Function to ensure a command is installed
+ensure() {
+	local cmd="$1"
+	local pkg="${2:-$1}" # Use command name as package name if not specified
+
+	if ! exists "$cmd"; then
+		echo "Installing $pkg..."
+		nix profile install "github:NixOS/nixpkgs/nixpkgs-unstable#$pkg"
+	fi
+}
+
+# Ensure required tools are installed
+ensure rg ripgrep
+ensure statix
+ensure deadnix
+ensure alejandra
 todos
 
 # minimally, yell if nix version out of date - linux/mac only
@@ -133,6 +154,13 @@ if [[ ! "${VALID_HOSTNAMES[*]}" =~ $HN ]]; then
 		exit 1
 	fi
 fi
+
+# Run linting checks before building
+echo "Running Nix linters..."
+statix fix .
+alejandra --check .
+# only log deadnix, don't want to auto-delete dead code.
+deadnix . || true
 
 if [[ "$IS_MAC" ]]; then
 	# Use darwin-rebuild build to create the result symlink

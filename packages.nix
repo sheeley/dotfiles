@@ -1,5 +1,4 @@
 {
-  glow                 # Render markdown on the CLI, with pizzazz!
   lib,
   private,
   pkgs,
@@ -10,6 +9,7 @@ with pkgs; [
   bat # Enhanced `cat` command with syntax highlighting and paging
   borgmatic # Backup, bb!
   bottom # btm ~ better top, htop, cpu, mem, etc
+  deadnix # Scan Nix files for dead code
   du-dust # Disk usage visualization tool
   dua # disk usage, interactively
   duf # User-friendly disk usage/free space utility
@@ -24,6 +24,7 @@ with pkgs; [
   git # Version control system
   gitui # Terminal-based Git user interface
   go # best language ever
+  glow # Render markdown on the CLI, with pizzazz!
   gron # Convert JSON into a grep-able format and back
   gnused # gnu sed replace text
   jid # Interactive JSON query tool
@@ -53,6 +54,7 @@ with pkgs; [
   shfmt # Formatter for shell scripts
   # silver-searcher # Fast code searching tool (`ag`)
   ssh-copy-id # Add SSH public key to a remote machine
+  statix # Linter for Nix expressions
   sshfs # Mount remote directories over SSH
   tldr # Community-driven man pages with practical examples
   # tailspin # Log file highlighter
@@ -74,3 +76,4 @@ with pkgs; [
 #   obsidian
 #   # dockutil
 # ])
+
