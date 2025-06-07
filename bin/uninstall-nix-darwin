@@ -2,5 +2,8 @@
 # Purpose: Remove Nix Darwin installation from the system
 set -euo pipefail
 set -x
-nix --extra-experimental-features "nix-command flakes" run nix-darwin#darwin-uninstaller
-/nix/nix-installer uninstall
+if command -v nix-darwin; then
+	nix --extra-experimental-features "nix-command flakes" run nix-darwin#darwin-uninstaller
+fi
+
+curl -fsSL https://install.determinate.systems/nix | sh -s -- uninstall
