@@ -96,18 +96,16 @@
     userName = "Johnny Sheeley";
     userEmail = "${private.email}";
 
-    includes =
-      []
-      ++ (lib.optionals (lib.hasAttr "workEmail" private) [
-        {
-          condition = "gitdir:~/work";
-          contents = {
-            user = {
-              email = "${private.workEmail}";
-            };
+    includes = lib.optionals (lib.hasAttr "workEmail" private) [
+      {
+        condition = "gitdir:~/work";
+        contents = {
+          user = {
+            email = "${private.workEmail}";
           };
-        }
-      ]);
+        };
+      }
+    ];
 
     ignores = [
       ### Vim ###

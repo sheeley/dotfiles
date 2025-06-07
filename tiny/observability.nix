@@ -1,4 +1,4 @@
-{...}: {
+_: {
   networking.firewall.allowedTCPPorts = [
     # loki
     3100

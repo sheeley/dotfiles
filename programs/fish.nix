@@ -37,11 +37,11 @@
     plugins = [
       {
         name = "foreign-env";
-        src = pkgs.fishPlugins.foreign-env.src;
+        inherit (pkgs.fishPlugins.foreign-env) src;
       }
       {
         name = "done";
-        src = pkgs.fishPlugins.done.src;
+        inherit (pkgs.fishPlugins.done) src;
       }
     ];
 

@@ -4,8 +4,7 @@
   lib,
   user,
   ...
-}: let
-in {
+}: {
   environment.pathsToLink = ["/share/qemu"];
 
   home-manager.users.${user}.home = {

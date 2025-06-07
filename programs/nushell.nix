@@ -1,8 +1,4 @@
-{
-  # pkgs,
-  # private,
-  ...
-}:
+_:
 # let
 # in
 {

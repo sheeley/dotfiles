@@ -1,4 +1,4 @@
-{...}: {
+_: {
   home = {
     shellAliases = {
       amend = "git commit --amend --no-edit";

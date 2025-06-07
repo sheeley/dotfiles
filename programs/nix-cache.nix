@@ -1,4 +1,4 @@
-{...}: let
+_: let
   hostname = "tiny.sheeley.house";
   resolverIp = "172.20.1.1";
   cacheDirectory = "/var/cache/nginx/";

@@ -226,7 +226,7 @@ in {
     # Prometheus service (only if role is server or standalone)
     services.prometheus = mkIf (cfg.prometheus.enable && (cfg.role == "server" || cfg.role == "standalone")) {
       enable = true;
-      port = cfg.prometheus.port;
+      inherit (cfg.prometheus) port;
       globalConfig.scrape_interval = cfg.prometheus.scrapeInterval;
       extraFlags = [
         "--web.enable-remote-write-receiver"
