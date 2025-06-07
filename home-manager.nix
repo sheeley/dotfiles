@@ -19,7 +19,7 @@ in {
     useGlobalPkgs = true;
     useUserPackages = true;
     extraSpecialArgs = {
-      private = private;
+      inherit private;
     };
   };
 

@@ -6,8 +6,8 @@
 }:
 with lib; let
   cfg = config.local.dock;
-  stdenv = pkgs.stdenv;
-  brewPrefix = config.homebrew.brewPrefix;
+  inherit (pkgs) stdenv;
+  inherit (config.homebrew) brewPrefix;
   # dockutil = pkgs.dockutil;
   # dockutil = import ./dockutil.nix;
   normalize = path:
@@ -70,7 +70,7 @@ in {
     #   ];
     # })
 
-    (lib.mkIf (cfg.enable) {
+    (lib.mkIf cfg.enable {
       # && config.module.programs.homebrew.enable) {
       # TODO: move back to nix package eventually - can re-enable in darwin.nix
       homebrew.brews = ["dockutil"];

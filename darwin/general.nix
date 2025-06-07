@@ -32,7 +32,7 @@ in {
     '';
   };
 
-  home-manager.users.${user} = {...}: {
+  home-manager.users.${user} = _: {
     home.packages = [
       # pkgs.obsidian
     ];

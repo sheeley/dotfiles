@@ -48,21 +48,21 @@ in {
 
     sessionVariables = import ./environment_variables.nix {
       homeDirectory = homeDir;
-      lib = lib;
-      private = private;
+      inherit lib;
+      inherit private;
     };
 
     # this sometimes doesn't work with fish
     # https://github.com/LnL7/nix-darwin/issues/122
     sessionPath = pkgs.callPackage ./environment_path.nix {
-      user = user;
+      inherit user;
 
       homeDirectory = homeDir;
     };
 
     packages = pkgs.callPackage ./packages.nix {
-      lib = lib;
-      private = private;
+      inherit lib;
+      inherit private;
     };
 
     file = {

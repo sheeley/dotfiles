@@ -14,11 +14,9 @@
   # keyContents = map (v: builtins.readFile (lib.path.append ./authorized_keys "${v}")) keyFiles;
   # keysJoined = builtins.concatStringsSep "\n" keyContents;
 in {
-  imports =
-    []
-    ++ ((lib.optionals (lib.hasAttr "personal" private && private.personal)) [
-      # personal only
-    ]);
+  imports = (lib.optionals (lib.hasAttr "personal" private && private.personal)) [
+    # personal only
+  ];
 
   users.users.${user} = {
     shell = pkgs.fish;

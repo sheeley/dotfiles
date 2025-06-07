@@ -90,7 +90,7 @@
       specialArgs = {
         inherit inputs;
         user = "sheeley";
-        private = private;
+        inherit private;
       };
     };
 
@@ -108,7 +108,7 @@
       specialArgs = {
         inherit inputs;
         user = "sheeley";
-        private = private;
+        inherit private;
         storagePath = "/Volumes/Slash";
       };
     };
@@ -121,7 +121,7 @@
       specialArgs = {
         inherit inputs;
         user = "johnnysheeley";
-        private = private;
+        inherit private;
       };
     };
 
@@ -137,7 +137,7 @@
       specialArgs = {
         inherit inputs;
         user = "sheeley";
-        private = private;
+        inherit private;
       };
     };
 
@@ -154,7 +154,7 @@
       specialArgs = {
         inherit inputs;
         user = "sheeley";
-        private = private;
+        inherit private;
         isMac = false;
       };
     };
@@ -178,9 +178,9 @@
       extraSpecialArgs = {
         inherit inputs outputs;
         user = "sheeley";
-        private = private;
+        inherit private;
         isMac = false;
-        nixvim = nixvim;
+        inherit nixvim;
       };
     };
 

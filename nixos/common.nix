@@ -1,4 +1,4 @@
-{...}: {
+_: {
   users.users.sheeley = {
     isNormalUser = true;
     extraGroups = ["wheel"]; # Enable ‘sudo’ for the user.
