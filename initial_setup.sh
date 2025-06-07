@@ -44,6 +44,26 @@ exists() {
 	return 1
 }
 
+# Simple ensure function for initial setup
+ensure() {
+	local cmd="$1"
+	local pkg="${2:-$1}"
+	
+	if ! exists "$cmd"; then
+		echo "Installing $pkg..."
+		# Ensure channel exists first
+		if ! (nix-channel --list | grep -q nixpkgs); then
+			nix-channel --add https://nixos.org/channels/nixpkgs-unstable
+			nix-channel --update
+		fi
+		
+		if [[ "$IS_NIX" ]]; then
+			nix-env -iA "nixos.$pkg"
+		else
+			nix-env -iA "nixpkgs.$pkg"
+		fi
+	fi
+}
 
 if [[ "sheeley" != $(whoami) ]]; then
 	if confirm "username is $(whoami), change to sheeley?"; then
@@ -68,25 +88,14 @@ fi
 # if [[ "$IS_MAC" && ! -d /run ]]; then
 # 	echo "creating /run"
 # 	printf 'run\tprivate/var/run\n' | sudo tee -a /etc/synthetic.conf
-#  	# 
+#  	#
 #  	set +e
 # 	sudo /System/Library/Filesystems/apfs.fs/Contents/Resources/apfs.util -t
 #  	set -e
 # fi
 
-if ! (nix-channel --list | grep -q nixpkgs); then
-	nix-channel --add https://nixos.org/channels/nixpkgs-unstable
-	nix-channel --update
-fi
-
 # git to clone the repo
-if ! exists git; then
-	if [[ "$IS_NIX" ]]; then
-		nix-env -iA nixos.git
-	else
-		nix-env -iA nixpkgs.git
-	fi
-fi
+ensure git
 
 if [[ "$IS_MAC" ]]; then
 	# nix-darwin doesn't install brew.
@@ -134,7 +143,7 @@ fi
 if [[ ! -f ~/dotfiles/private.nix ]]; then
 	if ! exists op; then
 		brew install --cask 1password 1password/tap/1password-cli
-  		confirm "Log in to 1password, go to settings -> developer -> enable CLI integration. Continue?"
+		confirm "Log in to 1password, go to settings -> developer -> enable CLI integration. Continue?"
 	fi
 	if exists op; then
 		HOMEBREW_GITHUB_API_TOKEN=$(op read 'op://Personal/Homebrew Github Token/password')
@@ -177,14 +186,17 @@ if [ ! -f ~/.gh_done ]; then
 fi
 
 if [ ! -d ~/dotfiles ]; then
-# then
-# 	(
-# 		cd ~/dotfiles
-# 		git pull
-# 	)
-# else
+	# then
+	# 	(
+	# 		cd ~/dotfiles
+	# 		git pull
+	# 	)
+	# else
 	git clone git@github.com:sheeley/dotfiles.git ~/dotfiles
 fi
+
+# Ensure nushell is installed for the ensure script
+ensure nu nushell
 
 if [ ! -f ~/dotfiles/private.nix ]; then
 	cp ~/dotfiles/private.template.nix ~/dotfiles/private.nix
@@ -201,15 +213,15 @@ fi
 set +e
 if grep -q UNALTERED ~/dotfiles/private.nix && confirm "Customize private.nix"; then
 	set +u
- 	if [[ -z "$EDITOR" ]]; then
+	if [[ -z "$EDITOR" ]]; then
 		if exists vim; then
 			EDITOR=vim
-	  	elif exists nano; then
-	   		EDITOR=nano
-	  	fi
-   	fi
-    	set -u
-   	$EDITOR --wait ~/dotfiles/private.nix
+		elif exists nano; then
+			EDITOR=nano
+		fi
+	fi
+	set -u
+	$EDITOR --wait ~/dotfiles/private.nix
 fi
 set -e
 
