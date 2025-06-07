@@ -183,4 +183,8 @@ fi
 
 date >last-applied.txt
 
+# Reminder about deadnix
+echo ""
+echo -e "\033[1;33mReminder: Run 'deadnix --edit .' to remove unused code from your Nix files\033[0m"
+
 # source ~/.config/fish/config.fish

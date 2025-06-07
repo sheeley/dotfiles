@@ -1,8 +1,4 @@
-{
-  lib,
-  private,
-  pkgs,
-}:
+{pkgs}:
 with pkgs; [
   alejandra # Code formatter for Nix expressions
   atool # Archiving utility; useful for extracting various archive types

@@ -44,19 +44,23 @@ exists() {
 	return 1
 }
 
+UPDATED=
 # Simple ensure function for initial setup
 ensure() {
 	local cmd="$1"
 	local pkg="${2:-$1}"
-	
+
 	if ! exists "$cmd"; then
 		echo "Installing $pkg..."
 		# Ensure channel exists first
-		if ! (nix-channel --list | grep -q nixpkgs); then
-			nix-channel --add https://nixos.org/channels/nixpkgs-unstable
-			nix-channel --update
+		if [[ ! "$UPDATED" ]]; then
+			if ! (nix-channel --list | grep -q nixpkgs); then
+				nix-channel --add https://nixos.org/channels/nixpkgs-unstable
+				nix-channel --update
+				UPDATED=true
+			fi
 		fi
-		
+
 		if [[ "$IS_NIX" ]]; then
 			nix-env -iA "nixos.$pkg"
 		else
