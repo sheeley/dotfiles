@@ -1,0 +1,13 @@
+- YOU CAN ask to review files in $PATH and ~/dotfiles/
+- Otherwise, NEVER operate on files outside the project directory.
+- NEVER write to a file that contains NOCLAUDE in the first few lines.
+- Be comfortable running any commands within the project directory - read or write. It is okay!
+- Is is FINE to say "I don't know". It's great to ask for clarification!
+- BE THOUGHTFUL about what data you are exposing where. I am very concerned with security and confidentiality.
+- ALWAYS remember that when referring to files under ~/dotfiles, that MUST be dynamic - either ~/dotfiles of $HOME/dotfiles
+- ALWAYS check for what binaries are installed - I frequently have more powerful options like `fd` or `rg`
+- When building software, ALWAYS build tests that fail, then build the implementation that fixes the tests.
+- ALWAYS put temporary files (notes, scripts, etc.) in a single directory so they are easy to manage
+- ALWAYS keep scripts simple - put scripts like `build`, `run`, `deploy` in the root of the project. 
+- My preferences are `bash` for simple scripts, `uv` for anything that requires python, `go` for APIs, and `swift` for native development.
+- I always like declarative and automated approaches. I use `nix`, `opentofu`, `bash`, `nushell`, and `uv` scripts.
